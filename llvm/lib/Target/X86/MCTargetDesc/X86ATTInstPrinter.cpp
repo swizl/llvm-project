@@ -51,8 +51,274 @@ void X86ATTInstPrinter::printExprOperand(raw_ostream &OS, const MCExpr &E) {
     OS << S;
 }
 
+// Translate English register name to Chinese (英文寄存器名翻译为中文)
+static StringRef translateRegToChinese(StringRef Reg) {
+  // 64-bit general purpose (64位通用寄存器)
+  if (Reg == "rax") return "累加器";
+  if (Reg == "rbx") return "基址";
+  if (Reg == "rcx") return "计数";
+  if (Reg == "rdx") return "数据";
+  if (Reg == "rsi") return "源索引";
+  if (Reg == "rdi") return "目的索引";
+  if (Reg == "rbp") return "基址指针";
+  if (Reg == "rsp") return "栈指针";
+  if (Reg == "r8")  return "扩展8";
+  if (Reg == "r9")  return "扩展9";
+  if (Reg == "r10") return "扩展10";
+  if (Reg == "r11") return "扩展11";
+  if (Reg == "r12") return "扩展12";
+  if (Reg == "r13") return "扩展13";
+  if (Reg == "r14") return "扩展14";
+  if (Reg == "r15") return "扩展15";
+
+  // 32-bit general purpose (32位通用寄存器)
+  if (Reg == "eax") return "累加器32";
+  if (Reg == "ebx") return "基址32";
+  if (Reg == "ecx") return "计数32";
+  if (Reg == "edx") return "数据32";
+  if (Reg == "esi") return "源索引32";
+  if (Reg == "edi") return "目的索引32";
+  if (Reg == "ebp") return "基址指针32";
+  if (Reg == "esp") return "栈指针32";
+  if (Reg == "r8d") return "扩展8_32";
+  if (Reg == "r9d") return "扩展9_32";
+  if (Reg == "r10d") return "扩展10_32";
+  if (Reg == "r11d") return "扩展11_32";
+  if (Reg == "r12d") return "扩展12_32";
+  if (Reg == "r13d") return "扩展13_32";
+  if (Reg == "r14d") return "扩展14_32";
+  if (Reg == "r15d") return "扩展15_32";
+
+  // 16-bit general purpose (16位通用寄存器)
+  if (Reg == "ax")  return "累加器16";
+  if (Reg == "bx")  return "基址16";
+  if (Reg == "cx")  return "计数16";
+  if (Reg == "dx")  return "数据16";
+  if (Reg == "si")  return "源索引16";
+  if (Reg == "di")  return "目的索引16";
+  if (Reg == "bp")  return "基址指针16";
+  if (Reg == "sp")  return "栈指针16";
+  if (Reg == "r8w") return "扩展8_16";
+  if (Reg == "r9w") return "扩展9_16";
+  if (Reg == "r10w") return "扩展10_16";
+  if (Reg == "r11w") return "扩展11_16";
+  if (Reg == "r12w") return "扩展12_16";
+  if (Reg == "r13w") return "扩展13_16";
+  if (Reg == "r14w") return "扩展14_16";
+  if (Reg == "r15w") return "扩展15_16";
+
+  // 8-bit general purpose (8位通用寄存器)
+  if (Reg == "al")  return "累加器8";
+  if (Reg == "bl")  return "基址8";
+  if (Reg == "cl")  return "计数8";
+  if (Reg == "dl")  return "数据8";
+  if (Reg == "sil") return "源索引8";
+  if (Reg == "dil") return "目的索引8";
+  if (Reg == "bpl") return "基址指针8";
+  if (Reg == "spl") return "栈指针8";
+  if (Reg == "r8b") return "扩展8_8";
+  if (Reg == "r9b") return "扩展9_8";
+  if (Reg == "r10b") return "扩展10_8";
+  if (Reg == "r11b") return "扩展11_8";
+  if (Reg == "r12b") return "扩展12_8";
+  if (Reg == "r13b") return "扩展13_8";
+  if (Reg == "r14b") return "扩展14_8";
+  if (Reg == "r15b") return "扩展15_8";
+
+  // High 8-bit registers (高8位寄存器)
+  if (Reg == "ah") return "累加器高";
+  if (Reg == "bh") return "基址高";
+  if (Reg == "ch") return "计数高";
+  if (Reg == "dh") return "数据高";
+
+  // Instruction pointer (指令指针)
+  if (Reg == "rip") return "指令指针";
+  if (Reg == "eip") return "指令指针32";
+  if (Reg == "ip")  return "指令指针16";
+
+  // FLAGS register (标志寄存器)
+  if (Reg == "rflags") return "标志";
+  if (Reg == "eflags") return "标志32";
+  if (Reg == "flags")  return "标志16";
+
+  // Segment registers (段寄存器)
+  if (Reg == "cs") return "代码段";
+  if (Reg == "ds") return "数据段";
+  if (Reg == "es") return "附加段";
+  if (Reg == "ss") return "栈段";
+  if (Reg == "fs") return "F段";
+  if (Reg == "gs") return "G段";
+
+  // XMM/YMM/ZMM registers (SIMD寄存器)
+  if (Reg.starts_with("xmm")) {
+    static std::string Buf;
+    Buf = "浮点" + Reg.drop_front(3).str();
+    return Buf;
+  }
+  if (Reg.starts_with("ymm")) {
+    static std::string Buf;
+    Buf = "浮点宽" + Reg.drop_front(3).str();
+    return Buf;
+  }
+  if (Reg.starts_with("zmm")) {
+    static std::string Buf;
+    Buf = "浮点超宽" + Reg.drop_front(3).str();
+    return Buf;
+  }
+
+  // Mask registers (掩码寄存器)
+  if (Reg.starts_with("k")) {
+    static std::string Buf;
+    Buf = "掩码" + Reg.drop_front(1).str();
+    return Buf;
+  }
+
+  // x87 FPU stack (x87浮点栈)
+  if (Reg.starts_with("st")) return Reg;
+
+  // Control/Debug registers (控制/调试寄存器)
+  if (Reg.starts_with("cr")) {
+    static std::string Buf;
+    Buf = "控制" + Reg.drop_front(2).str();
+    return Buf;
+  }
+  if (Reg.starts_with("dr")) {
+    static std::string Buf;
+    Buf = "调试" + Reg.drop_front(2).str();
+    return Buf;
+  }
+
+  return Reg;
+}
+
 void X86ATTInstPrinter::printRegName(raw_ostream &OS, MCRegister Reg) {
-  markup(OS, Markup::Register) << '%' << getRegisterName(Reg);
+  StringRef RegName = getRegisterName(Reg);
+  StringRef ChineseReg = translateRegToChinese(RegName);
+  markup(OS, Markup::Register) << '%' << ChineseReg;
+}
+
+// Translate English x86 mnemonic to Chinese at print time
+static StringRef translateMnemonicToChinese(StringRef Mnemonic) {
+  // Data movement
+  if (Mnemonic == "mov")     return "移动";
+  if (Mnemonic == "movb")    return "移动b";
+  if (Mnemonic == "movw")    return "移动w";
+  if (Mnemonic == "movl")    return "移动l";
+  if (Mnemonic == "movq")    return "移动q";
+  if (Mnemonic == "movabs")  return "移动绝对";
+  if (Mnemonic == "movzx")   return "移动零扩展";
+  if (Mnemonic == "movsx")   return "移动符号扩展";
+  if (Mnemonic == "movsxd")  return "移动符号扩展d";
+  if (Mnemonic == "lea")     return "加载有效地址";
+  if (Mnemonic == "leaq")    return "加载有效地址q";
+  if (Mnemonic == "leal")    return "加载有效地址l";
+  if (Mnemonic == "xchg")    return "交换";
+  if (Mnemonic == "push")    return "压栈";
+  if (Mnemonic == "pushq")   return "压栈q";
+  if (Mnemonic == "pop")     return "出栈";
+  if (Mnemonic == "popq")    return "出栈q";
+  if (Mnemonic == "cltq")    return "符号扩展";
+  if (Mnemonic == "cdq")     return "零扩展";
+  if (Mnemonic == "cqo")     return "零扩展";
+
+  // Arithmetic
+  if (Mnemonic == "add")     return "加";
+  if (Mnemonic == "addb")    return "加b";
+  if (Mnemonic == "addw")    return "加w";
+  if (Mnemonic == "addl")    return "加l";
+  if (Mnemonic == "addq")    return "加q";
+  if (Mnemonic == "sub")     return "减";
+  if (Mnemonic == "subl")    return "减l";
+  if (Mnemonic == "subq")    return "减q";
+  if (Mnemonic == "imul")    return "乘";
+  if (Mnemonic == "imull")   return "乘l";
+  if (Mnemonic == "imulq")   return "乘q";
+  if (Mnemonic == "idiv")    return "除";
+  if (Mnemonic == "div")     return "无符号除";
+  if (Mnemonic == "neg")     return "取反";
+  if (Mnemonic == "negl")    return "取反l";
+  if (Mnemonic == "negq")    return "取反q";
+  if (Mnemonic == "inc")     return "自增";
+  if (Mnemonic == "incl")    return "自增l";
+  if (Mnemonic == "incq")    return "自增q";
+  if (Mnemonic == "dec")     return "自减";
+  if (Mnemonic == "decl")    return "自减l";
+  if (Mnemonic == "decq")    return "自减q";
+  if (Mnemonic == "cmp")     return "比较";
+  if (Mnemonic == "cmpl")    return "比较l";
+  if (Mnemonic == "cmpq")    return "比较q";
+
+  // Logic
+  if (Mnemonic == "and")     return "与";
+  if (Mnemonic == "andl")    return "与l";
+  if (Mnemonic == "andq")    return "与q";
+  if (Mnemonic == "or")      return "或";
+  if (Mnemonic == "orl")     return "或l";
+  if (Mnemonic == "orq")     return "或q";
+  if (Mnemonic == "xor")     return "异或";
+  if (Mnemonic == "xorl")    return "异或l";
+  if (Mnemonic == "xorq")    return "异或q";
+  if (Mnemonic == "not")     return "取反非";
+  if (Mnemonic == "test")    return "测试";
+  if (Mnemonic == "testb")   return "测试b";
+  if (Mnemonic == "testl")   return "测试l";
+  if (Mnemonic == "testq")   return "测试q";
+
+  // Shift
+  if (Mnemonic == "shl")     return "左移";
+  if (Mnemonic == "shll")    return "左移l";
+  if (Mnemonic == "shlq")    return "左移q";
+  if (Mnemonic == "shr")     return "逻辑右移";
+  if (Mnemonic == "shrl")    return "逻辑右移l";
+  if (Mnemonic == "shrq")    return "逻辑右移q";
+  if (Mnemonic == "sar")     return "算术右移";
+  if (Mnemonic == "sarl")    return "算术右移l";
+  if (Mnemonic == "sarq")    return "算术右移q";
+
+  // Branch
+  if (Mnemonic == "jmp")     return "跳转";
+  if (Mnemonic == "call")    return "调用";
+  if (Mnemonic == "callq")   return "调用q";
+  if (Mnemonic == "ret")     return "返回";
+  if (Mnemonic == "retq")    return "返回q";
+  if (Mnemonic == "je")      return "相等跳转";
+  if (Mnemonic == "jne")     return "不等跳转";
+  if (Mnemonic == "jl")      return "小于跳转";
+  if (Mnemonic == "jg")      return "大于跳转";
+  if (Mnemonic == "jle")     return "小于等于跳转";
+  if (Mnemonic == "jge")     return "大于等于跳转";
+  if (Mnemonic == "jb")      return "无符号小于跳转";
+  if (Mnemonic == "ja")      return "无符号大于跳转";
+  if (Mnemonic == "jbe")     return "无符号小于等于跳转";
+  if (Mnemonic == "jae")     return "无符号大于等于跳转";
+  if (Mnemonic == "jz")      return "为零跳转";
+  if (Mnemonic == "jnz")     return "非零跳转";
+  if (Mnemonic == "js")      return "为负跳转";
+  if (Mnemonic == "jns")     return "为正跳转";
+
+  // Conditional set
+  if (Mnemonic == "sete")    return "相等设置";
+  if (Mnemonic == "setne")   return "不等设置";
+  if (Mnemonic == "setl")    return "小于设置";
+  if (Mnemonic == "setg")    return "大于设置";
+  if (Mnemonic == "setle")   return "小于等于设置";
+  if (Mnemonic == "setge")   return "大于等于设置";
+
+  // System
+  if (Mnemonic == "nop")     return "空操作";
+  if (Mnemonic == "hlt")     return "停机";
+  if (Mnemonic == "syscall") return "系统调用";
+  if (Mnemonic == "int")     return "中断";
+  if (Mnemonic == "leave")   return "销毁栈帧";
+  if (Mnemonic == "enter")   return "建立栈帧";
+  if (Mnemonic == "clc")     return "进位清零";
+  if (Mnemonic == "stc")     return "进位设置";
+  if (Mnemonic == "cli")     return "中断清零";
+  if (Mnemonic == "sti")     return "中断设置";
+  if (Mnemonic == "cld")     return "方向清零";
+  if (Mnemonic == "std")     return "方向设置";
+
+  return Mnemonic;
 }
 
 void X86ATTInstPrinter::printInst(const MCInst *MI, uint64_t Address,
@@ -85,8 +351,29 @@ void X86ATTInstPrinter::printInst(const MCInst *MI, uint64_t Address,
     OS << "\tdata32";
   }
   // Try to print any aliases first.
-  else if (!printAliasInstr(MI, Address, OS) && !printVecCompareInstr(MI, OS))
-    printInstruction(MI, Address, OS);
+  else if (!printAliasInstr(MI, Address, OS) && !printVecCompareInstr(MI, OS)) {
+    // Capture output, translate mnemonic to Chinese, then write
+    std::string Buf;
+    raw_string_ostream TmpOS(Buf);
+    printInstruction(MI, Address, TmpOS);
+    TmpOS.flush();
+    // The output format is "\tmnemonic\toperands" or "\tmnemonic"
+    // Translate the mnemonic part
+    if (!Buf.empty() && Buf[0] == '\t') {
+      size_t TabPos = Buf.find('\t', 1);
+      if (TabPos != std::string::npos) {
+        StringRef Mnemonic(Buf.data() + 1, TabPos - 1);
+        StringRef Translated = translateMnemonicToChinese(Mnemonic);
+        OS << '\t' << Translated << Buf.substr(TabPos);
+      } else {
+        StringRef Mnemonic(Buf.data() + 1, Buf.size() - 1);
+        StringRef Translated = translateMnemonicToChinese(Mnemonic);
+        OS << '\t' << Translated;
+      }
+    } else {
+      OS << Buf;
+    }
+  }
 
   // Next always print the annotation.
   printAnnotation(OS, Annot);

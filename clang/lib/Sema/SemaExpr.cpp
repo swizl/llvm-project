@@ -2843,6 +2843,20 @@ ExprResult Sema::ActOnIdExpression(Scope *S, CXXScopeSpec &SS,
   IdentifierInfo *II = Name.getAsIdentifierInfo();
   SourceLocation NameLoc = NameInfo.getLoc();
 
+  // Chinese builtin aliases (中文内置函数别名): transparently rewrite a call
+  // through an alias identifier (e.g. "打印") to the canonical libc identifier
+  // ("printf") so that header declarations and builtin semantics apply.
+  if (II && HasTrailingLParen && II->getBuiltinID()) {
+    if (StringRef Canonical = getCanonicalNameForChineseBuiltin(II->getName());
+        !Canonical.empty()) {
+      II = &PP.getIdentifierTable().get(Canonical);
+      NameInfo = DeclarationNameInfo(II, NameLoc);
+      Name = II;
+      if (Id.getKind() == UnqualifiedIdKind::IK_Identifier)
+        Id.Identifier = II;
+    }
+  }
+
   if (II && II->isEditorPlaceholder()) {
     // FIXME: When typed placeholders are supported we can create a typed
     // placeholder expression node.

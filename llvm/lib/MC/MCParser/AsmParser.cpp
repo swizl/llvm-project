@@ -27,6 +27,7 @@
 #include "llvm/MC/MCCodeView.h"
 #include "llvm/MC/MCContext.h"
 #include "llvm/MC/MCDirectives.h"
+#include "llvm/MC/MCObjectFileInfo.h"
 #include "llvm/MC/MCDwarf.h"
 #include "llvm/MC/MCExpr.h"
 #include "llvm/MC/MCInstPrinter.h"
@@ -2241,6 +2242,138 @@ bool AsmParser::parseStatement(ParseStatementInfo &Info,
     }
 
     return Error(IDLoc, "unknown directive");
+  }
+
+  // Chinese directive aliases (中文指令别名)
+  // These don't start with '.' so they need special handling
+  if (static_cast<unsigned char>(IDVal[0]) >= 0x80) {
+    // Section directives (段指令)
+    if (IDVal == "文本段") {
+      // Switch to .text section
+      getStreamer().switchSection(getContext().getObjectFileInfo()->getTextSection());
+      return false;
+    }
+    if (IDVal == "数据段") {
+      getStreamer().switchSection(getContext().getObjectFileInfo()->getDataSection());
+      return false;
+    }
+    if (IDVal == "只读数据段") {
+      getStreamer().switchSection(getContext().getObjectFileInfo()->getReadOnlySection());
+      return false;
+    }
+    if (IDVal == "BSS段") {
+      getStreamer().switchSection(getContext().getObjectFileInfo()->getBSSSection());
+      return false;
+    }
+
+    // Symbol attributes (符号属性)
+    if (IDVal == "全局符号") {
+      return parseDirectiveSymbolAttribute(MCSA_Global);
+    }
+    if (IDVal == "弱符号") {
+      return parseDirectiveSymbolAttribute(MCSA_Weak);
+    }
+    if (IDVal == "局部符号") {
+      return parseDirectiveSymbolAttribute(MCSA_Local);
+    }
+    if (IDVal == "隐藏符号") {
+      return parseDirectiveSymbolAttribute(MCSA_Hidden);
+    }
+    if (IDVal == "受保护符号") {
+      return parseDirectiveSymbolAttribute(MCSA_Protected);
+    }
+    if (IDVal == "内部符号") {
+      return parseDirectiveSymbolAttribute(MCSA_Internal);
+    }
+
+    // Data directives (数据指令)
+    if (IDVal == "字节") {
+      return parseDirectiveValue(IDVal, 1);
+    }
+    if (IDVal == "半字") {
+      return parseDirectiveValue(IDVal, 2);
+    }
+    if (IDVal == "字") {
+      return parseDirectiveValue(IDVal, 4);
+    }
+    if (IDVal == "双字") {
+      return parseDirectiveValue(IDVal, 8);
+    }
+    if (IDVal == "字符串") {
+      return parseDirectiveAscii(IDVal, true);
+    }
+    if (IDVal == "原始字符串") {
+      return parseDirectiveAscii(IDVal, false);
+    }
+    if (IDVal == "零填充") {
+      return parseDirectiveZero();
+    }
+
+    // Alignment (对齐)
+    if (IDVal == "对齐") {
+      return parseDirectiveAlign(/*IsPow2=*/true, 0);
+    }
+
+    // Type/size (类型/大小)
+    if (IDVal == "类型") {
+      return parseDirectiveSymbolAttribute(MCSA_ELF_TypeFunction);
+    }
+    if (IDVal == "大小") {
+      return parseDirectiveSymbolAttribute(MCSA_ELF_TypeObject);
+    }
+
+    // Include (包含)
+    if (IDVal == "包含") {
+      return parseDirectiveInclude();
+    }
+
+    // File directive (文件)
+    if (IDVal == "文件") {
+      return parseDirectiveFile(IDLoc);
+    }
+
+    // Macro directives (宏指令)
+    if (IDVal == "宏") {
+      return parseDirectiveMacro(IDLoc);
+    }
+    if (IDVal == "结束宏") {
+      return parseDirectiveEndMacro(IDVal);
+    }
+
+    // Conditional directives (条件指令)
+    if (IDVal == "如果") {
+      return parseDirectiveIf(IDLoc, DK_IF);
+    }
+    if (IDVal == "否则") {
+      return parseDirectiveElse(IDLoc);
+    }
+    if (IDVal == "结束如果") {
+      return parseDirectiveEndIf(IDLoc);
+    }
+
+    // Repeat (重复)
+    if (IDVal == "重复") {
+      return parseDirectiveRept(IDLoc, IDVal);
+    }
+    if (IDVal == "结束重复") {
+      return parseDirectiveEndr(IDLoc);
+    }
+
+    // Error/warning (错误/警告)
+    if (IDVal == "错误") {
+      return parseDirectiveError(IDLoc, true);
+    }
+    if (IDVal == "警告") {
+      return parseDirectiveWarning(IDLoc);
+    }
+
+    // Org (偏移)
+    if (IDVal == "偏移") {
+      return parseDirectiveOrg();
+    }
+
+    // Not a known Chinese directive, fall through to instruction parser
+    // so that Chinese x86 mnemonics can be handled by the target parser
   }
 
   // __asm _emit or __asm __emit

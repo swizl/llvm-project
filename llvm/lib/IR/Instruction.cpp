@@ -817,88 +817,88 @@ void Instruction::andIRFlags(const Value *V) {
 
 const char *Instruction::getOpcodeName(unsigned OpCode) {
   switch (OpCode) {
-  // Terminators
-  case Ret:    return "ret";
-  case UncondBr: return "br";
-  case CondBr: return "br";
-  case Switch: return "switch";
-  case IndirectBr: return "indirectbr";
-  case Invoke: return "invoke";
-  case Resume: return "resume";
-  case Unreachable: return "unreachable";
-  case CleanupRet: return "cleanupret";
-  case CatchRet: return "catchret";
-  case CatchPad: return "catchpad";
-  case CatchSwitch: return "catchswitch";
-  case CallBr: return "callbr";
+  // 终结指令
+  case Ret:    return "返回";
+  case UncondBr: return "分支";
+  case CondBr: return "分支";
+  case Switch: return "开关";
+  case IndirectBr: return "间接分支";
+  case Invoke: return "调用返回";
+  case Resume: return "恢复";
+  case Unreachable: return "不可达";
+  case CleanupRet: return "清理返回";
+  case CatchRet: return "捕获返回";
+  case CatchPad: return "捕获填充";
+  case CatchSwitch: return "捕获开关";
+  case CallBr: return "调用分支";
 
-  // Standard unary operators...
-  case FNeg: return "fneg";
+  // 一元运算
+  case FNeg: return "取反";
 
-  // Standard binary operators...
-  case Add: return "add";
-  case FAdd: return "fadd";
-  case Sub: return "sub";
-  case FSub: return "fsub";
-  case Mul: return "mul";
-  case FMul: return "fmul";
-  case UDiv: return "udiv";
-  case SDiv: return "sdiv";
-  case FDiv: return "fdiv";
-  case URem: return "urem";
-  case SRem: return "srem";
-  case FRem: return "frem";
+  // 二元运算
+  case Add: return "加";
+  case FAdd: return "浮点加";
+  case Sub: return "减";
+  case FSub: return "浮点减";
+  case Mul: return "乘";
+  case FMul: return "浮点乘";
+  case UDiv: return "无符号除";
+  case SDiv: return "有符号除";
+  case FDiv: return "浮点除";
+  case URem: return "无符号取余";
+  case SRem: return "有符号取余";
+  case FRem: return "浮点取余";
 
-  // Logical operators...
-  case And: return "and";
-  case Or : return "or";
-  case Xor: return "xor";
+  // 位运算
+  case And: return "与";
+  case Or : return "或";
+  case Xor: return "异或";
 
-  // Memory instructions...
-  case Alloca:        return "alloca";
-  case Load:          return "load";
-  case Store:         return "store";
-  case AtomicCmpXchg: return "cmpxchg";
-  case AtomicRMW:     return "atomicrmw";
-  case Fence:         return "fence";
-  case GetElementPtr: return "getelementptr";
+  // 内存指令
+  case Alloca:        return "分配";
+  case Load:          return "加载";
+  case Store:         return "存储";
+  case AtomicCmpXchg: return "比较交换";
+  case AtomicRMW:     return "原子读写";
+  case Fence:         return "栅栏";
+  case GetElementPtr: return "获取元素指针";
 
-  // Convert instructions...
-  case Trunc:         return "trunc";
-  case ZExt:          return "zext";
-  case SExt:          return "sext";
-  case FPTrunc:       return "fptrunc";
-  case FPExt:         return "fpext";
-  case FPToUI:        return "fptoui";
-  case FPToSI:        return "fptosi";
-  case UIToFP:        return "uitofp";
-  case SIToFP:        return "sitofp";
-  case IntToPtr:      return "inttoptr";
-  case PtrToAddr:     return "ptrtoaddr";
-  case PtrToInt:      return "ptrtoint";
-  case BitCast:       return "bitcast";
-  case AddrSpaceCast: return "addrspacecast";
+  // 类型转换
+  case Trunc:         return "截断";
+  case ZExt:          return "零扩展";
+  case SExt:          return "符号扩展";
+  case FPTrunc:       return "浮点截断";
+  case FPExt:         return "浮点扩展";
+  case FPToUI:        return "浮点转无符号";
+  case FPToSI:        return "浮点转有符号";
+  case UIToFP:        return "无符号转浮点";
+  case SIToFP:        return "有符号转浮点";
+  case IntToPtr:      return "整数转指针";
+  case PtrToAddr:     return "指针转地址";
+  case PtrToInt:      return "指针转整数";
+  case BitCast:       return "位转换";
+  case AddrSpaceCast: return "地址空间转换";
 
-  // Other instructions...
-  case ICmp:           return "icmp";
-  case FCmp:           return "fcmp";
-  case PHI:            return "phi";
-  case Select:         return "select";
-  case Call:           return "call";
-  case Shl:            return "shl";
-  case LShr:           return "lshr";
-  case AShr:           return "ashr";
-  case VAArg:          return "va_arg";
-  case ExtractElement: return "extractelement";
-  case InsertElement:  return "insertelement";
-  case ShuffleVector:  return "shufflevector";
-  case ExtractValue:   return "extractvalue";
-  case InsertValue:    return "insertvalue";
-  case LandingPad:     return "landingpad";
-  case CleanupPad:     return "cleanuppad";
-  case Freeze:         return "freeze";
+  // 其他指令
+  case ICmp:           return "整数比较";
+  case FCmp:           return "浮点比较";
+  case PHI:            return "PHI节点";
+  case Select:         return "选择";
+  case Call:           return "调用";
+  case Shl:            return "左移";
+  case LShr:           return "逻辑右移";
+  case AShr:           return "算术右移";
+  case VAArg:          return "可变参数";
+  case ExtractElement: return "提取元素";
+  case InsertElement:  return "插入元素";
+  case ShuffleVector:  return "混洗向量";
+  case ExtractValue:   return "提取值";
+  case InsertValue:    return "插入值";
+  case LandingPad:     return "着陆垫";
+  case CleanupPad:     return "清理填充";
+  case Freeze:         return "冻结";
 
-  default: return "<Invalid operator> ";
+  default: return "<无效操作> ";
   }
 }
 

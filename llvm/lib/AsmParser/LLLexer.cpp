@@ -202,6 +202,9 @@ lltok::Kind LLLexer::LexToken() {
       // Handle letters: [a-zA-Z_]
       if (isalpha(static_cast<unsigned char>(CurChar)) || CurChar == '_')
         return LexIdentifier();
+      // Handle Chinese/UTF-8 identifiers (non-ASCII bytes)
+      if (static_cast<unsigned char>(CurChar) >= 0x80)
+        return LexChineseIdentifier();
       return lltok::Error;
     case EOF: return lltok::Eof;
     case 0:
@@ -1098,6 +1101,210 @@ lltok::Kind LLLexer::LexIdentifier() {
 
   // Finally, if this isn't known, return an error.
   CurPtr = TokStart+1;
+  return lltok::Error;
+}
+
+/// LexChineseIdentifier - Lex a Chinese/UTF-8 identifier and match against
+/// Chinese keyword aliases for LLVM IR keywords and instructions.
+lltok::Kind LLLexer::LexChineseIdentifier() {
+  // Scan the full UTF-8 identifier (bytes >= 0x80 or alphanumeric)
+  while (*CurPtr && (static_cast<unsigned char>(*CurPtr) >= 0x80 ||
+                     isalnum(static_cast<unsigned char>(*CurPtr)) ||
+                     *CurPtr == '_'))
+    ++CurPtr;
+
+  StringRef Keyword(TokStart, CurPtr - TokStart);
+
+  // Chinese LLVM IR keywords (中文LLVM IR关键字)
+  // Module structure (模块结构)
+  if (Keyword == "声明")     return lltok::kw_declare;
+  if (Keyword == "定义")     return lltok::kw_define;
+  if (Keyword == "全局")     return lltok::kw_global;
+  if (Keyword == "常量")     return lltok::kw_constant;
+  if (Keyword == "目标")     return lltok::kw_target;
+  if (Keyword == "三元组")   return lltok::kw_triple;
+  if (Keyword == "数据布局") return lltok::kw_datalayout;
+  if (Keyword == "源文件名") return lltok::kw_source_filename;
+  if (Keyword == "模块")     return lltok::kw_module;
+  if (Keyword == "汇编")     return lltok::kw_asm;
+
+  // Linkage (链接)
+  if (Keyword == "私有")       return lltok::kw_private;
+  if (Keyword == "内部")       return lltok::kw_internal;
+  if (Keyword == "弱")         return lltok::kw_weak;
+  if (Keyword == "弱ODR")      return lltok::kw_weak_odr;
+  if (Keyword == "链接一次")   return lltok::kw_linkonce;
+  if (Keyword == "链接一次ODR") return lltok::kw_linkonce_odr;
+  if (Keyword == "外部")       return lltok::kw_external;
+  if (Keyword == "外部弱")     return lltok::kw_extern_weak;
+  if (Keyword == "公共")       return lltok::kw_common;
+  if (Keyword == "追加")       return lltok::kw_appending;
+  if (Keyword == "可用外部")   return lltok::kw_available_externally;
+  if (Keyword == "DLL导入")    return lltok::kw_dllimport;
+  if (Keyword == "DLL导出")    return lltok::kw_dllexport;
+
+  // Visibility (可见性)
+  if (Keyword == "默认可见")   return lltok::kw_default;
+  if (Keyword == "隐藏")       return lltok::kw_hidden;
+  if (Keyword == "受保护")     return lltok::kw_protected;
+  if (Keyword == "未命名地址") return lltok::kw_unnamed_addr;
+  if (Keyword == "本地未命名地址") return lltok::kw_local_unnamed_addr;
+  if (Keyword == "本地")       return lltok::kw_dso_local;
+  if (Keyword == "可抢占")     return lltok::kw_dso_preemptable;
+
+  // TLS
+  if (Keyword == "线程局部")   return lltok::kw_thread_local;
+  if (Keyword == "本地动态")   return lltok::kw_localdynamic;
+  if (Keyword == "初始执行")   return lltok::kw_initialexec;
+  if (Keyword == "本地执行")   return lltok::kw_localexec;
+
+  // Special values (特殊值)
+  if (Keyword == "零初始化")   return lltok::kw_zeroinitializer;
+  if (Keyword == "未定义")     return lltok::kw_undef;
+  if (Keyword == "空指针")     return lltok::kw_null;
+  if (Keyword == "无")         return lltok::kw_none;
+  if (Keyword == "毒药值")     return lltok::kw_poison;
+
+  // Call modifiers (调用修饰)
+  if (Keyword == "尾调用")     return lltok::kw_tail;
+  if (Keyword == "必须尾调用") return lltok::kw_musttail;
+  if (Keyword == "禁用尾调用") return lltok::kw_notail;
+
+  // Memory/atomic (内存/原子)
+  if (Keyword == "易变")       return lltok::kw_volatile;
+  if (Keyword == "原子")       return lltok::kw_atomic;
+  if (Keyword == "无序")       return lltok::kw_unordered;
+  if (Keyword == "单调")       return lltok::kw_monotonic;
+  if (Keyword == "获取")       return lltok::kw_acquire;
+  if (Keyword == "释放")       return lltok::kw_release;
+  if (Keyword == "获取释放")   return lltok::kw_acq_rel;
+  if (Keyword == "顺序一致")   return lltok::kw_seq_cst;
+  if (Keyword == "同步范围")   return lltok::kw_syncscope;
+
+  // Fast-math flags (快速数学标志)
+  if (Keyword == "无NaN")      return lltok::kw_nnan;
+  if (Keyword == "无Inf")      return lltok::kw_ninf;
+  if (Keyword == "无符号零")   return lltok::kw_nsz;
+  if (Keyword == "近似倒数")   return lltok::kw_arcp;
+  if (Keyword == "收缩")       return lltok::kw_contract;
+  if (Keyword == "重结合")     return lltok::kw_reassoc;
+  if (Keyword == "近似函数")   return lltok::kw_afn;
+  if (Keyword == "快速")       return lltok::kw_fast;
+
+  // Overflow flags (溢出标志)
+  if (Keyword == "无符号环绕") return lltok::kw_nuw;
+  if (Keyword == "无符号环绕") return lltok::kw_nsw;
+  if (Keyword == "精确")       return lltok::kw_exact;
+  if (Keyword == "不相交")     return lltok::kw_disjoint;
+  if (Keyword == "入界")       return lltok::kw_inbounds;
+  if (Keyword == "非负")       return lltok::kw_nneg;
+
+  // Boolean (布尔)
+  if (Keyword == "真")         return lltok::kw_true;
+  if (Keyword == "假")         return lltok::kw_false;
+
+  // Instructions - Terminators (指令 - 终结指令)
+  // Terminators don't use UIntVal; the parser dispatches by token kind directly.
+  if (Keyword == "返回")       return lltok::kw_ret;
+  if (Keyword == "分支")       return lltok::kw_br;
+  if (Keyword == "开关")       return lltok::kw_switch;
+  if (Keyword == "间接分支")   return lltok::kw_indirectbr;
+  if (Keyword == "调用")       return lltok::kw_call;
+  if (Keyword == "调用分支")   return lltok::kw_callbr;
+  if (Keyword == "调用返回")   return lltok::kw_invoke;
+  if (Keyword == "恢复")       return lltok::kw_resume;
+  if (Keyword == "不可达")     return lltok::kw_unreachable;
+
+  // Instructions - Arithmetic (指令 - 算术)
+  // These use UIntVal (KeywordVal) passed to parseArithmetic/parseUnaryOp.
+  if (Keyword == "加")         { UIntVal = Instruction::Add;  return lltok::kw_add; }
+  if (Keyword == "减")         { UIntVal = Instruction::Sub;  return lltok::kw_sub; }
+  if (Keyword == "乘")         { UIntVal = Instruction::Mul;  return lltok::kw_mul; }
+  if (Keyword == "浮点加")     { UIntVal = Instruction::FAdd; return lltok::kw_fadd; }
+  if (Keyword == "浮点减")     { UIntVal = Instruction::FSub; return lltok::kw_fsub; }
+  if (Keyword == "浮点乘")     { UIntVal = Instruction::FMul; return lltok::kw_fmul; }
+  if (Keyword == "无符号除")   { UIntVal = Instruction::UDiv; return lltok::kw_udiv; }
+  if (Keyword == "有符号除")   { UIntVal = Instruction::SDiv; return lltok::kw_sdiv; }
+  if (Keyword == "浮点除")     { UIntVal = Instruction::FDiv; return lltok::kw_fdiv; }
+  if (Keyword == "无符号取余") { UIntVal = Instruction::URem; return lltok::kw_urem; }
+  if (Keyword == "有符号取余") { UIntVal = Instruction::SRem; return lltok::kw_srem; }
+  if (Keyword == "浮点取余")   { UIntVal = Instruction::FRem; return lltok::kw_frem; }
+  if (Keyword == "取反")       { UIntVal = Instruction::FNeg; return lltok::kw_fneg; }
+
+  // Instructions - Bitwise/shift (指令 - 位运算)
+  if (Keyword == "左移")       { UIntVal = Instruction::Shl;  return lltok::kw_shl; }
+  if (Keyword == "逻辑右移")   { UIntVal = Instruction::LShr; return lltok::kw_lshr; }
+  if (Keyword == "算术右移")   { UIntVal = Instruction::AShr; return lltok::kw_ashr; }
+  if (Keyword == "与")         { UIntVal = Instruction::And;  return lltok::kw_and; }
+  if (Keyword == "或")         { UIntVal = Instruction::Or;   return lltok::kw_or; }
+  if (Keyword == "异或")       { UIntVal = Instruction::Xor;  return lltok::kw_xor; }
+
+  // Instructions - Compare (指令 - 比较)
+  if (Keyword == "整数比较")   { UIntVal = Instruction::ICmp; return lltok::kw_icmp; }
+  if (Keyword == "浮点比较")   { UIntVal = Instruction::FCmp; return lltok::kw_fcmp; }
+
+  // Instructions - Cast (指令 - 类型转换)
+  // These use UIntVal (KeywordVal) passed to parseCast.
+  if (Keyword == "截断")       { UIntVal = Instruction::Trunc;         return lltok::kw_trunc; }
+  if (Keyword == "零扩展")     { UIntVal = Instruction::ZExt;          return lltok::kw_zext; }
+  if (Keyword == "符号扩展")   { UIntVal = Instruction::SExt;          return lltok::kw_sext; }
+  if (Keyword == "浮点截断")   { UIntVal = Instruction::FPTrunc;       return lltok::kw_fptrunc; }
+  if (Keyword == "浮点扩展")   { UIntVal = Instruction::FPExt;         return lltok::kw_fpext; }
+  if (Keyword == "无符号转浮点") { UIntVal = Instruction::UIToFP;      return lltok::kw_uitofp; }
+  if (Keyword == "有符号转浮点") { UIntVal = Instruction::SIToFP;      return lltok::kw_sitofp; }
+  if (Keyword == "浮点转无符号") { UIntVal = Instruction::FPToUI;      return lltok::kw_fptoui; }
+  if (Keyword == "浮点转有符号") { UIntVal = Instruction::FPToSI;      return lltok::kw_fptosi; }
+  if (Keyword == "整数转指针") { UIntVal = Instruction::IntToPtr;      return lltok::kw_inttoptr; }
+  if (Keyword == "指针转整数") { UIntVal = Instruction::PtrToInt;      return lltok::kw_ptrtoint; }
+  if (Keyword == "指针转地址") { UIntVal = Instruction::PtrToAddr;     return lltok::kw_ptrtoaddr; }
+  if (Keyword == "位转换")     { UIntVal = Instruction::BitCast;       return lltok::kw_bitcast; }
+  if (Keyword == "地址空间转换") { UIntVal = Instruction::AddrSpaceCast; return lltok::kw_addrspacecast; }
+
+  // Instructions - Memory (指令 - 内存)
+  // These dispatch to their own parse functions; UIntVal not used.
+  if (Keyword == "分配")       return lltok::kw_alloca;
+  if (Keyword == "加载")       return lltok::kw_load;
+  if (Keyword == "存储")       return lltok::kw_store;
+  if (Keyword == "栅栏")       return lltok::kw_fence;
+  if (Keyword == "比较交换")   return lltok::kw_cmpxchg;
+  if (Keyword == "原子读写")   return lltok::kw_atomicrmw;
+  if (Keyword == "获取元素指针") return lltok::kw_getelementptr;
+
+  // Instructions - Other (指令 - 其他)
+  if (Keyword == "选择")       return lltok::kw_select;
+  if (Keyword == "PHI节点")    return lltok::kw_phi;
+  if (Keyword == "冻结")       return lltok::kw_freeze;
+
+  // Instructions - Vector/aggregate (指令 - 向量/聚合)
+  if (Keyword == "提取元素")   return lltok::kw_extractelement;
+  if (Keyword == "插入元素")   return lltok::kw_insertelement;
+  if (Keyword == "混洗向量")   return lltok::kw_shufflevector;
+  if (Keyword == "提取值")     return lltok::kw_extractvalue;
+  if (Keyword == "插入值")     return lltok::kw_insertvalue;
+
+  // Type keywords (类型关键字)
+  if (Keyword == "空类型")     { TyVal = Type::getVoidTy(Context);        return lltok::Type; }
+  if (Keyword == "半精度")     { TyVal = Type::getHalfTy(Context);        return lltok::Type; }
+  if (Keyword == "单精度")     { TyVal = Type::getFloatTy(Context);       return lltok::Type; }
+  if (Keyword == "双精度")     { TyVal = Type::getDoubleTy(Context);      return lltok::Type; }
+  if (Keyword == "指针")       { TyVal = PointerType::getUnqual(Context); return lltok::Type; }
+  if (Keyword == "标签")       { TyVal = Type::getLabelTy(Context);       return lltok::Type; }
+  if (Keyword == "元数据")     { TyVal = Type::getMetadataTy(Context);    return lltok::Type; }
+  if (Keyword == "令牌")       { TyVal = Type::getTokenTy(Context);       return lltok::Type; }
+
+  // Comparison predicates (比较谓词)
+  if (Keyword == "等于")       return lltok::kw_eq;
+  if (Keyword == "不等于")     return lltok::kw_ne;
+  if (Keyword == "有符号小于") return lltok::kw_slt;
+  if (Keyword == "有符号大于") return lltok::kw_sgt;
+  if (Keyword == "有符号小于等于") return lltok::kw_sle;
+  if (Keyword == "有符号大于等于") return lltok::kw_sge;
+  if (Keyword == "无符号小于") return lltok::kw_ult;
+  if (Keyword == "无符号大于") return lltok::kw_ugt;
+  if (Keyword == "无符号小于等于") return lltok::kw_ule;
+  if (Keyword == "无符号大于等于") return lltok::kw_uge;
+
+  // Finally, if this isn't known, return an error.
   return lltok::Error;
 }
 

@@ -864,7 +864,7 @@ bool MCAsmStreamer::emitSymbolAttribute(MCSymbol *Symbol,
   case MCSA_ELF_TypeGnuUniqueObject:  /// .type _foo, @gnu_unique_object
     if (!MAI->hasDotTypeDotSizeDirective())
       return false; // Symbol attribute not supported
-    OS << "\t.type\t";
+    OS << "\t类型\t";
     Symbol->print(OS, MAI);
     OS << ',' << ((MAI->getCommentString()[0] != '@') ? '@' : '%');
     switch (Attribute) {
@@ -883,7 +883,7 @@ bool MCAsmStreamer::emitSymbolAttribute(MCSymbol *Symbol,
     OS << MAI->getGlobalDirective();
     break;
   case MCSA_LGlobal:        OS << "\t.lglobl\t";          break;
-  case MCSA_Hidden:         OS << "\t.hidden\t";          break;
+  case MCSA_Hidden:         OS << "\t隐藏\t";          break;
   case MCSA_IndirectSymbol: OS << "\t.indirect_symbol\t"; break;
   case MCSA_Internal:       OS << "\t.internal\t";        break;
   case MCSA_LazyReference:  OS << "\t.lazy_reference\t";  break;
@@ -1187,7 +1187,7 @@ void MCAsmStreamer::emitXCOFFCInfoSym(StringRef Name, StringRef Metadata) {
 
 void MCAsmStreamer::emitELFSize(MCSymbol *Symbol, const MCExpr *Value) {
   assert(MAI->hasDotTypeDotSizeDirective());
-  OS << "\t.size\t";
+  OS << "\t大小\t";
   Symbol->print(OS, MAI);
   OS << ", ";
   MAI->printExpr(OS, *Value);
@@ -1196,7 +1196,7 @@ void MCAsmStreamer::emitELFSize(MCSymbol *Symbol, const MCExpr *Value) {
 
 void MCAsmStreamer::emitCommonSymbol(MCSymbol *Symbol, uint64_t Size,
                                      Align ByteAlignment) {
-  OS << "\t.comm\t";
+  OS << "\t公共\t";
   Symbol->print(OS, MAI);
   OS << ',' << Size;
 
@@ -1400,14 +1400,14 @@ void MCAsmStreamer::emitBytes(StringRef Data) {
         // For target with DoubleQuoteString constants, .string and .byte are
         // used as replacement of .asciz and .ascii.
         if (Data.back() == 0) {
-          OS << "\t.string\t";
+          OS << "\t字符串\t";
           Data = Data.substr(0, Data.size() - 1);
         } else {
-          OS << "\t.byte\t";
+          OS << "\t字节\t";
         }
         PrintQuotedString(Data, OS);
       } else {
-        OS << "\t.byte\t";
+        OS << "\t字节\t";
         PrintByteList(Data, OS, MAI->characterLiteralSyntax());
       }
       EmitEOL();

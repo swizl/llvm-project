@@ -2328,7 +2328,18 @@ static std::string getMangledNameImpl(CodeGenModule &CGM, GlobalDecl GD,
                GD.getKernelReferenceKind() == KernelReferenceKind::Stub) {
       Out << "__clang_ocl_kern_imp_" << II->getName();
     } else {
-      Out << II->getName();
+      // Chinese builtin aliases (e.g. "打印" for printf): compiler-generated
+      // declarations for alias identifiers must lower to the canonical libc
+      // symbol, otherwise the object file would reference an undefined symbol
+      // named after the Chinese identifier. User-authored declarations of the
+      // same name are never implicit, so they are unaffected.
+      StringRef Name = II->getName();
+      if (FD && FD->isImplicit() && FD->getBuiltinID()) {
+        if (StringRef Canonical = getCanonicalNameForChineseBuiltin(Name);
+            !Canonical.empty())
+          Name = Canonical;
+      }
+      Out << Name;
     }
   }
 

@@ -461,6 +461,39 @@ tok::PPKeywordKind IdentifierInfo::getPPKeywordID() const {
 #undef CASE
 #undef HASH
   }
+
+  // Chinese preprocessor directive aliases (中文预处理指令别名)
+  // The perfect hash only works with ASCII, so handle non-ASCII separately
+  if ((unsigned char)Name[0] >= 0x80) {
+    StringRef N(getNameStart(), getLength());
+    if      (N == "包含")     return tok::pp_include;
+    else if (N == "定义")     return tok::pp_define;
+    else if (N == "取消定义") return tok::pp_undef;
+    else if (N == "如果定义") return tok::pp_ifdef;
+    else if (N == "如果未定义") return tok::pp_ifndef;
+    else if (N == "结束")     return tok::pp_endif;
+    else if (N == "否则")     return tok::pp_else;
+    else if (N == "否则如果") return tok::pp_elif;
+    else if (N == "错误")     return tok::pp_error;
+    else if (N == "警告")     return tok::pp_warning;
+    else if (N == "编译指令") return tok::pp_pragma;
+    else if (N == "行号")     return tok::pp_line;
+    // Additional aliases (额外别名)
+    else if (N == "嵌入")     return tok::pp_embed;
+    else if (N == "模块")     return tok::pp_module;
+    else if (N == "导入")     return tok::pp_import;
+    else if (N == "下一个包含") return tok::pp_include_next;
+    else if (N == "如果已定义") return tok::pp_ifdef;
+    else if (N == "如果未定义") return tok::pp_ifndef;
+    else if (N == "否则如果已定义") return tok::pp_elifdef;
+    else if (N == "否则如果未定义") return tok::pp_elifndef;
+    else if (N == "已定义")   return tok::pp_defined;
+    else if (N == "断言")     return tok::pp_assert;
+    else if (N == "取消断言") return tok::pp_unassert;
+    else if (N == "标识")     return tok::pp_ident;
+    return tok::pp_not_keyword;
+  }
+
   // clang-format on
 }
 

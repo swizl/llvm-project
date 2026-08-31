@@ -114,6 +114,7 @@ namespace llvm {
     bool ReadVarName();
 
     lltok::Kind LexIdentifier();
+    lltok::Kind LexChineseIdentifier();
     lltok::Kind LexDigitOrNegative();
     lltok::Kind LexPositive();
     lltok::Kind LexAt();

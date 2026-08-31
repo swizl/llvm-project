@@ -1449,11 +1449,141 @@ static bool CheckBaseRegAndIndexRegAndScale(MCRegister BaseReg,
   return checkScale(Scale, ErrMsg);
 }
 
+// Translate Chinese register name to English (中文寄存器名翻译为英文)
+static std::string translateChineseRegToEnglish(StringRef Reg) {
+  // 64-bit general purpose (64位通用寄存器)
+  if (Reg == "累加器") return "rax";
+  if (Reg == "基址") return "rbx";
+  if (Reg == "计数") return "rcx";
+  if (Reg == "数据") return "rdx";
+  if (Reg == "源索引") return "rsi";
+  if (Reg == "目的索引") return "rdi";
+  if (Reg == "基址指针") return "rbp";
+  if (Reg == "栈指针") return "rsp";
+  if (Reg == "扩展8") return "r8";
+  if (Reg == "扩展9") return "r9";
+  if (Reg == "扩展10") return "r10";
+  if (Reg == "扩展11") return "r11";
+  if (Reg == "扩展12") return "r12";
+  if (Reg == "扩展13") return "r13";
+  if (Reg == "扩展14") return "r14";
+  if (Reg == "扩展15") return "r15";
+
+  // 32-bit general purpose (32位通用寄存器)
+  if (Reg == "累加器32" || Reg == "累加器d") return "eax";
+  if (Reg == "基址32" || Reg == "基址d") return "ebx";
+  if (Reg == "计数32" || Reg == "计数d") return "ecx";
+  if (Reg == "数据32" || Reg == "数据d") return "edx";
+  if (Reg == "源索引32" || Reg == "源索引d") return "esi";
+  if (Reg == "目的索引32" || Reg == "目的索引d") return "edi";
+  if (Reg == "基址指针32" || Reg == "基址指针d") return "ebp";
+  if (Reg == "栈指针32" || Reg == "栈指针d") return "esp";
+  if (Reg == "扩展8_32" || Reg == "扩展8d") return "r8d";
+  if (Reg == "扩展9_32" || Reg == "扩展9d") return "r9d";
+  if (Reg == "扩展10_32" || Reg == "扩展10d") return "r10d";
+  if (Reg == "扩展11_32" || Reg == "扩展11d") return "r11d";
+  if (Reg == "扩展12_32" || Reg == "扩展12d") return "r12d";
+  if (Reg == "扩展13_32" || Reg == "扩展13d") return "r13d";
+  if (Reg == "扩展14_32" || Reg == "扩展14d") return "r14d";
+  if (Reg == "扩展15_32" || Reg == "扩展15d") return "r15d";
+
+  // 16-bit general purpose (16位通用寄存器)
+  if (Reg == "累加器16" || Reg == "累加器w") return "ax";
+  if (Reg == "基址16" || Reg == "基址w") return "bx";
+  if (Reg == "计数16" || Reg == "计数w") return "cx";
+  if (Reg == "数据16" || Reg == "数据w") return "dx";
+  if (Reg == "源索引16" || Reg == "源索引w") return "si";
+  if (Reg == "目的索引16" || Reg == "目的索引w") return "di";
+  if (Reg == "基址指针16" || Reg == "基址指针w") return "bp";
+  if (Reg == "栈指针16" || Reg == "栈指针w") return "sp";
+  if (Reg == "扩展8_16" || Reg == "扩展8w") return "r8w";
+  if (Reg == "扩展9_16" || Reg == "扩展9w") return "r9w";
+  if (Reg == "扩展10_16" || Reg == "扩展10w") return "r10w";
+  if (Reg == "扩展11_16" || Reg == "扩展11w") return "r11w";
+  if (Reg == "扩展12_16" || Reg == "扩展12w") return "r12w";
+  if (Reg == "扩展13_16" || Reg == "扩展13w") return "r13w";
+  if (Reg == "扩展14_16" || Reg == "扩展14w") return "r14w";
+  if (Reg == "扩展15_16" || Reg == "扩展15w") return "r15w";
+
+  // 8-bit general purpose (8位通用寄存器)
+  if (Reg == "累加器8") return "al";
+  if (Reg == "基址8") return "bl";
+  if (Reg == "计数8") return "cl";
+  if (Reg == "数据8") return "dl";
+  if (Reg == "源索引8" || Reg == "源索引8l") return "sil";
+  if (Reg == "目的索引8" || Reg == "目的索引8l") return "dil";
+  if (Reg == "基址指针8" || Reg == "基址指针8l") return "bpl";
+  if (Reg == "栈指针8" || Reg == "栈指针8l") return "spl";
+  if (Reg == "扩展8_8" || Reg == "扩展8b") return "r8b";
+  if (Reg == "扩展9_8" || Reg == "扩展9b") return "r9b";
+  if (Reg == "扩展10_8" || Reg == "扩展10b") return "r10b";
+  if (Reg == "扩展11_8" || Reg == "扩展11b") return "r11b";
+  if (Reg == "扩展12_8" || Reg == "扩展12b") return "r12b";
+  if (Reg == "扩展13_8" || Reg == "扩展13b") return "r13b";
+  if (Reg == "扩展14_8" || Reg == "扩展14b") return "r14b";
+  if (Reg == "扩展15_8" || Reg == "扩展15b") return "r15b";
+
+  // High 8-bit registers (高8位寄存器)
+  if (Reg == "累加器高") return "ah";
+  if (Reg == "基址高") return "bh";
+  if (Reg == "计数高") return "ch";
+  if (Reg == "数据高") return "dh";
+
+  // Instruction pointer (指令指针)
+  if (Reg == "指令指针") return "rip";
+  if (Reg == "指令指针32") return "eip";
+  if (Reg == "指令指针16") return "ip";
+
+  // FLAGS register (标志寄存器)
+  if (Reg == "标志") return "rflags";
+  if (Reg == "标志32") return "eflags";
+  if (Reg == "标志16") return "flags";
+
+  // Segment registers (段寄存器)
+  if (Reg == "代码段") return "cs";
+  if (Reg == "数据段") return "ds";
+  if (Reg == "附加段") return "es";
+  if (Reg == "栈段") return "ss";
+  if (Reg == "F段") return "fs";
+  if (Reg == "G段") return "gs";
+
+  // XMM/YMM/ZMM registers (SIMD寄存器)
+  // Note: Chinese chars are 3 bytes each in UTF-8
+  if (Reg.starts_with("浮点超宽")) {    // 12 bytes = 4 chars * 3
+    return "zmm" + Reg.drop_front(12).str();
+  }
+  if (Reg.starts_with("浮点宽")) {      // 9 bytes = 3 chars * 3
+    return "ymm" + Reg.drop_front(9).str();
+  }
+  if (Reg.starts_with("浮点")) {        // 6 bytes = 2 chars * 3
+    return "xmm" + Reg.drop_front(6).str();
+  }
+
+  // Mask registers (掩码寄存器)
+  if (Reg.starts_with("掩码")) {        // 6 bytes = 2 chars * 3
+    return "k" + Reg.drop_front(6).str();
+  }
+
+  // Control/Debug registers (控制/调试寄存器)
+  if (Reg.starts_with("控制")) {        // 6 bytes
+    return "cr" + Reg.drop_front(6).str();
+  }
+  if (Reg.starts_with("调试")) {        // 6 bytes
+    return "dr" + Reg.drop_front(6).str();
+  }
+
+  return Reg.str();
+}
+
 bool X86AsmParser::MatchRegisterByName(MCRegister &RegNo, StringRef RegName,
                                        SMLoc StartLoc, SMLoc EndLoc) {
   // If we encounter a %, ignore it. This code handles registers with and
   // without the prefix, unprefixed registers can occur in cfi directives.
   RegName.consume_front("%");
+
+  // Translate Chinese register name to English if needed
+  std::string TranslatedReg = translateChineseRegToEnglish(RegName);
+  RegName = TranslatedReg;
 
   RegNo = MatchRegisterName(RegName);
 
@@ -3294,10 +3424,118 @@ bool X86AsmParser::parsePrimaryExpr(const MCExpr *&Res, SMLoc &EndLoc) {
   return Parser.parsePrimaryExpr(Res, EndLoc, nullptr);
 }
 
+// Chinese-to-English x86 mnemonic translation (中文x86助记符翻译)
+// Handles size suffixes: 移动q -> movq, 压栈l -> pushl, etc.
+static std::string translateChineseMnemonic(StringRef Name) {
+  // Strip trailing size suffix (q/l/w/b) if present
+  StringRef Base = Name;
+  StringRef Suffix;
+  if (Name.ends_with("q") && Name.size() > 1) {
+    Base = Name.drop_back(1);
+    Suffix = "q";
+  } else if (Name.ends_with("l") && Name.size() > 1) {
+    Base = Name.drop_back(1);
+    Suffix = "l";
+  } else if (Name.ends_with("w") && Name.size() > 1) {
+    Base = Name.drop_back(1);
+    Suffix = "w";
+  } else if (Name.ends_with("b") && Name.size() > 1) {
+    Base = Name.drop_back(1);
+    Suffix = "b";
+  }
+
+  // Translation map for base mnemonics
+  StringRef Eng;
+
+  // Data movement (数据传送)
+  if (Base == "移动")           Eng = "mov";
+  else if (Base == "移动零扩展")  Eng = "movzx";
+  else if (Base == "移动符号扩展") Eng = "movsx";
+  else if (Base == "移动符号扩展d") Eng = "movsxd";
+  else if (Base == "交换")       Eng = "xchg";
+  else if (Base == "压栈")       Eng = "push";
+  else if (Base == "出栈")       Eng = "pop";
+  else if (Base == "加载有效地址") Eng = "lea";
+  else if (Base == "符号扩展")   Eng = "cltq";
+  else if (Base == "零扩展")     Eng = "cdq";
+
+  // Arithmetic (算术)
+  else if (Base == "加")         Eng = "add";
+  else if (Base == "减")         Eng = "sub";
+  else if (Base == "乘")         Eng = "imul";
+  else if (Base == "无符号乘")   Eng = "mul";
+  else if (Base == "除")         Eng = "idiv";
+  else if (Base == "无符号除")   Eng = "div";
+  else if (Base == "取反")       Eng = "neg";
+  else if (Base == "比较")       Eng = "cmp";
+  else if (Base == "自增")       Eng = "inc";
+  else if (Base == "自减")       Eng = "dec";
+
+  // Logic (逻辑)
+  else if (Base == "与")         Eng = "and";
+  else if (Base == "或")         Eng = "or";
+  else if (Base == "异或")       Eng = "xor";
+  else if (Base == "取反非")     Eng = "not";
+  else if (Base == "测试")       Eng = "test";
+
+  // Shift (移位)
+  else if (Base == "左移")       Eng = "shl";
+  else if (Base == "逻辑右移")   Eng = "shr";
+  else if (Base == "算术右移")   Eng = "sar";
+  else if (Base == "循环左移")   Eng = "rol";
+  else if (Base == "循环右移")   Eng = "ror";
+
+  // Branch (分支)
+  else if (Base == "跳转")       Eng = "jmp";
+  else if (Base == "调用")       Eng = "call";
+  else if (Base == "返回")       Eng = "ret";
+  else if (Base == "相等跳转")   Eng = "je";
+  else if (Base == "不等跳转")   Eng = "jne";
+  else if (Base == "小于跳转")   Eng = "jl";
+  else if (Base == "大于跳转")   Eng = "jg";
+  else if (Base == "小于等于跳转") Eng = "jle";
+  else if (Base == "大于等于跳转") Eng = "jge";
+  else if (Base == "无符号小于跳转") Eng = "jb";
+  else if (Base == "无符号大于跳转") Eng = "ja";
+  else if (Base == "无符号小于等于跳转") Eng = "jbe";
+  else if (Base == "无符号大于等于跳转") Eng = "jae";
+  else if (Base == "为零跳转")   Eng = "jz";
+  else if (Base == "非零跳转")   Eng = "jnz";
+  else if (Base == "为负跳转")   Eng = "js";
+  else if (Base == "为正跳转")   Eng = "jns";
+
+  // Conditional set (条件设置)
+  else if (Base == "相等设置")   Eng = "sete";
+  else if (Base == "不等设置")   Eng = "setne";
+  else if (Base == "小于设置")   Eng = "setl";
+  else if (Base == "大于设置")   Eng = "setg";
+
+  // System (系统)
+  else if (Base == "空操作")     Eng = "nop";
+  else if (Base == "停机")       Eng = "hlt";
+  else if (Base == "系统调用")   Eng = "syscall";
+  else if (Base == "中断")       Eng = "int";
+  else if (Base == "销毁栈帧")   Eng = "leave";
+  else if (Base == "建立栈帧")   Eng = "enter";
+  else if (Base == "进位清零")   Eng = "clc";
+  else if (Base == "进位设置")   Eng = "stc";
+  else if (Base == "中断清零")   Eng = "cli";
+  else if (Base == "中断设置")   Eng = "sti";
+
+  // If no match, return original name
+  if (Eng.empty()) return Name.str();
+
+  return (Eng + Suffix).str();
+}
+
 bool X86AsmParser::parseInstruction(ParseInstructionInfo &Info, StringRef Name,
                                     SMLoc NameLoc, OperandVector &Operands) {
   MCAsmParser &Parser = getParser();
   InstInfo = &Info;
+
+  // Translate Chinese mnemonic to English if needed
+  std::string TranslatedName = translateChineseMnemonic(Name);
+  Name = TranslatedName;
 
   // Reset the forced VEX encoding.
   ForcedOpcodePrefix = OpcodePrefix_Default;

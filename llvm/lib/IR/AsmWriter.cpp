@@ -526,16 +526,16 @@ static void printShuffleMask(raw_ostream &Out, Type *Ty, ArrayRef<int> Mask) {
     Out << "vscale x ";
   Out << Mask.size() << " x i32> ";
   if (all_of(Mask, equal_to(0))) {
-    Out << "zeroinitializer";
+    Out << "零初始化";
   } else if (all_of(Mask, equal_to(PoisonMaskElem))) {
-    Out << "poison";
+    Out << "毒药值";
   } else {
     Out << "<";
     ListSeparator LS;
     for (int Elt : Mask) {
       Out << LS << "i32 ";
       if (Elt == PoisonMaskElem)
-        Out << "poison";
+        Out << "毒药值";
       else
         Out << Elt;
     }
@@ -1613,7 +1613,7 @@ static void writeConstantInternal(raw_ostream &Out, const Constant *CV,
     }
 
     if (Ty->getScalarType()->isIntegerTy(1))
-      Out << (CI->getZExtValue() ? "true" : "false");
+      Out << (CI->getZExtValue() ? "真" : "假");
     else
       Out << CI->getValue();
 
@@ -1645,7 +1645,7 @@ static void writeConstantInternal(raw_ostream &Out, const Constant *CV,
 
     if (Ty->isVectorTy()) {
       if (CFP->getValue().bitcastToAPInt().isZero()) {
-        Out << "zeroinitializer";
+        Out << "零初始化";
         return;
       }
 
@@ -1663,7 +1663,7 @@ static void writeConstantInternal(raw_ostream &Out, const Constant *CV,
   }
 
   if (isa<ConstantAggregateZero>(CV) || isa<ConstantTargetNone>(CV)) {
-    Out << "zeroinitializer";
+    Out << "零初始化";
     return;
   }
 
@@ -1800,22 +1800,22 @@ static void writeConstantInternal(raw_ostream &Out, const Constant *CV,
       return;
     }
 
-    Out << "null";
+    Out << "空指针";
     return;
   }
 
   if (isa<ConstantTokenNone>(CV)) {
-    Out << "none";
+    Out << "无";
     return;
   }
 
   if (isa<PoisonValue>(CV)) {
-    Out << "poison";
+    Out << "毒药值";
     return;
   }
 
   if (isa<UndefValue>(CV)) {
-    Out << "undef";
+    Out << "未定义";
     return;
   }
 
@@ -1874,7 +1874,7 @@ static void writeMDTuple(raw_ostream &Out, const MDTuple *Node,
   for (const Metadata *MD : Node->operands()) {
     Out << LS;
     if (!MD) {
-      Out << "null";
+      Out << "空指针";
     } else if (auto *MDV = dyn_cast<ValueAsMetadata>(MD)) {
       Value *V = MDV->getValue();
       writeAsOperandInternal(Out, V, WriterCtx, /*PrintType=*/true);
@@ -1964,7 +1964,7 @@ void MDFieldPrinter::printString(StringRef Name, StringRef Value,
 static void writeMetadataAsOperand(raw_ostream &Out, const Metadata *MD,
                                    AsmWriterContext &WriterCtx) {
   if (!MD) {
-    Out << "null";
+    Out << "空指针";
     return;
   }
   writeAsOperandInternal(Out, MD, WriterCtx);
@@ -2016,7 +2016,7 @@ void MDFieldPrinter::printBool(StringRef Name, bool Value,
                                std::optional<bool> Default) {
   if (Default && Value == *Default)
     return;
-  Out << FS << Name << ": " << (Value ? "true" : "false");
+  Out << FS << Name << ": " << (Value ? "真" : "假");
 }
 
 void MDFieldPrinter::printDIFlags(StringRef Name, DINode::DIFlags Flags) {
@@ -3122,9 +3122,9 @@ void AssemblyWriter::printModule(const Module *M) {
 
   const std::string &DL = M->getDataLayoutStr();
   if (!DL.empty())
-    Out << "target datalayout = \"" << DL << "\"\n";
+    Out << "目标 数据布局 = \"" << DL << "\"\n";
   if (!M->getTargetTriple().empty())
-    Out << "target triple = \"" << M->getTargetTriple().str() << "\"\n";
+    Out << "目标 三元组 = \"" << M->getTargetTriple().str() << "\"\n";
 
   if (M->hasModuleInlineAsm()) {
     Out << '\n';
@@ -3439,11 +3439,11 @@ void AssemblyWriter::printAliasSummary(const AliasSummary *AS) {
   Out << ", aliasee: ";
   // The indexes emitted for distributed backends may not include the
   // aliasee summary (only if it is being imported directly). Handle
-  // that case by just emitting "null" as the aliasee.
+  // that case by just emitting "空指针" as the aliasee.
   if (AS->hasAliasee())
     Out << "^" << Machine.getGUIDSlot(SummaryToGUIDMap[&AS->getAliasee()]);
   else
-    Out << "null";
+    Out << "空指针";
 }
 
 void AssemblyWriter::printGlobalVarSummary(const GlobalVarSummary *GS) {
@@ -3472,27 +3472,27 @@ void AssemblyWriter::printGlobalVarSummary(const GlobalVarSummary *GS) {
 static std::string getLinkageName(GlobalValue::LinkageTypes LT) {
   switch (LT) {
   case GlobalValue::ExternalLinkage:
-    return "external";
+    return "外部";
   case GlobalValue::PrivateLinkage:
-    return "private";
+    return "私有";
   case GlobalValue::InternalLinkage:
-    return "internal";
+    return "内部";
   case GlobalValue::LinkOnceAnyLinkage:
-    return "linkonce";
+    return "链接一次";
   case GlobalValue::LinkOnceODRLinkage:
-    return "linkonce_odr";
+    return "链接一次ODR";
   case GlobalValue::WeakAnyLinkage:
-    return "weak";
+    return "弱";
   case GlobalValue::WeakODRLinkage:
-    return "weak_odr";
+    return "弱ODR";
   case GlobalValue::CommonLinkage:
-    return "common";
+    return "公共";
   case GlobalValue::AppendingLinkage:
-    return "appending";
+    return "追加";
   case GlobalValue::ExternalWeakLinkage:
-    return "extern_weak";
+    return "外部弱";
   case GlobalValue::AvailableExternallyLinkage:
-    return "available_externally";
+    return "可用外部";
   }
   llvm_unreachable("invalid linkage");
 }
@@ -3509,11 +3509,11 @@ static std::string getLinkageNameWithSpace(GlobalValue::LinkageTypes LT) {
 static const char *getVisibilityName(GlobalValue::VisibilityTypes Vis) {
   switch (Vis) {
   case GlobalValue::DefaultVisibility:
-    return "default";
+    return "默认可见";
   case GlobalValue::HiddenVisibility:
-    return "hidden";
+    return "隐藏";
   case GlobalValue::ProtectedVisibility:
-    return "protected";
+    return "受保护";
   }
   llvm_unreachable("invalid visibility");
 }
@@ -3558,7 +3558,7 @@ void AssemblyWriter::printFunctionSummary(const FunctionSummary *FS) {
   auto AllocTypeName = [](uint8_t Type) -> const char * {
     switch (Type) {
     case (uint8_t)AllocationType::None:
-      return "none";
+      return "无";
     case (uint8_t)AllocationType::NotCold:
       return "notcold";
     case (uint8_t)AllocationType::Cold:
@@ -3908,9 +3908,9 @@ static StringRef getUnnamedAddrEncoding(GlobalVariable::UnnamedAddr UA) {
   case GlobalVariable::UnnamedAddr::None:
     return "";
   case GlobalVariable::UnnamedAddr::Local:
-    return "local_unnamed_addr";
+    return "本地未命名地址";
   case GlobalVariable::UnnamedAddr::Global:
-    return "unnamed_addr";
+    return "未命名地址";
   }
   llvm_unreachable("Unknown UnnamedAddr");
 }
@@ -3956,7 +3956,7 @@ void AssemblyWriter::printGlobal(const GlobalVariable *GV) {
   printAddressSpace(GV->getParent(), GV->getType()->getAddressSpace(), Out,
                     /*Prefix=*/"", /*Suffix=*/" ");
   if (GV->isExternallyInitialized()) Out << "externally_initialized ";
-  Out << (GV->isConstant() ? "constant " : "global ");
+  Out << (GV->isConstant() ? "常量 " : "全局 ");
   TypePrinter.print(GV->getValueType(), Out);
 
   if (GV->hasInitializer()) {
@@ -4164,13 +4164,13 @@ void AssemblyWriter::printFunction(const Function *F) {
   Machine.incorporateFunction(F);
 
   if (F->isDeclaration()) {
-    Out << "declare";
+    Out << "声明";
     SmallVector<std::pair<unsigned, MDNode *>, 4> MDs;
     F->getAllMetadata(MDs);
     printMetadataAttachments(MDs, " ");
     Out << ' ';
   } else
-    Out << "define ";
+    Out << "定义 ";
 
   Out << getLinkageNameWithSpace(F->getLinkage());
   printDSOLocation(*F, Out);
@@ -4920,7 +4920,7 @@ void AssemblyWriter::printDbgVariableRecord(const DbgVariableRecord &DVR) {
     Out << "value";
     break;
   case DbgVariableRecord::LocationType::Declare:
-    Out << "declare";
+    Out << "声明";
     break;
   case DbgVariableRecord::LocationType::DeclareValue:
     Out << "declare_value";

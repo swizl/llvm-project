@@ -16,8 +16,30 @@
 #include "clang/Basic/LangOptions.h"
 #include "clang/Basic/TargetInfo.h"
 #include "llvm/ADT/SmallString.h"
+#include "llvm/ADT/StringMap.h"
 #include "llvm/ADT/StringRef.h"
 using namespace clang;
+
+// Chinese builtin alias registry (中文内置函数别名表).
+// Maps a Chinese alias identifier (e.g. "打印") to the canonical libc symbol
+// name (e.g. "printf"). Used during code generation so that calls through an
+// alias lower to the real library symbol rather than an external symbol named
+// after the Chinese identifier.
+static llvm::StringMap<std::string> &getChineseBuiltinAliasMap() {
+  static llvm::StringMap<std::string> Map;
+  return Map;
+}
+
+/// If \p Name is a registered Chinese alias for a libc builtin, return the
+/// canonical symbol name ("printf", "malloc", ...); otherwise return an empty
+/// StringRef.
+StringRef clang::getCanonicalNameForChineseBuiltin(StringRef Name) {
+  auto &Map = getChineseBuiltinAliasMap();
+  auto It = Map.find(Name);
+  if (It == Map.end())
+    return {};
+  return It->second;
+}
 
 const char *HeaderDesc::getName() const {
   switch (ID) {
@@ -350,6 +372,123 @@ void Builtin::Context::initializeBuiltins(IdentifierTable &Table,
       }
     }
   }
+
+  // Step #5: Register Chinese aliases for common builtins (中文内置函数别名)
+  auto &AliasMap = getChineseBuiltinAliasMap();
+  auto RegAlias = [&](const char *Chinese, const char *English) {
+    auto It = Table.find(English);
+    if (It == Table.end() ||
+        It->second->getBuiltinID() == Builtin::NotBuiltin)
+      return;
+    unsigned BID = It->second->getBuiltinID();
+    Table.get(Chinese).setBuiltinID(BID);
+    // Record the canonical identifier/symbol name for the Sema rewrite and
+    // code generation. Only strip the "__builtin_" prefix for aliases of
+    // real predefined libc functions (e.g. "__builtin_memcpy" -> "memcpy");
+    // compiler intrinsics like "__builtin_expect" have no libc counterpart
+    // and keep the prefix.
+    StringRef Canonical(English);
+    if (Canonical.starts_with("__builtin_") &&
+        isPredefinedLibFunction(BID))
+      Canonical = Canonical.substr(strlen("__builtin_"));
+    AliasMap[Chinese] = Canonical.str();
+  };
+  // Input/Output (输入输出)
+  RegAlias("打印", "printf");
+  RegAlias("格式化打印", "printf");
+  RegAlias("扫描", "scanf");
+  RegAlias("格式化扫描", "scanf");
+  RegAlias("文件打印", "fprintf");
+  RegAlias("文件扫描", "fscanf");
+  RegAlias("格式化字符串", "sprintf");
+  RegAlias("格式化字符串n", "snprintf");
+  // Memory (内存)
+  RegAlias("分配", "malloc");
+  RegAlias("重新分配", "realloc");
+  RegAlias("分配并清零", "calloc");
+  RegAlias("释放", "free");
+  RegAlias("内存复制", "memcpy");
+  RegAlias("内存移动", "memmove");
+  RegAlias("内存设置", "memset");
+  RegAlias("内存比较", "memcmp");
+  // String (字符串)
+  RegAlias("字符串长度", "strlen");
+  RegAlias("字符串复制", "strcpy");
+  RegAlias("字符串复制n", "strncpy");
+  RegAlias("字符串连接", "strcat");
+  RegAlias("字符串比较", "strcmp");
+  RegAlias("字符串查找", "strchr");
+  RegAlias("字符串查找子串", "strstr");
+  // Math (数学)
+  RegAlias("平方根", "sqrt");
+  RegAlias("绝对值", "abs");
+  RegAlias("浮点绝对值", "fabs");
+  RegAlias("幂运算", "pow");
+  RegAlias("正弦", "sin");
+  RegAlias("余弦", "cos");
+  RegAlias("正切", "tan");
+  RegAlias("向上取整", "ceil");
+  RegAlias("向下取整", "floor");
+  RegAlias("四舍五入", "round");
+  RegAlias("截断", "trunc");
+  RegAlias("取余", "fmod");
+  RegAlias("幂运算2", "exp2");
+  RegAlias("对数2", "log2");
+  RegAlias("立方根", "cbrt");
+  RegAlias("斜边", "hypot");
+  RegAlias("反正切2", "atan2");
+  RegAlias("双曲正弦", "sinh");
+  RegAlias("双曲余弦", "cosh");
+  RegAlias("双曲正切", "tanh");
+  // Character (字符)
+  RegAlias("是字母", "isalpha");
+  RegAlias("是数字", "isdigit");
+  RegAlias("是字母数字", "isalnum");
+  RegAlias("是空白", "isspace");
+  RegAlias("是大写", "isupper");
+  RegAlias("是小写", "islower");
+  RegAlias("是打印字符", "isprint");
+  RegAlias("是标点", "ispunct");
+  RegAlias("是十六进制", "isxdigit");
+  RegAlias("是控制字符", "iscntrl");
+  RegAlias("是图形字符", "isgraph");
+  RegAlias("转大写", "toupper");
+  RegAlias("转小写", "tolower");
+  // Type conversion (类型转换)
+  RegAlias("转整数", "atoi");
+  RegAlias("转长整数", "atol");
+  RegAlias("转浮点", "atof");
+  RegAlias("转长整数扩展", "strtol");
+  RegAlias("转无符号长整数", "strtoul");
+  // Program control (程序控制)
+  RegAlias("退出", "exit");
+  RegAlias("中止", "abort");
+  RegAlias("注册退出", "atexit");
+  RegAlias("系统调用", "system");
+  RegAlias("获取环境", "getenv");
+  // Sorting and searching (排序和查找)
+  RegAlias("快速排序", "qsort");
+  RegAlias("二分查找", "bsearch");
+  // Random (随机数)
+  RegAlias("随机数", "rand");
+  RegAlias("设置种子", "srand");
+  // Compiler builtins (编译器内置)
+  RegAlias("预期", "__builtin_expect");
+  RegAlias("不可达", "__builtin_unreachable");
+  RegAlias("陷阱", "__builtin_trap");
+  RegAlias("恒假", "__builtin_assume");
+  RegAlias("静态断言内置", "__builtin_static_assert");
+  RegAlias("类型检查", "__builtin_types_compatible_p");
+  RegAlias("常量检查", "__builtin_constant_p");
+  RegAlias("选择", "__builtin_choose_expr");
+  RegAlias("偏移量", "__builtin_offsetof");
+  RegAlias("内联预期", "__builtin_expect_with_probability");
+  RegAlias("内存复制内置", "__builtin_memcpy");
+  RegAlias("内存设置内置", "__builtin_memset");
+  RegAlias("内存移动内置", "__builtin_memmove");
+  RegAlias("字符串长度内置", "__builtin_strlen");
+  RegAlias("陷阱", "__builtin_debugtrap");
+  RegAlias("断点", "__builtin_debugtrap");
 }
 
 unsigned Builtin::Context::getRequiredVectorWidth(unsigned ID) const {

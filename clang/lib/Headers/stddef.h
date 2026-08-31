@@ -137,3 +137,32 @@ __WINT_TYPE__ directly; accommodate both by requiring __need_wint_t */
 #endif /* __need_wint_t */
 
 #endif /* __MVS__ */
+
+#if !defined(_CHINESE_STDDEF_H)
+#define _CHINESE_STDDEF_H
+
+/* ===== 中文类型别名 (Chinese type aliases) ===== */
+typedef void      空类型;
+typedef char      字节;
+typedef short     短整数;
+typedef long      长整数;
+typedef long long 长长整数;
+typedef float     单精度;
+typedef unsigned char  无符号字节;
+typedef unsigned short 无符号短整数;
+typedef unsigned int   无符号整数;
+typedef unsigned long  无符号长整数;
+typedef __SIZE_TYPE__  大小类型;
+typedef __PTRDIFF_TYPE__ 有符号大小类型;
+
+/* ===== 常用宏 (Common macros) ===== */
+#define 无 NULL
+#define 真 1
+#define 假 0
+
+/* ===== 标准 I/O 流 (Standard I/O streams) ===== */
+#define 标准输入   stdin
+#define 标准输出   stdout
+#define 标准错误   stderr
+
+#endif /* _CHINESE_STDDEF_H */

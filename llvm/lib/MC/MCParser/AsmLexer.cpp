@@ -231,7 +231,8 @@ AsmToken AsmLexer::LexHexFloatLiteral(bool NoIntDigits) {
 /// LexIdentifier: [a-zA-Z_$.@?][a-zA-Z0-9_$.@#?]*
 static bool isIdentifierChar(char C, bool AllowAt, bool AllowHash) {
   return isAlnum(C) || C == '_' || C == '$' || C == '.' || C == '?' ||
-         (AllowAt && C == '@') || (AllowHash && C == '#');
+         (AllowAt && C == '@') || (AllowHash && C == '#') ||
+         static_cast<unsigned char>(C) >= 0x80; // Chinese/UTF-8
 }
 
 AsmToken AsmLexer::LexIdentifier() {
@@ -874,7 +875,8 @@ AsmToken AsmLexer::LexToken() {
     // Whether or not the lexer accepts '$', '@', '#' and '?' at the start of
     // an identifier is target-dependent. These characters are handled in the
     // respective switch cases.
-    if (isalpha(CurChar) || CurChar == '_' || CurChar == '.')
+    if (isalpha(CurChar) || CurChar == '_' || CurChar == '.' ||
+        static_cast<unsigned char>(CurChar) >= 0x80)
       return LexIdentifier();
 
     // Unknown character, emit an error.

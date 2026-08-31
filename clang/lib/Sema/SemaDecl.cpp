@@ -914,6 +914,16 @@ Sema::NameClassification Sema::ClassifyName(Scope *S, CXXScopeSpec &SS,
                                             SourceLocation NameLoc,
                                             const Token &NextToken,
                                             CorrectionCandidateCallback *CCC) {
+  // Chinese builtin aliases (中文内置函数别名): when an alias identifier such
+  // as "打印" is used in a call position, transparently resolve it to the
+  // canonical libc identifier ("printf") so that normal header declarations
+  // and builtin handling apply.
+  if (SS.isEmpty() && NextToken.is(tok::l_paren) && Name->getBuiltinID()) {
+    if (StringRef Canonical = getCanonicalNameForChineseBuiltin(Name->getName());
+        !Canonical.empty())
+      Name = &PP.getIdentifierTable().get(Canonical);
+  }
+
   DeclarationNameInfo NameInfo(Name, NameLoc);
   ObjCMethodDecl *CurMethod = getCurMethodDecl();
 

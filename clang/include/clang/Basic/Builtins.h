@@ -493,5 +493,10 @@ enum BuiltinTemplateKind : int {
 #include "clang/Basic/BuiltinTemplates.inc"
 };
 
+/// If \p Name is a registered Chinese alias for a libc builtin (e.g.
+/// "打印"), return the canonical library symbol name (e.g. "printf").
+/// Returns an empty StringRef otherwise.
+llvm::StringRef getCanonicalNameForChineseBuiltin(llvm::StringRef Name);
+
 } // end namespace clang
 #endif
