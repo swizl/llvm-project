@@ -298,6 +298,71 @@ void IdentifierTable::AddKeywords(const LangOptions &LangOpts) {
   if (LangOpts.IEEE128)
     AddKeyword("__ieee128", tok::kw___float128, KEYALL, LangOpts, *this);
 
+  // Chinese C++ keyword aliases (中文C++关键字别名)
+  // 类型关键字
+  AddKeyword("虚空型",   tok::kw_void,     KEYALL, LangOpts, *this);
+  AddKeyword("真假型",   tok::kw_bool,     KEYALL, LangOpts, *this);
+  AddKeyword("整数型",   tok::kw_int,      KEYALL, LangOpts, *this);
+  AddKeyword("字符型",   tok::kw_char,     KEYALL, LangOpts, *this);
+  AddKeyword("双精度型", tok::kw_double,   KEYALL, LangOpts, *this);
+  AddKeyword("单精度型", tok::kw_float,    KEYALL, LangOpts, *this);
+  AddKeyword("无符号",   tok::kw_unsigned, KEYALL, LangOpts, *this);
+  AddKeyword("长整型",   tok::kw_long,     KEYALL, LangOpts, *this);
+  AddKeyword("短整型",   tok::kw_short,    KEYALL, LangOpts, *this);
+  AddKeyword("宽字符型", tok::kw_wchar_t,  KEYALL, LangOpts, *this);
+  // 修饰符关键字
+  AddKeyword("恒常",     tok::kw_const,    KEYALL, LangOpts, *this);
+  AddKeyword("静态",     tok::kw_static,   KEYALL, LangOpts, *this);
+  AddKeyword("内联",     tok::kw_inline,   KEYALL, LangOpts, *this);
+  AddKeyword("虚拟",     tok::kw_virtual,  KEYALL, LangOpts, *this);
+  AddKeyword("显式",     tok::kw_explicit, KEYALL, LangOpts, *this);
+  AddKeyword("可变",     tok::kw_mutable,  KEYALL, LangOpts, *this);
+  AddKeyword("易变",     tok::kw_volatile, KEYALL, LangOpts, *this);
+  AddKeyword("友元",     tok::kw_friend,   KEYALL, LangOpts, *this);
+  AddKeyword("常量表达式", tok::kw_constexpr, KEYALL, LangOpts, *this);
+  AddKeyword("无异常",   tok::kw_noexcept, KEYALL, LangOpts, *this);
+  // 控制流关键字
+  AddKeyword("归返",     tok::kw_return,   KEYALL, LangOpts, *this);
+  AddKeyword("如果",     tok::kw_if,       KEYALL, LangOpts, *this);
+  AddKeyword("否则",     tok::kw_else,     KEYALL, LangOpts, *this);
+  AddKeyword("当",       tok::kw_while,    KEYALL, LangOpts, *this);
+  AddKeyword("循环",     tok::kw_for,      KEYALL, LangOpts, *this);
+  AddKeyword("做",       tok::kw_do,       KEYALL, LangOpts, *this);
+  AddKeyword("切换",     tok::kw_switch,   KEYALL, LangOpts, *this);
+  AddKeyword("情况",     tok::kw_case,     KEYALL, LangOpts, *this);
+  AddKeyword("默认",     tok::kw_default,  KEYALL, LangOpts, *this);
+  AddKeyword("中断",     tok::kw_break,    KEYALL, LangOpts, *this);
+  AddKeyword("继续",     tok::kw_continue, KEYALL, LangOpts, *this);
+  AddKeyword("转到",     tok::kw_goto,     KEYALL, LangOpts, *this);
+  // 字面量关键字
+  AddKeyword("真值",     tok::kw_true,     KEYALL, LangOpts, *this);
+  AddKeyword("假值",     tok::kw_false,    KEYALL, LangOpts, *this);
+  AddKeyword("空针",     tok::kw_nullptr,  KEYALL, LangOpts, *this);
+  // 类/结构体/命名空间关键字
+  AddKeyword("类别",     tok::kw_class,    KEYALL, LangOpts, *this);
+  AddKeyword("构型",     tok::kw_struct,   KEYALL, LangOpts, *this);
+  AddKeyword("举型",     tok::kw_enum,     KEYALL, LangOpts, *this);
+  AddKeyword("名域",     tok::kw_namespace, KEYALL, LangOpts, *this);
+  AddKeyword("取用",     tok::kw_using,    KEYALL, LangOpts, *this);
+  AddKeyword("范型",     tok::kw_template, KEYALL, LangOpts, *this);
+  AddKeyword("类型名_",  tok::kw_typename, KEYALL, LangOpts, *this);
+  AddKeyword("公开",     tok::kw_public,   KEYALL, LangOpts, *this);
+  AddKeyword("私有",     tok::kw_private,  KEYALL, LangOpts, *this);
+  AddKeyword("保护",     tok::kw_protected, KEYALL, LangOpts, *this);
+  // 内存管理关键字
+  AddKeyword("新建",     tok::kw_new,      KEYALL, LangOpts, *this);
+  AddKeyword("删去",     tok::kw_delete,   KEYALL, LangOpts, *this);
+  // 异常关键字
+  AddKeyword("抛出",     tok::kw_throw,    KEYALL, LangOpts, *this);
+  AddKeyword("尝试",     tok::kw_try,      KEYALL, LangOpts, *this);
+  AddKeyword("捕获",     tok::kw_catch,    KEYALL, LangOpts, *this);
+  // 运算符关键字
+  AddKeyword("运算符",   tok::kw_operator, KEYALL, LangOpts, *this);
+  AddKeyword("类型标识", tok::kw_typeid,   KEYALL, LangOpts, *this);
+  AddKeyword("大小计算", tok::kw_sizeof,   KEYALL, LangOpts, *this);
+  // 自动类型推断
+  AddKeyword("自动",     tok::kw_auto,     KEYALL, LangOpts, *this);
+
   // Add the 'import' and 'module' contextual keywords.
   get("import").setKeywordImport(true);
   get("module").setModuleKeyword(true);
@@ -424,7 +489,7 @@ tok::PPKeywordKind IdentifierInfo::getPPKeywordID() const {
 
   // clang-format off
   switch (HASH(Len, Name[0], Name[2])) {
-  default: return tok::pp_not_keyword;
+  default: break;
   CASE( 2, 'i', '\0', if);
   CASE( 4, 'e', 'i', elif);
   CASE( 4, 'e', 's', else);
@@ -471,9 +536,13 @@ tok::PPKeywordKind IdentifierInfo::getPPKeywordID() const {
     else if (N == "取消定义") return tok::pp_undef;
     else if (N == "如果定义") return tok::pp_ifdef;
     else if (N == "如果未定义") return tok::pp_ifndef;
+    else if (N == "如果已定义") return tok::pp_ifdef;
+    else if (N == "如果")     return tok::pp_if;
     else if (N == "结束")     return tok::pp_endif;
-    else if (N == "否则")     return tok::pp_else;
+    else if (N == "否则如果已定义") return tok::pp_elifdef;
+    else if (N == "否则如果未定义") return tok::pp_elifndef;
     else if (N == "否则如果") return tok::pp_elif;
+    else if (N == "否则")     return tok::pp_else;
     else if (N == "错误")     return tok::pp_error;
     else if (N == "警告")     return tok::pp_warning;
     else if (N == "编译指令") return tok::pp_pragma;
@@ -483,16 +552,14 @@ tok::PPKeywordKind IdentifierInfo::getPPKeywordID() const {
     else if (N == "模块")     return tok::pp_module;
     else if (N == "导入")     return tok::pp_import;
     else if (N == "下一个包含") return tok::pp_include_next;
-    else if (N == "如果已定义") return tok::pp_ifdef;
-    else if (N == "如果未定义") return tok::pp_ifndef;
-    else if (N == "否则如果已定义") return tok::pp_elifdef;
-    else if (N == "否则如果未定义") return tok::pp_elifndef;
     else if (N == "已定义")   return tok::pp_defined;
     else if (N == "断言")     return tok::pp_assert;
     else if (N == "取消断言") return tok::pp_unassert;
     else if (N == "标识")     return tok::pp_ident;
     return tok::pp_not_keyword;
   }
+
+  return tok::pp_not_keyword;
 
   // clang-format on
 }

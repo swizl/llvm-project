@@ -505,15 +505,29 @@ lltok::Kind LLLexer::LexIdentifier() {
       (IntOrByteIdentifier == 'i' || IntOrByteIdentifier == 'b') ? nullptr
                                                                  : StartChar;
   const char *KeywordEnd = nullptr;
+  bool 含中文 = false;
 
-  for (; isLabelChar(*CurPtr); ++CurPtr) {
-    // If we decide this is a byte or an integer, remember the end of the
-    // sequence.
-    if (!IntOrByteEnd && !isdigit(static_cast<unsigned char>(*CurPtr)))
-      IntOrByteEnd = CurPtr;
-    if (!KeywordEnd && !isalnum(static_cast<unsigned char>(*CurPtr)) &&
-        *CurPtr != '_')
-      KeywordEnd = CurPtr;
+  while (true) {
+    unsigned char c = static_cast<unsigned char>(*CurPtr);
+    if (isLabelChar(static_cast<char>(c))) {
+      // If we decide this is a byte or an integer, remember the end of the
+      // sequence.
+      if (!IntOrByteEnd && !isdigit(c))
+        IntOrByteEnd = CurPtr;
+      if (!KeywordEnd && !isalnum(c) && *CurPtr != '_')
+        KeywordEnd = CurPtr;
+      ++CurPtr;
+    } else if (c >= 0x80) {
+      // Chinese (UTF-8) keyword suffix: consume the whole multi-byte sequence
+      // so a mixed ASCII+Chinese keyword such as "PHI节点" is lexed as one
+      // token and reaches the Chinese-keyword matching below.
+      while (*CurPtr && static_cast<unsigned char>(*CurPtr) >= 0x80)
+        ++CurPtr;
+      含中文 = true;
+      KeywordEnd = CurPtr; // keyword extends through the Chinese suffix
+    } else {
+      break;
+    }
   }
 
   // If we stopped due to a colon, unless we were directed to ignore it,
@@ -524,10 +538,10 @@ lltok::Kind LLLexer::LexIdentifier() {
   }
 
   // Otherwise, this wasn't a label. If this was valid as a byte or an integer
-  // type, return it.
+  // type, return it. (Chinese-containing identifiers are never int/byte types.)
   if (!IntOrByteEnd)
     IntOrByteEnd = CurPtr;
-  if (IntOrByteEnd != StartChar) {
+  if (!含中文 && IntOrByteEnd != StartChar) {
     CurPtr = IntOrByteEnd;
     uint64_t NumBits = atoull(StartChar, CurPtr);
     if (NumBits < IntegerType::MIN_INT_BITS ||
@@ -1099,6 +1113,18 @@ lltok::Kind LLLexer::LexIdentifier() {
     return lltok::kw_cc;
   }
 
+  // Mixed ASCII+Chinese keyword (e.g. "PHI节点", "获取元素指针 inbounds"):
+  // fall back to the Chinese-keyword matcher, which scans the full UTF-8
+  // identifier starting at TokStart.
+  if (含中文) {
+    const char *保存 = CurPtr;
+    CurPtr = TokStart;
+    lltok::Kind 结果 = LexChineseIdentifier();
+    if (结果 != lltok::Error)
+      return 结果;
+    CurPtr = 保存;
+  }
+
   // Finally, if this isn't known, return an error.
   CurPtr = TokStart+1;
   return lltok::Error;
@@ -1274,6 +1300,7 @@ lltok::Kind LLLexer::LexChineseIdentifier() {
   if (Keyword == "选择")       return lltok::kw_select;
   if (Keyword == "PHI节点")    return lltok::kw_phi;
   if (Keyword == "冻结")       return lltok::kw_freeze;
+  if (Keyword == "着陆垫")     return lltok::kw_landingpad;
 
   // Instructions - Vector/aggregate (指令 - 向量/聚合)
   if (Keyword == "提取元素")   return lltok::kw_extractelement;

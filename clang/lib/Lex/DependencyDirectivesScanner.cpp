@@ -1007,6 +1007,21 @@ bool Scanner::lexPPLine(const char *&First, const char *const End) {
                   .Case("elifndef", pp_elifndef)
                   .Case("else", pp_else)
                   .Case("endif", pp_endif)
+                  // Chinese directive aliases (中文指令别名)
+                  .Case("包含", pp_include)
+                  .Case("定义", pp_define)
+                  .Case("取消定义", pp_undef)
+                  .Case("如果", pp_if)
+                  .Case("如果定义", pp_ifdef)
+                  .Case("如果未定义", pp_ifndef)
+                  .Case("如果已定义", pp_ifdef)
+                  .Case("结束", pp_endif)
+                  .Case("否则", pp_else)
+                  .Case("否则如果", pp_elif)
+                  .Case("否则如果已定义", pp_elifdef)
+                  .Case("否则如果未定义", pp_elifndef)
+                  .Case("导入", pp_import)
+                  .Case("下一个包含", pp_include_next)
                   .Default(pp_none);
   if (Kind == pp_none) {
     skipDirective(Id, First, End);

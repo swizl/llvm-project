@@ -733,11 +733,10 @@ void Preprocessor::SkipExcludedConditionalBlock(SourceLocation HashTokenLoc,
     // other common directives.
     StringRef RI = Tok.getRawIdentifier();
 
-    char FirstChar = RI[0];
+char FirstChar = RI[0];
     if (FirstChar >= 'a' && FirstChar <= 'z' &&
         FirstChar != 'i' && FirstChar != 'e') {
       CurPPLexer->ParsingPreprocessorDirective = false;
-      // Restore comment saving mode.
       if (CurLexer) CurLexer->resetExtendedTokenMode();
       continue;
     }
@@ -754,12 +753,23 @@ void Preprocessor::SkipExcludedConditionalBlock(SourceLocation HashTokenLoc,
       size_t IdLen = DirectiveStr.size();
       if (IdLen >= 20) {
         CurPPLexer->ParsingPreprocessorDirective = false;
-        // Restore comment saving mode.
         if (CurLexer) CurLexer->resetExtendedTokenMode();
         continue;
       }
       memcpy(DirectiveBuf, &DirectiveStr[0], IdLen);
       Directive = StringRef(DirectiveBuf, IdLen);
+    }
+
+    // Translate Chinese directives to English equivalents for skip mode
+    if (static_cast<unsigned char>(Directive[0]) >= 0x80) {
+      if (Directive == "如果") Directive = "if";
+      else if (Directive == "如果定义" || Directive == "如果已定义") Directive = "ifdef";
+      else if (Directive == "如果未定义") Directive = "ifndef";
+      else if (Directive == "结束") Directive = "endif";
+      else if (Directive == "否则") Directive = "else";
+      else if (Directive == "否则如果") Directive = "elif";
+      else if (Directive == "否则如果已定义") Directive = "elifdef";
+      else if (Directive == "否则如果未定义") Directive = "elifndef";
     }
 
     if (Directive.starts_with("if")) {
@@ -948,8 +958,6 @@ void Preprocessor::SkipExcludedConditionalBlock(SourceLocation HashTokenLoc,
       } else {
         SuggestTypoedDirective(Tok, Directive);
       }
-    } else {
-      SuggestTypoedDirective(Tok, Directive);
     }
 
     CurPPLexer->ParsingPreprocessorDirective = false;
