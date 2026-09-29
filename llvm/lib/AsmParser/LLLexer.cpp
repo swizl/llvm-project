@@ -362,11 +362,13 @@ bool LLLexer::ReadVarName() {
   const char *NameStart = CurPtr;
   if (isalpha(static_cast<unsigned char>(CurPtr[0])) ||
       CurPtr[0] == '-' || CurPtr[0] == '$' ||
-      CurPtr[0] == '.' || CurPtr[0] == '_') {
+      CurPtr[0] == '.' || CurPtr[0] == '_' ||
+      static_cast<unsigned char>(CurPtr[0]) >= 0x80) {
     ++CurPtr;
     while (isalnum(static_cast<unsigned char>(CurPtr[0])) ||
            CurPtr[0] == '-' || CurPtr[0] == '$' ||
-           CurPtr[0] == '.' || CurPtr[0] == '_')
+           CurPtr[0] == '.' || CurPtr[0] == '_' ||
+           static_cast<unsigned char>(CurPtr[0]) >= 0x80)
       ++CurPtr;
 
     StrVal.assign(NameStart, CurPtr);
