@@ -1143,6 +1143,13 @@ lltok::Kind LLLexer::LexChineseIdentifier() {
 
   StringRef Keyword(TokStart, CurPtr - TokStart);
 
+  // Chinese label: if followed by ':', this is a basic-block label (入口:).
+  if (*CurPtr == ':') {
+    StrVal.assign(TokStart, CurPtr);
+    ++CurPtr; // consume the ':'
+    return lltok::LabelStr;
+  }
+
   // Chinese LLVM IR keywords (中文LLVM IR关键字)
   // Module structure (模块结构)
   if (Keyword == "声明")     return lltok::kw_declare;
@@ -1278,6 +1285,7 @@ lltok::Kind LLLexer::LexChineseIdentifier() {
   if (Keyword == "符号扩展")   { UIntVal = Instruction::SExt;          return lltok::kw_sext; }
   if (Keyword == "浮点截断")   { UIntVal = Instruction::FPTrunc;       return lltok::kw_fptrunc; }
   if (Keyword == "浮点扩展")   { UIntVal = Instruction::FPExt;         return lltok::kw_fpext; }
+  if (Keyword == "扩展浮点")   { UIntVal = Instruction::FPExt;         return lltok::kw_fpext; }
   if (Keyword == "无符号转浮点") { UIntVal = Instruction::UIToFP;      return lltok::kw_uitofp; }
   if (Keyword == "有符号转浮点") { UIntVal = Instruction::SIToFP;      return lltok::kw_sitofp; }
   if (Keyword == "浮点转无符号") { UIntVal = Instruction::FPToUI;      return lltok::kw_fptoui; }
@@ -1287,6 +1295,7 @@ lltok::Kind LLLexer::LexChineseIdentifier() {
   if (Keyword == "指针转地址") { UIntVal = Instruction::PtrToAddr;     return lltok::kw_ptrtoaddr; }
   if (Keyword == "位转换")     { UIntVal = Instruction::BitCast;       return lltok::kw_bitcast; }
   if (Keyword == "地址空间转换") { UIntVal = Instruction::AddrSpaceCast; return lltok::kw_addrspacecast; }
+  if (Keyword == "到")          return lltok::kw_to;
 
   // Instructions - Memory (指令 - 内存)
   // These dispatch to their own parse functions; UIntVal not used.
@@ -1297,6 +1306,8 @@ lltok::Kind LLLexer::LexChineseIdentifier() {
   if (Keyword == "比较交换")   return lltok::kw_cmpxchg;
   if (Keyword == "原子读写")   return lltok::kw_atomicrmw;
   if (Keyword == "获取元素指针") return lltok::kw_getelementptr;
+  if (Keyword == "对齐")        return lltok::kw_align;
+  if (Keyword == "对齐栈")      return lltok::kw_alignstack;
 
   // Instructions - Other (指令 - 其他)
   if (Keyword == "选择")       return lltok::kw_select;
@@ -1320,6 +1331,16 @@ lltok::Kind LLLexer::LexChineseIdentifier() {
   if (Keyword == "标签")       { TyVal = Type::getLabelTy(Context);       return lltok::Type; }
   if (Keyword == "元数据")     { TyVal = Type::getMetadataTy(Context);    return lltok::Type; }
   if (Keyword == "令牌")       { TyVal = Type::getTokenTy(Context);       return lltok::Type; }
+  if (Keyword == "整数1")      { TyVal = Type::getInt1Ty(Context);        return lltok::Type; }
+  if (Keyword == "整数8")      { TyVal = Type::getInt8Ty(Context);        return lltok::Type; }
+  if (Keyword == "整数16")     { TyVal = Type::getInt16Ty(Context);       return lltok::Type; }
+  if (Keyword == "整数32")     { TyVal = Type::getInt32Ty(Context);       return lltok::Type; }
+  if (Keyword == "整数64")     { TyVal = Type::getInt64Ty(Context);       return lltok::Type; }
+  if (Keyword == "类型")       return lltok::kw_type;
+
+  // Array/string tokens (数组与字符串)
+  if (Keyword == "个")         return lltok::kw_x;
+  if (Keyword == "字")         return lltok::kw_c;
 
   // Comparison predicates (比较谓词)
   if (Keyword == "等于")       return lltok::kw_eq;
@@ -1332,6 +1353,12 @@ lltok::Kind LLLexer::LexChineseIdentifier() {
   if (Keyword == "无符号大于") return lltok::kw_ugt;
   if (Keyword == "无符号小于等于") return lltok::kw_ule;
   if (Keyword == "无符号大于等于") return lltok::kw_uge;
+  if (Keyword == "有序等于")     return lltok::kw_oeq;
+  if (Keyword == "有序不等于")   return lltok::kw_une;
+  if (Keyword == "有序大于")     return lltok::kw_ogt;
+  if (Keyword == "有序小于")     return lltok::kw_olt;
+  if (Keyword == "有序小于等于") return lltok::kw_ole;
+  if (Keyword == "有序大于等于") return lltok::kw_oge;
 
   // Finally, if this isn't known, return an error.
   return lltok::Error;

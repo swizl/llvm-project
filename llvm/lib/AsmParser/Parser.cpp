@@ -17,7 +17,15 @@
 #include "llvm/IR/ModuleSummaryIndex.h"
 #include "llvm/Support/MemoryBuffer.h"
 #include "llvm/Support/SourceMgr.h"
+#include <string>
 #include <system_error>
+#ifdef _WIN32
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include <windows.h>
+#undef GetMessage
+#endif
 
 using namespace llvm;
 
@@ -103,6 +111,54 @@ ParsedModuleAndIndex llvm::parseAssemblyWithIndex(MemoryBufferRef F,
       [](StringRef, StringRef) { return std::nullopt; });
 }
 
+// 规范化汇编文件字节：去除 UTF-8 BOM；若非合法 UTF-8 则按本地 ANSI(GBK) 转 UTF-8。
+static std::string normalizeAssemblyBytes(StringRef Data) {
+  if (Data.size() >= 3 && (unsigned char)Data[0] == 0xEF &&
+      (unsigned char)Data[1] == 0xBB && (unsigned char)Data[2] == 0xBF)
+    Data = Data.substr(3);
+
+  bool Valid = true;
+  size_t i = 0;
+  while (i < Data.size()) {
+    unsigned char c = (unsigned char)Data[i];
+    if (c < 0x80) {
+      i++;
+    } else if ((c & 0xE0) == 0xC0) {
+      if (i + 1 >= Data.size() || ((unsigned char)Data[i + 1] & 0xC0) != 0x80) { Valid = false; break; }
+      i += 2;
+    } else if ((c & 0xF0) == 0xE0) {
+      if (i + 2 >= Data.size() || ((unsigned char)Data[i + 1] & 0xC0) != 0x80 ||
+          ((unsigned char)Data[i + 2] & 0xC0) != 0x80) { Valid = false; break; }
+      i += 3;
+    } else if ((c & 0xF8) == 0xF0) {
+      if (i + 3 >= Data.size() || ((unsigned char)Data[i + 1] & 0xC0) != 0x80 ||
+          ((unsigned char)Data[i + 2] & 0xC0) != 0x80 ||
+          ((unsigned char)Data[i + 3] & 0xC0) != 0x80) { Valid = false; break; }
+      i += 4;
+    } else {
+      Valid = false;
+      break;
+    }
+  }
+  if (Valid)
+    return Data.str();
+
+#ifdef _WIN32
+  int WideLen = MultiByteToWideChar(CP_ACP, 0, Data.data(), (int)Data.size(), nullptr, 0);
+  if (WideLen > 0) {
+    std::wstring Wide((size_t)WideLen, L'\0');
+    MultiByteToWideChar(CP_ACP, 0, Data.data(), (int)Data.size(), &Wide[0], WideLen);
+    int Utf8Len = WideCharToMultiByte(CP_UTF8, 0, Wide.data(), WideLen, nullptr, 0, nullptr, nullptr);
+    if (Utf8Len > 0) {
+      std::string Result((size_t)Utf8Len, '\0');
+      WideCharToMultiByte(CP_UTF8, 0, Wide.data(), WideLen, &Result[0], Utf8Len, nullptr, nullptr);
+      return Result;
+    }
+  }
+#endif
+  return Data.str();
+}
+
 static ParsedModuleAndIndex
 parseAssemblyFileWithIndex(StringRef Filename, SMDiagnostic &Err,
                            LLVMContext &Context, SlotMapping *Slots,
@@ -116,7 +172,12 @@ parseAssemblyFileWithIndex(StringRef Filename, SMDiagnostic &Err,
     return {nullptr, nullptr};
   }
 
-  return parseAssemblyWithIndex(FileOrErr.get()->getMemBufferRef(), Err,
+  // 规范化编码：去 UTF-8 BOM；非合法 UTF-8 时按本地 ANSI(GBK) 转 UTF-8。
+  std::string Normalized = normalizeAssemblyBytes((*FileOrErr)->getBuffer());
+  std::unique_ptr<MemoryBuffer> Buf = MemoryBuffer::getMemBufferCopy(
+      Normalized, (*FileOrErr)->getBufferIdentifier());
+
+  return parseAssemblyWithIndex(Buf->getMemBufferRef(), Err,
                                 Context, Slots, UpgradeDebugInfo,
                                 DataLayoutCallback);
 }
