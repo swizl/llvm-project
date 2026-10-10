@@ -1305,7 +1305,7 @@ lltok::Kind LLLexer::LexChineseIdentifier() {
   if (Keyword == "栅栏")       return lltok::kw_fence;
   if (Keyword == "比较交换")   return lltok::kw_cmpxchg;
   if (Keyword == "原子读写")   return lltok::kw_atomicrmw;
-  if (Keyword == "获取元素指针") return lltok::kw_getelementptr;
+  if (Keyword == "获取元素指针") { UIntVal = Instruction::GetElementPtr; return lltok::kw_getelementptr; }
   if (Keyword == "对齐")        return lltok::kw_align;
   if (Keyword == "对齐栈")      return lltok::kw_alignstack;
 
@@ -1316,9 +1316,9 @@ lltok::Kind LLLexer::LexChineseIdentifier() {
   if (Keyword == "着陆垫")     return lltok::kw_landingpad;
 
   // Instructions - Vector/aggregate (指令 - 向量/聚合)
-  if (Keyword == "提取元素")   return lltok::kw_extractelement;
-  if (Keyword == "插入元素")   return lltok::kw_insertelement;
-  if (Keyword == "混洗向量")   return lltok::kw_shufflevector;
+  if (Keyword == "提取元素")   { UIntVal = Instruction::ExtractElement; return lltok::kw_extractelement; }
+  if (Keyword == "插入元素")   { UIntVal = Instruction::InsertElement;  return lltok::kw_insertelement; }
+  if (Keyword == "混洗向量")   { UIntVal = Instruction::ShuffleVector;  return lltok::kw_shufflevector; }
   if (Keyword == "提取值")     return lltok::kw_extractvalue;
   if (Keyword == "插入值")     return lltok::kw_insertvalue;
 
@@ -1337,6 +1337,27 @@ lltok::Kind LLLexer::LexChineseIdentifier() {
   if (Keyword == "整数32")     { TyVal = Type::getInt32Ty(Context);       return lltok::Type; }
   if (Keyword == "整数64")     { TyVal = Type::getInt64Ty(Context);       return lltok::Type; }
   if (Keyword == "类型")       return lltok::kw_type;
+
+  // 任意位宽整数类型：整数<宽度>（如 整数47、整数128、整数6），与英文 i<N> 对应。
+  if (Keyword.consume_front("整数")) {
+    bool 全部数字 = !Keyword.empty();
+    for (char C : Keyword)
+      if (C < '0' || C > '9') {
+        全部数字 = false;
+        break;
+      }
+    if (全部数字) {
+      unsigned 宽度 = 0;
+      if (Keyword.getAsInteger(10, 宽度) ||
+          宽度 < IntegerType::MIN_INT_BITS ||
+          宽度 > IntegerType::MAX_INT_BITS) {
+        LexError("bitwidth for integer or byte type out of range");
+        return lltok::Error;
+      }
+      TyVal = IntegerType::get(Context, 宽度);
+      return lltok::Type;
+    }
+  }
 
   // Array/string tokens (数组与字符串)
   if (Keyword == "个")         return lltok::kw_x;

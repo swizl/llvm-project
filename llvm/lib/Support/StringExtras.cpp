@@ -47,13 +47,38 @@ void llvm::SplitString(StringRef Source,
 }
 
 void llvm::printEscapedString(StringRef Name, raw_ostream &Out) {
-  for (unsigned char C : Name) {
-    if (C == '\\')
+  for (size_t i = 0, e = Name.size(); i < e; ++i) {
+    unsigned char C = Name[i];
+    if (C == '\\') {
       Out << '\\' << C;
-    else if (isPrint(C) && C != '"')
+    } else if (C >= 0x20 && C < 0x7F && C != '"') {
       Out << C;
-    else
+    } else if (C >= 0x80) {
+      // 若此处开始一个合法的 UTF-8 多字节序列，则原样输出（使 .ll 中出现真实中文）；
+      // 否则按字节转义，保证二进制/非法序列可精确往返。
+      unsigned Len = 0;
+      if ((C & 0xE0) == 0xC0 && C >= 0xC2)
+        Len = 2;
+      else if ((C & 0xF0) == 0xE0)
+        Len = 3;
+      else if ((C & 0xF8) == 0xF0 && C <= 0xF4)
+        Len = 4;
+      bool 合法 = Len != 0 && i + Len <= e;
+      if (合法)
+        for (unsigned k = 1; k < Len; ++k)
+          if ((static_cast<unsigned char>(Name[i + k]) & 0xC0) != 0x80) {
+            合法 = false;
+            break;
+          }
+      if (合法) {
+        Out.write(Name.data() + i, Len);
+        i += Len - 1;
+      } else {
+        Out << '\\' << hexdigit(C >> 4) << hexdigit(C & 0x0F);
+      }
+    } else {
       Out << '\\' << hexdigit(C >> 4) << hexdigit(C & 0x0F);
+    }
   }
 }
 

@@ -466,10 +466,10 @@ void llvm::printLLVMNameWithoutPrefix(raw_ostream &OS, StringRef Name) {
   bool NeedsQuotes = isdigit(static_cast<unsigned char>(Name[0]));
   if (!NeedsQuotes) {
     for (unsigned char C : Name) {
-      // By making this unsigned, the value passed in to isalnum will always be
-      // in the range 0-255.  This is important when building with MSVC because
-      // its implementation will assert.  This situation can arise when dealing
-      // with UTF-8 multibyte characters.
+      // 高位字节(>=0x80)视为合法的中文 UTF-8 标识符字节，无需加引号
+      // （与 LLLexer 的 LexChineseIdentifier 一致；同时避免 isalnum 对 >=0x80 的未定义行为）。
+      if (C >= 0x80)
+        continue;
       if (!isalnum(C) && C != '-' && C != '.' && C != '_') {
         NeedsQuotes = true;
         break;
@@ -524,7 +524,7 @@ static void printShuffleMask(raw_ostream &Out, Type *Ty, ArrayRef<int> Mask) {
   Out << ", <";
   if (isa<ScalableVectorType>(Ty))
     Out << "vscale x ";
-  Out << Mask.size() << " x i32> ";
+  Out << Mask.size() << " 个 整数32> ";
   if (all_of(Mask, equal_to(0))) {
     Out << "零初始化";
   } else if (all_of(Mask, equal_to(PoisonMaskElem))) {
@@ -533,7 +533,7 @@ static void printShuffleMask(raw_ostream &Out, Type *Ty, ArrayRef<int> Mask) {
     Out << "<";
     ListSeparator LS;
     for (int Elt : Mask) {
-      Out << LS << "i32 ";
+      Out << LS << "整数32 ";
       if (Elt == PoisonMaskElem)
         Out << "毒药值";
       else
@@ -655,25 +655,25 @@ static void printAddressSpace(const Module *M, unsigned AS, raw_ostream &OS,
 /// names or up references to shorten the type name where possible.
 void TypePrinting::print(Type *Ty, raw_ostream &OS) {
   switch (Ty->getTypeID()) {
-  case Type::VoidTyID:      OS << "void"; return;
-  case Type::HalfTyID:      OS << "half"; return;
+  case Type::VoidTyID:      OS << "空类型"; return;
+  case Type::HalfTyID:      OS << "半精度"; return;
   case Type::BFloatTyID:    OS << "bfloat"; return;
-  case Type::FloatTyID:     OS << "float"; return;
-  case Type::DoubleTyID:    OS << "double"; return;
+  case Type::FloatTyID:     OS << "单精度"; return;
+  case Type::DoubleTyID:    OS << "双精度"; return;
   case Type::X86_FP80TyID:  OS << "x86_fp80"; return;
   case Type::FP128TyID:     OS << "fp128"; return;
   case Type::PPC_FP128TyID: OS << "ppc_fp128"; return;
-  case Type::LabelTyID:     OS << "label"; return;
+  case Type::LabelTyID:     OS << "标签"; return;
   case Type::MetadataTyID:
-    OS << "metadata";
+    OS << "元数据";
     return;
   case Type::X86_AMXTyID:   OS << "x86_amx"; return;
-  case Type::TokenTyID:     OS << "token"; return;
+  case Type::TokenTyID:     OS << "令牌"; return;
   case Type::ByteTyID:
     OS << 'b' << Ty->getByteBitWidth();
     return;
   case Type::IntegerTyID:
-    OS << 'i' << cast<IntegerType>(Ty)->getBitWidth();
+    OS << "整数" << cast<IntegerType>(Ty)->getBitWidth();
     return;
 
   case Type::FunctionTyID: {
@@ -704,18 +704,18 @@ void TypePrinting::print(Type *Ty, raw_ostream &OS) {
     if (I != Type2Number.end())
       OS << '%' << I->second;
     else  // Not enumerated, print the hex address.
-      OS << "%\"type " << STy << '\"';
+      OS << "%\"类型 " << STy << '\"';
     return;
   }
   case Type::PointerTyID: {
     PointerType *PTy = cast<PointerType>(Ty);
-    OS << "ptr";
+    OS << "指针";
     printAddressSpace(M, PTy->getAddressSpace(), OS);
     return;
   }
   case Type::ArrayTyID: {
     ArrayType *ATy = cast<ArrayType>(Ty);
-    OS << '[' << ATy->getNumElements() << " x ";
+    OS << '[' << ATy->getNumElements() << " 个 ";
     print(ATy->getElementType(), OS);
     OS << ']';
     return;
@@ -727,7 +727,7 @@ void TypePrinting::print(Type *Ty, raw_ostream &OS) {
     OS << "<";
     if (EC.isScalable())
       OS << "vscale x ";
-    OS << EC.getKnownMinValue() << " x ";
+    OS << EC.getKnownMinValue() << " 个 ";
     print(PTy->getElementType(), OS);
     OS << '>';
     return;
@@ -1725,7 +1725,7 @@ static void writeConstantInternal(raw_ostream &Out, const Constant *CV,
     // As a special case, print the array as a string if it is an array of
     // i8 with ConstantInt values.
     if (CA->isString()) {
-      Out << "c\"";
+      Out << "字\"";
       printEscapedString(CA->getAsString(), Out);
       Out << '"';
       return;
@@ -1853,7 +1853,7 @@ static void writeConstantInternal(raw_ostream &Out, const Constant *CV,
     }
 
     if (CE->isCast()) {
-      Out << " to ";
+      Out << " 到 ";
       WriterCtx.TypePrinter->print(CE->getType(), Out);
     }
 
@@ -3112,10 +3112,10 @@ void AssemblyWriter::printModule(const Module *M) {
       // Don't print the ID if it will start a new line (which would
       // require a comment char before it).
       M->getModuleIdentifier().find('\n') == std::string::npos)
-    Out << "; ModuleID = '" << M->getModuleIdentifier() << "'\n";
+    Out << "; 模块标识 = '" << M->getModuleIdentifier() << "'\n";
 
   if (!M->getSourceFileName().empty()) {
-    Out << "source_filename = \"";
+    Out << "源文件名 = \"";
     printEscapedString(M->getSourceFileName(), Out);
     Out << "\"\n";
   }
@@ -3942,7 +3942,7 @@ void AssemblyWriter::printGlobal(const GlobalVariable *GV) {
   Out << " = ";
 
   if (!GV->hasInitializer() && GV->hasExternalLinkage())
-    Out << "external ";
+    Out << "外部 ";
 
   Out << getLinkageNameWithSpace(GV->getLinkage());
   printDSOLocation(*GV, Out);
@@ -4011,7 +4011,7 @@ void AssemblyWriter::printGlobal(const GlobalVariable *GV) {
 
   maybePrintComdat(Out, *GV);
   if (MaybeAlign A = GV->getAlign())
-    Out << ", align " << A->value();
+    Out << ", 对齐 " << A->value();
 
   SmallVector<std::pair<unsigned, MDNode *>, 4> MDs;
   GV->getAllMetadata(MDs);
@@ -4247,7 +4247,7 @@ void AssemblyWriter::printFunction(const Function *F) {
   }
   maybePrintComdat(Out, *F);
   if (MaybeAlign A = F->getAlign())
-    Out << " align " << A->value();
+    Out << " 对齐 " << A->value();
   if (MaybeAlign A = F->getPreferredAlignment())
     Out << " prefalign(" << A->value() << ')';
   if (F->hasGC())
@@ -4594,7 +4594,7 @@ void AssemblyWriter::printInstruction(const Instruction &I) {
     }
     Out << ']';
   } else if (isa<ReturnInst>(I) && !Operand) {
-    Out << " void";
+    Out << " 空类型";
   } else if (const auto *CRI = dyn_cast<CatchReturnInst>(&I)) {
     Out << " from ";
     writeOperand(CRI->getOperand(0), /*PrintType=*/false);
@@ -4789,7 +4789,7 @@ void AssemblyWriter::printInstruction(const Instruction &I) {
       writeOperand(AI->getArraySize(), true);
     }
     if (MaybeAlign A = AI->getAlign()) {
-      Out << ", align " << A->value();
+      Out << ", 对齐 " << A->value();
     }
 
     printAddressSpace(AI->getModule(), AI->getAddressSpace(), Out,
@@ -4799,7 +4799,7 @@ void AssemblyWriter::printInstruction(const Instruction &I) {
       Out << ' ';
       writeOperand(Operand, true);   // Work with broken code
     }
-    Out << " to ";
+    Out << " 到 ";
     TypePrinter.print(I.getType(), Out);
   } else if (isa<VAArgInst>(I)) {
     if (Operand) {
@@ -4861,20 +4861,20 @@ void AssemblyWriter::printInstruction(const Instruction &I) {
     if (LI->isAtomic())
       writeAtomic(LI->getContext(), LI->getOrdering(), LI->getSyncScopeID());
     if (MaybeAlign A = LI->getAlign())
-      Out << ", align " << A->value();
+      Out << ", 对齐 " << A->value();
   } else if (const auto *SI = dyn_cast<StoreInst>(&I)) {
     if (SI->isAtomic())
       writeAtomic(SI->getContext(), SI->getOrdering(), SI->getSyncScopeID());
     if (MaybeAlign A = SI->getAlign())
-      Out << ", align " << A->value();
+      Out << ", 对齐 " << A->value();
   } else if (const auto *CXI = dyn_cast<AtomicCmpXchgInst>(&I)) {
     writeAtomicCmpXchg(CXI->getContext(), CXI->getSuccessOrdering(),
                        CXI->getFailureOrdering(), CXI->getSyncScopeID());
-    Out << ", align " << CXI->getAlign().value();
+    Out << ", 对齐 " << CXI->getAlign().value();
   } else if (const auto *RMWI = dyn_cast<AtomicRMWInst>(&I)) {
     writeAtomic(RMWI->getContext(), RMWI->getOrdering(),
                 RMWI->getSyncScopeID());
-    Out << ", align " << RMWI->getAlign().value();
+    Out << ", 对齐 " << RMWI->getAlign().value();
   } else if (const auto *FI = dyn_cast<FenceInst>(&I)) {
     writeAtomic(FI->getContext(), FI->getOrdering(), FI->getSyncScopeID());
   } else if (const auto *SVI = dyn_cast<ShuffleVectorInst>(&I)) {
@@ -4920,7 +4920,7 @@ void AssemblyWriter::printDbgVariableRecord(const DbgVariableRecord &DVR) {
     Out << "value";
     break;
   case DbgVariableRecord::LocationType::Declare:
-    Out << "声明";
+    Out << "declare";
     break;
   case DbgVariableRecord::LocationType::DeclareValue:
     Out << "declare_value";
