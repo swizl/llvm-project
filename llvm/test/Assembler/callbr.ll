@@ -3,14 +3,14 @@
 declare void @llvm.amdgcn.kill(i1)
 
 define void @test_kill(i1 %c) {
-; CHECK-LABEL: define void @test_kill(
-; CHECK-SAME: i1 [[C:%.*]]) {
-; CHECK-NEXT:    callbr void @llvm.amdgcn.kill(i1 [[C]])
-; CHECK-NEXT:            to label %[[CONT:.*]] [label %kill]
+; CHECK-LABEL: 定义 空类型 @test_kill(
+; CHECK-SAME: 整数1 [[C:%.*]]) {
+; CHECK-NEXT:    调用分支 空类型 @llvm.amdgcn.kill(整数1 [[C]])
+; CHECK-NEXT:            to 标签 %[[CONT:.*]] [标签 %kill]
 ; CHECK:       [[KILL:.*:]]
-; CHECK-NEXT:    unreachable
+; CHECK-NEXT:    不可达
 ; CHECK:       [[CONT]]:
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   callbr void @llvm.amdgcn.kill(i1 %c) to label %cont [label %kill]
 kill:

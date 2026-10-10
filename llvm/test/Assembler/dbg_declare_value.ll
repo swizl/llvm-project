@@ -1,6 +1,6 @@
 ; RUN: llvm-as < %s | llvm-dis | llvm-as | llvm-dis | FileCheck %s
 
-; CHECK: #dbg_declare_value(double %{{[0-9]+}}, !{{[0-9]+}}, !DIExpression(), !{{[0-9]+}})
+; CHECK: #dbg_declare_value(双精度 %{{[0-9]+}}, !{{[0-9]+}}, !DIExpression(), !{{[0-9]+}})
 
 ; ModuleID = '/tmp/test.c'
 source_filename = "/tmp/test.c"

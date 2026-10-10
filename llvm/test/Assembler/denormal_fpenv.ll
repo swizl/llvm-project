@@ -2,268 +2,268 @@
 
 define void @func_ieee() denormal_fpenv(ieee) {
 ; CHECK: Function Attrs: denormal_fpenv(ieee)
-; CHECK-LABEL: define void @func_ieee(
+; CHECK-LABEL: 定义 空类型 @func_ieee(
 ; CHECK-SAME: ) #[[ATTR0:[0-9]+]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_preservesign() denormal_fpenv(preservesign) {
 ; CHECK: Function Attrs: denormal_fpenv(preservesign)
-; CHECK-LABEL: define void @func_preservesign(
+; CHECK-LABEL: 定义 空类型 @func_preservesign(
 ; CHECK-SAME: ) #[[ATTR1:[0-9]+]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_positivezero() denormal_fpenv(positivezero) {
 ; CHECK: Function Attrs: denormal_fpenv(positivezero)
-; CHECK-LABEL: define void @func_positivezero(
+; CHECK-LABEL: 定义 空类型 @func_positivezero(
 ; CHECK-SAME: ) #[[ATTR2:[0-9]+]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_dynamic() denormal_fpenv(dynamic) {
 ; CHECK: Function Attrs: denormal_fpenv(dynamic)
-; CHECK-LABEL: define void @func_dynamic(
+; CHECK-LABEL: 定义 空类型 @func_dynamic(
 ; CHECK-SAME: ) #[[ATTR3:[0-9]+]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_ieee_ieee() denormal_fpenv(ieee|ieee) {
 ; CHECK: Function Attrs: denormal_fpenv(ieee)
-; CHECK-LABEL: define void @func_ieee_ieee(
+; CHECK-LABEL: 定义 空类型 @func_ieee_ieee(
 ; CHECK-SAME: ) #[[ATTR0]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_preservesign_preservesign() denormal_fpenv(preservesign|preservesign) {
 ; CHECK: Function Attrs: denormal_fpenv(preservesign)
-; CHECK-LABEL: define void @func_preservesign_preservesign(
+; CHECK-LABEL: 定义 空类型 @func_preservesign_preservesign(
 ; CHECK-SAME: ) #[[ATTR1]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_positivezero_positivezero() denormal_fpenv(positivezero|positivezero) {
 ; CHECK: Function Attrs: denormal_fpenv(positivezero)
-; CHECK-LABEL: define void @func_positivezero_positivezero(
+; CHECK-LABEL: 定义 空类型 @func_positivezero_positivezero(
 ; CHECK-SAME: ) #[[ATTR2]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_dynamic_dynamic() denormal_fpenv(dynamic|dynamic) {
 ; CHECK: Function Attrs: denormal_fpenv(dynamic)
-; CHECK-LABEL: define void @func_dynamic_dynamic(
+; CHECK-LABEL: 定义 空类型 @func_dynamic_dynamic(
 ; CHECK-SAME: ) #[[ATTR3]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_ieee_preservesign() denormal_fpenv(ieee|preservesign) {
-; CHECK-LABEL: define void @func_ieee_preservesign(
+; CHECK-LABEL: 定义 空类型 @func_ieee_preservesign(
 ; CHECK-SAME: ) #[[ATTR4:[0-9]+]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_preservesign_ieee() denormal_fpenv(preservesign|ieee) {
-; CHECK-LABEL: define void @func_preservesign_ieee(
+; CHECK-LABEL: 定义 空类型 @func_preservesign_ieee(
 ; CHECK-SAME: ) #[[ATTR5:[0-9]+]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_ieee_dynamic() denormal_fpenv(ieee|dynamic) {
-; CHECK-LABEL: define void @func_ieee_dynamic(
+; CHECK-LABEL: 定义 空类型 @func_ieee_dynamic(
 ; CHECK-SAME: ) #[[ATTR6:[0-9]+]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_dynamic_ieee() denormal_fpenv(dynamic|ieee) {
-; CHECK-LABEL: define void @func_dynamic_ieee(
+; CHECK-LABEL: 定义 空类型 @func_dynamic_ieee(
 ; CHECK-SAME: ) #[[ATTR7:[0-9]+]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_ieee_positivezero() denormal_fpenv(ieee|positivezero) {
-; CHECK-LABEL: define void @func_ieee_positivezero(
+; CHECK-LABEL: 定义 空类型 @func_ieee_positivezero(
 ; CHECK-SAME: ) #[[ATTR8:[0-9]+]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_positivezero_ieee() denormal_fpenv(positivezero|ieee) {
-; CHECK-LABEL: define void @func_positivezero_ieee(
+; CHECK-LABEL: 定义 空类型 @func_positivezero_ieee(
 ; CHECK-SAME: ) #[[ATTR9:[0-9]+]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_positivezero_dynamic() denormal_fpenv(positivezero|dynamic) {
-; CHECK-LABEL: define void @func_positivezero_dynamic(
+; CHECK-LABEL: 定义 空类型 @func_positivezero_dynamic(
 ; CHECK-SAME: ) #[[ATTR10:[0-9]+]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_dynamic_positivezero() denormal_fpenv(dynamic|positivezero) {
-; CHECK-LABEL: define void @func_dynamic_positivezero(
+; CHECK-LABEL: 定义 空类型 @func_dynamic_positivezero(
 ; CHECK-SAME: ) #[[ATTR11:[0-9]+]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_attr_group0() #0 {
-; CHECK-LABEL: define void @func_attr_group0(
+; CHECK-LABEL: 定义 空类型 @func_attr_group0(
 ; CHECK-SAME: ) #[[ATTR12:[0-9]+]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_attr_group1() #1 {
 ; CHECK: Function Attrs: denormal_fpenv(preservesign)
-; CHECK-LABEL: define void @func_attr_group1(
+; CHECK-LABEL: 定义 空类型 @func_attr_group1(
 ; CHECK-SAME: ) #[[ATTR1]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_f32_ieee() denormal_fpenv(float:ieee) {
 ; CHECK: Function Attrs: denormal_fpenv(ieee)
-; CHECK-LABEL: define void @func_f32_ieee(
+; CHECK-LABEL: 定义 空类型 @func_f32_ieee(
 ; CHECK-SAME: ) #[[ATTR0]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_f32_preservesign() denormal_fpenv(float: preservesign) {
 ; CHECK: Function Attrs: denormal_fpenv(float: preservesign)
-; CHECK-LABEL: define void @func_f32_preservesign(
+; CHECK-LABEL: 定义 空类型 @func_f32_preservesign(
 ; CHECK-SAME: ) #[[ATTR13:[0-9]+]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_f32_positivezero() denormal_fpenv(float: positivezero) {
 ; CHECK: Function Attrs: denormal_fpenv(float: positivezero)
-; CHECK-LABEL: define void @func_f32_positivezero(
+; CHECK-LABEL: 定义 空类型 @func_f32_positivezero(
 ; CHECK-SAME: ) #[[ATTR14:[0-9]+]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_f32_dynamic() denormal_fpenv(float: dynamic) {
 ; CHECK: Function Attrs: denormal_fpenv(float: dynamic)
-; CHECK-LABEL: define void @func_f32_dynamic(
+; CHECK-LABEL: 定义 空类型 @func_f32_dynamic(
 ; CHECK-SAME: ) #[[ATTR15:[0-9]+]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_f32_ieee_ieee() denormal_fpenv(float: ieee|ieee) {
 ; CHECK: Function Attrs: denormal_fpenv(ieee)
-; CHECK-LABEL: define void @func_f32_ieee_ieee(
+; CHECK-LABEL: 定义 空类型 @func_f32_ieee_ieee(
 ; CHECK-SAME: ) #[[ATTR0]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_f32_preservesign_preservesign() denormal_fpenv(float: preservesign|preservesign) {
 ; CHECK: Function Attrs: denormal_fpenv(float: preservesign)
-; CHECK-LABEL: define void @func_f32_preservesign_preservesign(
+; CHECK-LABEL: 定义 空类型 @func_f32_preservesign_preservesign(
 ; CHECK-SAME: ) #[[ATTR13]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_f32_positivezero_positivezero() denormal_fpenv(float: positivezero|positivezero) {
 ; CHECK: Function Attrs: denormal_fpenv(float: positivezero)
-; CHECK-LABEL: define void @func_f32_positivezero_positivezero(
+; CHECK-LABEL: 定义 空类型 @func_f32_positivezero_positivezero(
 ; CHECK-SAME: ) #[[ATTR14]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_f32_dynamic_dynamic() denormal_fpenv(float: dynamic|dynamic) {
 ; CHECK: Function Attrs: denormal_fpenv(float: dynamic)
-; CHECK-LABEL: define void @func_f32_dynamic_dynamic(
+; CHECK-LABEL: 定义 空类型 @func_f32_dynamic_dynamic(
 ; CHECK-SAME: ) #[[ATTR15]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_f32_preservesign_ieee() denormal_fpenv(float: preservesign|ieee) {
-; CHECK-LABEL: define void @func_f32_preservesign_ieee(
+; CHECK-LABEL: 定义 空类型 @func_f32_preservesign_ieee(
 ; CHECK-SAME: ) #[[ATTR16:[0-9]+]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_f32_dynamic_positivezero() denormal_fpenv(float:dynamic|positivezero) {
-; CHECK-LABEL: define void @func_f32_dynamic_positivezero(
+; CHECK-LABEL: 定义 空类型 @func_f32_dynamic_positivezero(
 ; CHECK-SAME: ) #[[ATTR17:[0-9]+]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_f64_dynamic__f32_ieee() denormal_fpenv(dynamic, float:ieee) {
 ; CHECK: Function Attrs: denormal_fpenv(dynamic, float: ieee)
-; CHECK-LABEL: define void @func_f64_dynamic__f32_ieee(
+; CHECK-LABEL: 定义 空类型 @func_f64_dynamic__f32_ieee(
 ; CHECK-SAME: ) #[[ATTR18:[0-9]+]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_f64_dynamic__f32_preservesign() denormal_fpenv(dynamic, float:preservesign) {
 ; CHECK: Function Attrs: denormal_fpenv(dynamic, float: preservesign)
-; CHECK-LABEL: define void @func_f64_dynamic__f32_preservesign(
+; CHECK-LABEL: 定义 空类型 @func_f64_dynamic__f32_preservesign(
 ; CHECK-SAME: ) #[[ATTR19:[0-9]+]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }
 
 define void @func_f64_dynamic_ieee__f32_preservesign_ieee() denormal_fpenv(dynamic|ieee, float:preservesign|ieee) {
 ;
-; CHECK-LABEL: define void @func_f64_dynamic_ieee__f32_preservesign_ieee(
+; CHECK-LABEL: 定义 空类型 @func_f64_dynamic_ieee__f32_preservesign_ieee(
 ; CHECK-SAME: ) #[[ATTR20:[0-9]+]] {
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }

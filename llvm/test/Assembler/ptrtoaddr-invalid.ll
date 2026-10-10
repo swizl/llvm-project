@@ -7,7 +7,7 @@
 ; RUN: not llvm-as %t/src_vec_dst_no_vec.ll -o /dev/null 2>&1 | FileCheck -check-prefix=SRC_VEC_DST_NO_VEC %s --implicit-check-not="error:"
 define i64 @bad(<2 x ptr> %p) {
   %addr = ptrtoaddr <2 x ptr> %p to i64
-  ; SRC_VEC_DST_NO_VEC: [[#@LINE-1]]:21: error: invalid cast opcode for cast from '<2 x ptr>' to 'i64'
+  ; SRC_VEC_DST_NO_VEC: [[#@LINE-1]]:21: error: invalid cast opcode for cast from '<2 个 指针>' to '整数64'
   ret i64 %addr
 }
 
@@ -15,7 +15,7 @@ define i64 @bad(<2 x ptr> %p) {
 ; RUN: not llvm-as %t/src_no_vec_dst_vec.ll -o /dev/null 2>&1 | FileCheck -check-prefix=SRC_NO_VEC_DST_VEC %s --implicit-check-not="error:"
 define <2 x i64> @bad(ptr %p) {
   %addr = ptrtoaddr ptr %p to <2 x i64>
-  ; SRC_NO_VEC_DST_VEC: [[#@LINE-1]]:21: error: invalid cast opcode for cast from 'ptr' to '<2 x i64>'
+  ; SRC_NO_VEC_DST_VEC: [[#@LINE-1]]:21: error: invalid cast opcode for cast from '指针' to '<2 个 整数64>'
   ret <2 x i64> %addr
 }
 
@@ -23,7 +23,7 @@ define <2 x i64> @bad(ptr %p) {
 ; RUN: not llvm-as %t/dst_not_int.ll -o /dev/null 2>&1 | FileCheck -check-prefix=DST_NOT_INT %s --implicit-check-not="error:"
 define float @bad(ptr %p) {
   %addr = ptrtoaddr ptr %p to float
-  ; DST_NOT_INT: [[#@LINE-1]]:21: error: invalid cast opcode for cast from 'ptr' to 'float'
+  ; DST_NOT_INT: [[#@LINE-1]]:21: error: invalid cast opcode for cast from '指针' to '单精度'
   ret float %addr
 }
 
@@ -31,7 +31,7 @@ define float @bad(ptr %p) {
 ; RUN: not llvm-as %t/dst_not_int_vec.ll -o /dev/null 2>&1 | FileCheck -check-prefix=DST_NOT_INT_VEC %s --implicit-check-not="error:"
 define <2 x float> @bad(<2 x ptr> %p) {
   %addr = ptrtoaddr <2 x ptr> %p to <2 x float>
-  ; DST_NOT_INT_VEC: [[#@LINE-1]]:21: error: invalid cast opcode for cast from '<2 x ptr>' to '<2 x float>'
+  ; DST_NOT_INT_VEC: [[#@LINE-1]]:21: error: invalid cast opcode for cast from '<2 个 指针>' to '<2 个 单精度>'
   ret <2 x float> %addr
 }
 
@@ -39,7 +39,7 @@ define <2 x float> @bad(<2 x ptr> %p) {
 ; RUN: not llvm-as %t/src_not_ptr.ll -o /dev/null 2>&1 | FileCheck -check-prefix=SRC_NOT_PTR %s --implicit-check-not="error:"
 define i64 @bad(i32 %p) {
   %addr = ptrtoaddr i32 %p to i64
-  ; SRC_NOT_PTR: [[#@LINE-1]]:21: error: invalid cast opcode for cast from 'i32' to 'i64'
+  ; SRC_NOT_PTR: [[#@LINE-1]]:21: error: invalid cast opcode for cast from '整数32' to '整数64'
   ret i64 %addr
 }
 
@@ -47,7 +47,7 @@ define i64 @bad(i32 %p) {
 ; RUN: not llvm-as %t/src_not_ptr_vec.ll -o /dev/null 2>&1 | FileCheck -check-prefix=SRC_NOT_PTR_VEC %s --implicit-check-not="error:"
 define <2 x i64> @bad(<2 x i32> %p) {
   %addr = ptrtoaddr <2 x i32> %p to <2 x i64>
-  ; SRC_NOT_PTR_VEC: [[#@LINE-1]]:21: error: invalid cast opcode for cast from '<2 x i32>' to '<2 x i64>'
+  ; SRC_NOT_PTR_VEC: [[#@LINE-1]]:21: error: invalid cast opcode for cast from '<2 个 整数32>' to '<2 个 整数64>'
   ret <2 x i64> %addr
 }
 
@@ -55,7 +55,7 @@ define <2 x i64> @bad(<2 x i32> %p) {
 ; RUN: not llvm-as %t/vec_src_fewer_elems.ll -o /dev/null 2>&1 | FileCheck -check-prefix=VEC_SRC_FEWER_ELEMS %s --implicit-check-not="error:"
 define <4 x i64> @bad(<2 x ptr> %p) {
   %addr = ptrtoaddr <2 x ptr> %p to <4 x i64>
-  ; VEC_SRC_FEWER_ELEMS: [[#@LINE-1]]:21: error: invalid cast opcode for cast from '<2 x ptr>' to '<4 x i64>'
+  ; VEC_SRC_FEWER_ELEMS: [[#@LINE-1]]:21: error: invalid cast opcode for cast from '<2 个 指针>' to '<4 个 整数64>'
   ret <4 x i64> %addr
 }
 
@@ -63,7 +63,7 @@ define <4 x i64> @bad(<2 x ptr> %p) {
 ; RUN: not llvm-as %t/vec_dst_fewer_elems.ll -o /dev/null 2>&1 | FileCheck -check-prefix=VEC_DST_FEWER_ELEMS %s --implicit-check-not="error:"
 define <2 x i64> @bad(<4 x ptr> %p) {
   %addr = ptrtoaddr <4 x ptr> %p to <2 x i64>
-  ; VEC_DST_FEWER_ELEMS: [[#@LINE-1]]:21: error: invalid cast opcode for cast from '<4 x ptr>' to '<2 x i64>'
+  ; VEC_DST_FEWER_ELEMS: [[#@LINE-1]]:21: error: invalid cast opcode for cast from '<4 个 指针>' to '<2 个 整数64>'
   ret <2 x i64> %addr
 }
 

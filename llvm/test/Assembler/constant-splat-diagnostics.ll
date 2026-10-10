@@ -14,7 +14,7 @@ define <4 x i32> @not_a_constant(i32 %a) {
 }
 
 ;--- not_a_sclar.ll
-; NOT_A_SCALAR: error: constant expression type mismatch: got type '<1 x i32>' but expected 'i32'
+; NOT_A_SCALAR: error: constant expression type mismatch: got type '<1 个 整数32>' but expected '整数32'
 define <4 x i32> @not_a_scalar() {
   ret <4 x i32> splat (<1 x i32> <i32 7>)
 }
@@ -26,13 +26,13 @@ define <4 x i32> @not_a_vector() {
 }
 
 ;--- wrong_explicit_type.ll
-; WRONG_EXPLICIT_TYPE: error: constant expression type mismatch: got type 'i8' but expected 'i32'
+; WRONG_EXPLICIT_TYPE: error: constant expression type mismatch: got type '整数8' but expected '整数32'
 define <4 x i32> @wrong_explicit_type() {
   ret <4 x i32> splat (i8 7)
 }
 
 ;--- wrong_implicit_type.ll
-; WRONG_IMPLICIT_TYPE: error: constant expression type mismatch: got type 'i8' but expected 'i32'
+; WRONG_IMPLICIT_TYPE: error: constant expression type mismatch: got type '整数8' but expected '整数32'
 define void @wrong_implicit_type(<4 x i32> %a) {
   %add = add <4 x i32> %a, splat (i8 7)
   ret void

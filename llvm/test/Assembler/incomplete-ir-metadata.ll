@@ -4,13 +4,13 @@
 @g = global i8 0, !exclude !4
 
 define void @test(ptr %p) !dbg !3 {
-; CHECK-LABEL: define void @test(
-; CHECK-SAME: ptr [[P:%.*]]) {
-; CHECK-NEXT:    [[V1:%.*]] = load i8, ptr [[P]], align 1
-; CHECK-NEXT:    [[V2:%.*]] = load i8, ptr [[P]], align 1
-; CHECK-NEXT:    [[V3:%.*]] = load i8, ptr [[P]], align 1, !noalias [[META0:![0-9]+]]
-; CHECK-NEXT:    call void @llvm.experimental.noalias.scope.decl(metadata [[META0]])
-; CHECK-NEXT:    ret void
+; CHECK-LABEL: 定义 空类型 @test(
+; CHECK-SAME: 指针 [[P:%.*]]) {
+; CHECK-NEXT:    [[V1:%.*]] = 加载 整数8, 指针 [[P]], 对齐 1
+; CHECK-NEXT:    [[V2:%.*]] = 加载 整数8, 指针 [[P]], 对齐 1
+; CHECK-NEXT:    [[V3:%.*]] = 加载 整数8, 指针 [[P]], 对齐 1, !noalias [[META0:![0-9]+]]
+; CHECK-NEXT:    调用 空类型 @llvm.experimental.noalias.scope.decl(元数据 [[META0]])
+; CHECK-NEXT:    返回 空类型
 ;
   %v1 = load i8, ptr %p, !noalias !0
   %v2 = load i8, ptr %p, !tbaa !1

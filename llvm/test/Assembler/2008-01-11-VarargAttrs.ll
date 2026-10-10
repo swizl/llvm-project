@@ -3,10 +3,10 @@
 
 %struct = type {  }
 
-; CHECK: declare void @foo(...)
+; CHECK: 声明 空类型 @foo(...)
 declare void @foo(...)
 
-; CHECK: call void (...) @foo(ptr byval(%struct) null)
+; CHECK: 调用 空类型 (...) @foo(指针 byval(%struct) 空指针)
 define void @bar() {
 	call void (...) @foo(ptr byval(%struct) null )
 	ret void

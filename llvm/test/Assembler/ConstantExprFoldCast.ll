@@ -3,10 +3,10 @@
 ; RUN: llvm-as < %s | llvm-dis | FileCheck %s
 ; RUN: verify-uselistorder %s
 
-; CHECK-NOT: bitcast
-; CHECK-NOT: trunc
-; CHECK: addrspacecast
-; CHECK: addrspacecast
+; CHECK-NOT: 位转换
+; CHECK-NOT: 截断
+; CHECK: 地址空间转换
+; CHECK: 地址空间转换
 
 @A = global ptr null  ; Cast null -> fold
 @B = global ptr @A   ; Cast to same type -> fold

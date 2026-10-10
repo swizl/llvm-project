@@ -20,22 +20,22 @@ $N:
   ret i32 %4
 }
 
-; CHECK-LABEL: define i32 @test1(i32 %X) {
-; CHECK-NEXT:   %1 = alloca i32, align 4
-; CHECK-NEXT:   br label %2
+; CHECK-LABEL: 定义 整数32 @test1(整数32 %X) {
+; CHECK-NEXT:   %1 = 分配 整数32, 对齐 4
+; CHECK-NEXT:   分支 标签 %2
 ; CHECK:      2:       ; preds = %0
-; CHECK-NEXT:   br label %3
+; CHECK-NEXT:   分支 标签 %3
 ; CHECK:      3:       ; preds = %2
-; CHECK-NEXT:   br label %"2"
+; CHECK-NEXT:   分支 标签 %"2"
 ; CHECK:      "2":     ; preds = %3
-; CHECK-NEXT:   br label %-3
+; CHECK-NEXT:   分支 标签 %-3
 ; CHECK:      -3:      ; preds = %"2"
-; CHECK-NEXT:   br label %-N-
+; CHECK-NEXT:   分支 标签 %-N-
 ; CHECK:      -N-:     ; preds = %-3
-; CHECK-NEXT:   br label %"$N"
+; CHECK-NEXT:   分支 标签 %"$N"
 ; CHECK:      "$N":    ; preds = %-N-
-; CHECK-NEXT:   %4 = add i32 1, 1
-; CHECK-NEXT:   ret i32 %4
+; CHECK-NEXT:   %4 = 加 整数32 1, 1
+; CHECK-NEXT:   返回 整数32 %4
 ; CHECK-NEXT: }
 
 define void @test2(i32 %0, i32 %1) {
@@ -44,5 +44,5 @@ define void @test2(i32 %0, i32 %1) {
   ret void
 }
 
-; CHECK-LABEL: define void @test2(i32 %0, i32 %1) {
-; CHECK-NEXT:    ret void
+; CHECK-LABEL: 定义 空类型 @test2(整数32 %0, 整数32 %1) {
+; CHECK-NEXT:    返回 空类型

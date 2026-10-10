@@ -16,7 +16,7 @@
 !6 = distinct !{}
 !7 = distinct !{}
 
-; CHECK: !8 = distinct !DICompileUnit(language: DW_LANG_C99, file: !1, producer: "clang", isOptimized: true, flags: "-O2", runtimeVersion: 2, splitDebugFilename: "abc.debug", emissionKind: FullDebug, enums: !2, retainedTypes: !3, globals: !5, imports: !6, macros: !7, dwoId: 42, rangesBaseAddress: true, sysroot: "/", dialect: DW_LLVM_LANG_DIALECT_simt)
+; CHECK: !8 = distinct !DICompileUnit(language: DW_LANG_C99, file: !1, producer: "clang", isOptimized: 真, flags: "-O2", runtimeVersion: 2, splitDebugFilename: "abc.debug", emissionKind: FullDebug, enums: !2, retainedTypes: !3, globals: !5, imports: !6, macros: !7, dwoId: 42, rangesBaseAddress: 真, sysroot: "/", dialect: DW_LLVM_LANG_DIALECT_simt)
 !8 = distinct !DICompileUnit(language: DW_LANG_C99, file: !1, producer: "clang",
                              isOptimized: true, flags: "-O2", runtimeVersion: 2,
                              splitDebugFilename: "abc.debug",
@@ -25,12 +25,12 @@
                              globals: !5, imports: !6, macros: !7, dwoId: 42,
                              splitDebugInlining: true, rangesBaseAddress: true, sysroot: "/", dialect: DW_LLVM_LANG_DIALECT_simt)
 
-; CHECK: !9 = distinct !DICompileUnit(language: DW_LANG_C99, file: !1, isOptimized: false, runtimeVersion: 0, emissionKind: NoDebug)
+; CHECK: !9 = distinct !DICompileUnit(language: DW_LANG_C99, file: !1, isOptimized: 假, runtimeVersion: 0, emissionKind: NoDebug)
 !9 = distinct !DICompileUnit(language: 12, file: !1, producer: "",
                              isOptimized: false, flags: "", runtimeVersion: 0,
                              splitDebugFilename: "", emissionKind: NoDebug)
 
-; CHECK: !10 = distinct !DICompileUnit(language: DW_LANG_C99, file: !1, producer: "clang", isOptimized: true, flags: "-O2", runtimeVersion: 2, splitDebugFilename: "abc.debug", emissionKind: LineTablesOnly, splitDebugInlining: false, dialect: DW_LLVM_LANG_DIALECT_tile)
+; CHECK: !10 = distinct !DICompileUnit(language: DW_LANG_C99, file: !1, producer: "clang", isOptimized: 真, flags: "-O2", runtimeVersion: 2, splitDebugFilename: "abc.debug", emissionKind: LineTablesOnly, splitDebugInlining: 假, dialect: DW_LLVM_LANG_DIALECT_tile)
 !10 = distinct !DICompileUnit(language: DW_LANG_C99, file: !1, producer: "clang",
                              isOptimized: true, flags: "-O2", runtimeVersion: 2,
                              splitDebugFilename: "abc.debug",
@@ -41,7 +41,7 @@
 
 ;; Numeric dialect values within range are also accepted and round-trip as
 ;; the corresponding symbolic spelling.
-; CHECK: !11 = distinct !DICompileUnit(language: DW_LANG_C99, file: !1, isOptimized: false, runtimeVersion: 0, emissionKind: NoDebug, dialect: DW_LLVM_LANG_DIALECT_simt)
+; CHECK: !11 = distinct !DICompileUnit(language: DW_LANG_C99, file: !1, isOptimized: 假, runtimeVersion: 0, emissionKind: NoDebug, dialect: DW_LLVM_LANG_DIALECT_simt)
 !12 = distinct !DICompileUnit(language: DW_LANG_C99, file: !1,
                               isOptimized: false, runtimeVersion: 0,
                               emissionKind: NoDebug, dialect: 1)

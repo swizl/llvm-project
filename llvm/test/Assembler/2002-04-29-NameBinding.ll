@@ -8,7 +8,7 @@
 ;
 ; RUN: verify-uselistorder %s
 
-; CHECK-NOT: constant
+; CHECK-NOT: 常量
 ; CHECK-NOT: @v1
 
 @v1 = internal constant i32 5

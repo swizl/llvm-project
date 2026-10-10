@@ -5,7 +5,7 @@ declare target("a", target("b")) @llvm.ssa.copy.ta_tbtt(target("a", target("b"))
 declare target("a", void, i8, 5, 3) @llvm.ssa.copy.ta_isVoid_i8_5_3t(target("a", void, i8, 5, 3) returned)
 declare target("b") @llvm.ssa.copy.tbt(target("b") returned)
 
-; CHECK: declare target("a", target("b")) @llvm.ssa.copy.ta_tbtt(target("a", target("b")) returned)
-; CHECK: declare target("a", void, i8, 5, 3) @llvm.ssa.copy.ta_isVoid_i8_5_3t(target("a", void, i8, 5, 3) returned)
-; CHECK: declare target("b") @llvm.ssa.copy.tbt(target("b") returned)
+; CHECK: 声明 target("a", target("b")) @llvm.ssa.copy.ta_tbtt(target("a", target("b")) returned)
+; CHECK: 声明 target("a", 空类型, 整数8, 5, 3) @llvm.ssa.copy.ta_isVoid_i8_5_3t(target("a", 空类型, 整数8, 5, 3) returned)
+; CHECK: 声明 target("b") @llvm.ssa.copy.tbt(target("b") returned)
 

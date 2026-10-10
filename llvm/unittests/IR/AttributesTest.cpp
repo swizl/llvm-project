@@ -191,7 +191,7 @@ TEST(Attributes, StringRepresentation) {
   EXPECT_EQ(A.getAsString(), "byval(%mystruct)");
 
   A = Attribute::getWithByValType(C, Type::getInt32Ty(C));
-  EXPECT_EQ(A.getAsString(), "byval(i32)");
+  EXPECT_EQ(A.getAsString(), "byval(整数32)");
 }
 
 TEST(Attributes, HasParentContext) {

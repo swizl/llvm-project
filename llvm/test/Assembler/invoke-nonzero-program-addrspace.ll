@@ -9,7 +9,7 @@ define i8 @test_invoke(ptr %fnptr0, ptr addrspace(200) %fnptr200) personality pt
   %explicit_as_42 = invoke addrspace(200) i8 %fnptr200(i32 0) to label %ok unwind label %lpad
   ; The following is only okay if the program address space is 200:
   %no_as = invoke i8 %fnptr200(i32 0) to label %ok unwind label %lpad
-  ; CHECK: invoke-nonzero-program-addrspace.ll:[[@LINE-1]]:22: error: '%fnptr200' defined with type 'ptr addrspace(200)' but expected 'ptr'
+  ; CHECK: invoke-nonzero-program-addrspace.ll:[[@LINE-1]]:22: error: '%fnptr200' defined with type '指针 addrspace(200)' but expected '指针'
 ok:
   ret i8 0
 lpad:
@@ -21,10 +21,10 @@ lpad:
 declare i32 @__gxx_personality_v0(...)
 
 
-; PROGAS200:  target datalayout = "P200"
-; PROGAS200:  define i8 @test_invoke(ptr %fnptr0, ptr addrspace(200) %fnptr200) addrspace(200) personality ptr addrspace(200) @__gxx_personality_v0 {
-; PROGAS200:    %explicit_as_0 = invoke addrspace(0) i8 %fnptr0(i32 0)
-; PROGAS200:    %explicit_as_42 = invoke addrspace(200) i8 %fnptr200(i32 0)
-; PROGAS200:    %no_as = invoke addrspace(200) i8 %fnptr200(i32 0)
-; PROGAS200:    ret i8 0
+; PROGAS200:  目标 数据布局 = "P200"
+; PROGAS200:  定义 整数8 @test_invoke(指针 %fnptr0, 指针 addrspace(200) %fnptr200) addrspace(200) personality 指针 addrspace(200) @__gxx_personality_v0 {
+; PROGAS200:    %explicit_as_0 = 调用返回 addrspace(0) 整数8 %fnptr0(整数32 0)
+; PROGAS200:    %explicit_as_42 = 调用返回 addrspace(200) 整数8 %fnptr200(整数32 0)
+; PROGAS200:    %no_as = 调用返回 addrspace(200) 整数8 %fnptr200(整数32 0)
+; PROGAS200:    返回 整数8 0
 ; PROGAS200:  }

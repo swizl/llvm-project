@@ -29,22 +29,22 @@
 
 ; Need a function to make update_test_checks.py work.
 ;.
-; CHECK: @A = global i64 0
-; CHECK: @add = global ptr inttoptr (i64 ptrtoint (ptr @A to i64) to ptr)
-; CHECK: @sub = global ptr inttoptr (i64 ptrtoint (ptr @A to i64) to ptr)
-; CHECK: @xor = global ptr inttoptr (i64 ptrtoint (ptr @A to i64) to ptr)
-; CHECK: @B = external global %Ty
-; CHECK: @cons = weak global i32 0, align 8
-; CHECK: @gep1 = global <2 x ptr> undef
-; CHECK: @gep2 = global <2 x ptr> undef
-; CHECK: @gep3 = global <2 x ptr> splat (ptr null)
-; CHECK: @gep4 = global <2 x ptr> splat (ptr null)
-; CHECK: @bitcast1 = global <2 x i32> splat (i32 -1)
-; CHECK: @bitcast2 = global <4 x i16> splat (i16 -1)
+; CHECK: @A = 全局 整数64 0
+; CHECK: @add = 全局 指针 整数转指针 (整数64 指针转整数 (指针 @A 到 整数64) 到 指针)
+; CHECK: @sub = 全局 指针 整数转指针 (整数64 指针转整数 (指针 @A 到 整数64) 到 指针)
+; CHECK: @xor = 全局 指针 整数转指针 (整数64 指针转整数 (指针 @A 到 整数64) 到 指针)
+; CHECK: @B = 外部 全局 %Ty
+; CHECK: @cons = 弱 全局 整数32 0, 对齐 8
+; CHECK: @gep1 = 全局 <2 个 指针> 未定义
+; CHECK: @gep2 = 全局 <2 个 指针> 未定义
+; CHECK: @gep3 = 全局 <2 个 指针> splat (指针 空指针)
+; CHECK: @gep4 = 全局 <2 个 指针> splat (指针 空指针)
+; CHECK: @bitcast1 = 全局 <2 个 整数32> splat (整数32 -1)
+; CHECK: @bitcast2 = 全局 <4 个 整数16> splat (整数16 -1)
 ;.
 define void @dummy() {
 ; CHECK-LABEL: @dummy(
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
   ret void
 }

@@ -4,8 +4,8 @@
 ; Ordering is from Intrinsics.td.
 
 define void @func(double %a, double %b, double %c, i32 %i) strictfp {
-; CHECK-LABEL: define void @func
-; CHECK-SAME: (double [[A:%.*]], double [[B:%.*]], double [[C:%.*]], i32 [[I:%.*]]) #[[ATTR0:[0-9]+]] {
+; CHECK-LABEL: 定义 空类型 @func
+; CHECK-SAME: (双精度 [[A:%.*]], 双精度 [[B:%.*]], 双精度 [[C:%.*]], 整数32 [[I:%.*]]) #[[ATTR0:[0-9]+]] {
 
   %add = call double @llvm.experimental.constrained.fadd.f64(
                                                double %a, double %b,
@@ -229,7 +229,7 @@ define void @func(double %a, double %b, double %c, i32 %i) strictfp {
                                                metadata !"oeq",
                                                metadata !"fpexcept.strict")
 
-; CHECK: ret void
+; CHECK: 返回 空类型
   ret void
 }
 

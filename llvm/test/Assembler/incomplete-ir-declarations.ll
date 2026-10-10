@@ -1,12 +1,12 @@
 ; RUN: opt -S -allow-incomplete-ir < %s | FileCheck %s
 
-; CHECK: @fn2 = external global i8
-; CHECK: @g1 = external global i8
-; CHECK: @g2 = external global i8
-; CHECK: @g3 = external global i8
-; CHECK: @g4 = external global i8
+; CHECK: @fn2 = 外部 全局 整数8
+; CHECK: @g1 = 外部 全局 整数8
+; CHECK: @g2 = 外部 全局 整数8
+; CHECK: @g3 = 外部 全局 整数8
+; CHECK: @g4 = 外部 全局 整数8
 
-; CHECK: declare void @fn1(i32)
+; CHECK: 声明 空类型 @fn1(整数32)
 
 define ptr @test() {
   call void @fn1(i32 0)

@@ -1,6 +1,6 @@
 ; RUN: not llvm-as < %s 2>&1 | FileCheck %s
 
-; CHECK: insertvalue operand and field disagree in type: 'ptr' instead of 'i32'
+; CHECK: insertvalue operand and field disagree in type: '指针' instead of '整数32'
 
 define void @test() {
 entry:

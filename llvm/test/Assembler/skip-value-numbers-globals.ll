@@ -24,24 +24,24 @@ define void @test(ptr %p) {
   ret void
 }
 
-; CHECK: @0 = global i8 0
-; CHECK: @1 = global i8 1
-; CHECK: @2 = alias i8, ptr @0
-; CHECK: @3 = ifunc ptr (), ptr @4
+; CHECK: @0 = 全局 整数8 0
+; CHECK: @1 = 全局 整数8 1
+; CHECK: @2 = alias 整数8, 指针 @0
+; CHECK: @3 = ifunc 指针 (), 指针 @4
 
-; CHECK-LABEL: define ptr @4() {
-; CHECK-NEXT:  ret ptr null
+; CHECK-LABEL: 定义 指针 @4() {
+; CHECK-NEXT:  返回 指针 空指针
 
-; CHECK: declare void @5()
+; CHECK: 声明 空类型 @5()
 
-; CHECK: declare ptr @6(ptr)
+; CHECK: 声明 指针 @6(指针)
 
-; CHECK-LABEL: define void @test(ptr %p) {
-; CHECK-NEXT: store ptr @0, ptr %p, align 8
-; CHECK-NEXT: store ptr @1, ptr %p, align 8
-; CHECK-NEXT: store ptr @2, ptr %p, align 8
-; CHECK-NEXT: store ptr @3, ptr %p, align 8
-; CHECK-NEXT: store ptr @4, ptr %p, align 8
-; CHECK-NEXT: store ptr @5, ptr %p, align 8
-; CHECK-NEXT: store ptr @6, ptr %p, align 8
-; CHECK-NEXT: ret void
+; CHECK-LABEL: 定义 空类型 @test(指针 %p) {
+; CHECK-NEXT: 存储 指针 @0, 指针 %p, 对齐 8
+; CHECK-NEXT: 存储 指针 @1, 指针 %p, 对齐 8
+; CHECK-NEXT: 存储 指针 @2, 指针 %p, 对齐 8
+; CHECK-NEXT: 存储 指针 @3, 指针 %p, 对齐 8
+; CHECK-NEXT: 存储 指针 @4, 指针 %p, 对齐 8
+; CHECK-NEXT: 存储 指针 @5, 指针 %p, 对齐 8
+; CHECK-NEXT: 存储 指针 @6, 指针 %p, 对齐 8
+; CHECK-NEXT: 返回 空类型

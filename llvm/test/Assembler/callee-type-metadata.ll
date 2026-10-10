@@ -9,7 +9,7 @@ entry:
   store i8 %x, ptr %x.addr, align 1
   %fptr = load ptr, ptr %func.addr, align 8
   %x_val = load i8, ptr %x.addr, align 1
-  ; CHECK: %call = call i32 %fptr(i8 signext %x_val), !callee_type !1
+  ; CHECK: %call = 调用 整数32 %fptr(整数8 signext %x_val), !callee_type !1
   %call = call i32 %fptr(i8 signext %x_val), !callee_type !1
   ret i32 %call
 }

@@ -13,33 +13,33 @@
 
 ;--- valid.ll
 target datalayout = "A1-G2-P3"
-; CHECK: target datalayout = "A1-G2-P3"
+; CHECK: 目标 数据布局 = "A1-G2-P3"
 
-; CHECK: @str = private addrspace(2) constant [4 x i8] c"str\00"
+; CHECK: @str = 私有 addrspace(2) 常量 [4 个 整数8] 字"str\00"
 @str = private addrspace("G") constant [4 x i8] c"str\00"
 
 define void @foo() {
-  ; CHECK: %alloca = alloca i32, align 4, addrspace(1)
+  ; CHECK: %alloca = 分配 整数32, 对齐 4, addrspace(1)
   %alloca = alloca i32, addrspace("A")
   ret void
 }
 
-; CHECK: define void @bar() addrspace(3) {
+; CHECK: 定义 空类型 @bar() addrspace(3) {
 define void @bar() addrspace("P") {
-  ; CHECK: call addrspace(3) void @foo()
+  ; CHECK: 调用 addrspace(3) 空类型 @foo()
   call addrspace("P") void @foo()
   ret void
 }
 
 ;--- alloca-in-other-as.ll
 target datalayout = "A1-G2-P3"
-; ALLOCA-IN-GLOBALS: target datalayout = "A1-G2-P3"
+; ALLOCA-IN-GLOBALS: 目标 数据布局 = "A1-G2-P3"
 
 define void @foo() {
-  ; ALLOCA-IN-GLOBALS: %alloca = alloca i32, align 4, addrspace(2){{$}}
-  ; ALLOCA-IN-GLOBALS: %alloca2 = alloca i32, align 4, addrspace(1){{$}}
-  ; ALLOCA-IN-GLOBALS: %alloca3 = alloca i32, align 4{{$}}
-  ; ALLOCA-IN-GLOBALS: %alloca4 = alloca i32, align 4, addrspace(3){{$}}
+  ; ALLOCA-IN-GLOBALS: %alloca = 分配 整数32, 对齐 4, addrspace(2){{$}}
+  ; ALLOCA-IN-GLOBALS: %alloca2 = 分配 整数32, 对齐 4, addrspace(1){{$}}
+  ; ALLOCA-IN-GLOBALS: %alloca3 = 分配 整数32, 对齐 4{{$}}
+  ; ALLOCA-IN-GLOBALS: %alloca4 = 分配 整数32, 对齐 4, addrspace(3){{$}}
   %alloca = alloca i32, addrspace("G")
   %alloca2 = alloca i32, addrspace("A")
   %alloca3 = alloca i32

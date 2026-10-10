@@ -18,7 +18,7 @@
                              splitDebugFilename: "abc.debug", emissionKind: 2)
 !2 = !DIFile(filename: "path/to/file", directory: "/path/to/dir")
 ; CHECK: !1 = !DISubroutineType(types: !2)
-; CHECK: !2 = !{null}
+; CHECK: !2 = !{空指针}
 ; CHECK: !3 = distinct !DICompileUnit
 ; CHECK: !4 = !DIFile
 ; CHECK: !5 = !DICompositeType({{.*}})

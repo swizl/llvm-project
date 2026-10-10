@@ -182,8 +182,8 @@ TEST(ValueTest, printSlots) {
       EXPECT_EQ(STR, S);                                                       \
     }                                                                          \
   } while (false)
-  CHECK_PRINT(I0, "  %0 = add i32 %y, 1");
-  CHECK_PRINT(I1, "  %1 = add i32 %y, 1");
+  CHECK_PRINT(I0, "  %0 = 加 整数32 %y, 1");
+  CHECK_PRINT(I1, "  %1 = 加 整数32 %y, 1");
 #undef CHECK_PRINT
 
 #define CHECK_PRINT_AS_OPERAND(INST, TYPE, STR)                                \
@@ -203,10 +203,10 @@ TEST(ValueTest, printSlots) {
   } while (false)
   CHECK_PRINT_AS_OPERAND(I0, false, "%0");
   CHECK_PRINT_AS_OPERAND(I1, false, "%1");
-  CHECK_PRINT_AS_OPERAND(I0, true, "i32 %0");
-  CHECK_PRINT_AS_OPERAND(I1, true, "i32 %1");
-  CHECK_PRINT_AS_OPERAND(G0, true, "ptr @g0");
-  CHECK_PRINT_AS_OPERAND(G1, true, "ptr @g1");
+  CHECK_PRINT_AS_OPERAND(I0, true, "整数32 %0");
+  CHECK_PRINT_AS_OPERAND(I1, true, "整数32 %1");
+  CHECK_PRINT_AS_OPERAND(G0, true, "指针 @g0");
+  CHECK_PRINT_AS_OPERAND(G1, true, "指针 @g1");
 #undef CHECK_PRINT_AS_OPERAND
 }
 

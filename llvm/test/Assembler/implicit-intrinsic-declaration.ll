@@ -5,26 +5,26 @@
 ; Two of the llvm.umax calls are intentionally missing the mangling suffix here,
 ; to show that it will be added automatically.
 define i32 @test(i8 %x, i8 %y) {
-; CHECK-LABEL: define i32 @test(
-; CHECK-SAME: i8 [[X:%.*]], i8 [[Y:%.*]]) {
-; CHECK-NEXT:    [[CMP:%.*]] = icmp sgt i8 [[X]], -1
-; CHECK-NEXT:    call void @llvm.assume(i1 [[CMP]])
-; CHECK-NEXT:    [[MAX1:%.*]] = call i8 @llvm.umax.i8(i8 [[X]], i8 [[Y]])
-; CHECK-NEXT:    [[X_EXT:%.*]] = zext i8 [[X]] to i16
-; CHECK-NEXT:    [[Y_EXT:%.*]] = zext i8 [[Y]] to i16
-; CHECK-NEXT:    [[MAX2:%.*]] = call i16 @llvm.umax.i16(i16 [[X_EXT]], i16 [[Y_EXT]])
-; CHECK-NEXT:    [[X_EXT2:%.*]] = zext i8 [[X]] to i32
-; CHECK-NEXT:    [[Y_EXT2:%.*]] = zext i8 [[Y]] to i32
-; CHECK-NEXT:    [[MAX3:%.*]] = call i32 @llvm.umax.i32(i32 [[X_EXT2]], i32 [[Y_EXT2]])
-; CHECK-NEXT:    ret i32 [[MAX3]]
+; CHECK-LABEL: 定义 整数32 @test(
+; CHECK-SAME: 整数8 [[X:%.*]], 整数8 [[Y:%.*]]) {
+; CHECK-NEXT:    [[CMP:%.*]] = 整数比较 sgt 整数8 [[X]], -1
+; CHECK-NEXT:    调用 空类型 @llvm.assume(整数1 [[CMP]])
+; CHECK-NEXT:    [[MAX1:%.*]] = 调用 整数8 @llvm.umax.i8(整数8 [[X]], 整数8 [[Y]])
+; CHECK-NEXT:    [[X_EXT:%.*]] = 零扩展 整数8 [[X]] 到 整数16
+; CHECK-NEXT:    [[Y_EXT:%.*]] = 零扩展 整数8 [[Y]] 到 整数16
+; CHECK-NEXT:    [[MAX2:%.*]] = 调用 整数16 @llvm.umax.i16(整数16 [[X_EXT]], 整数16 [[Y_EXT]])
+; CHECK-NEXT:    [[X_EXT2:%.*]] = 零扩展 整数8 [[X]] 到 整数32
+; CHECK-NEXT:    [[Y_EXT2:%.*]] = 零扩展 整数8 [[Y]] 到 整数32
+; CHECK-NEXT:    [[MAX3:%.*]] = 调用 整数32 @llvm.umax.i32(整数32 [[X_EXT2]], 整数32 [[Y_EXT2]])
+; CHECK-NEXT:    返回 整数32 [[MAX3]]
 ;
-; INSTCOMBINE-LABEL: define i32 @test(
-; INSTCOMBINE-SAME: i8 [[X:%.*]], i8 [[Y:%.*]]) {
-; INSTCOMBINE-NEXT:    [[CMP:%.*]] = icmp sgt i8 [[X]], -1
-; INSTCOMBINE-NEXT:    call void @llvm.assume(i1 [[CMP]])
-; INSTCOMBINE-NEXT:    [[TMP1:%.*]] = call i8 @llvm.umax.i8(i8 [[X]], i8 [[Y]])
-; INSTCOMBINE-NEXT:    [[MAX3:%.*]] = zext i8 [[TMP1]] to i32
-; INSTCOMBINE-NEXT:    ret i32 [[MAX3]]
+; INSTCOMBINE-LABEL: 定义 整数32 @test(
+; INSTCOMBINE-SAME: 整数8 [[X:%.*]], 整数8 [[Y:%.*]]) {
+; INSTCOMBINE-NEXT:    [[CMP:%.*]] = 整数比较 sgt 整数8 [[X]], -1
+; INSTCOMBINE-NEXT:    调用 空类型 @llvm.assume(整数1 [[CMP]])
+; INSTCOMBINE-NEXT:    [[TMP1:%.*]] = 调用 整数8 @llvm.umax.i8(整数8 [[X]], 整数8 [[Y]])
+; INSTCOMBINE-NEXT:    [[MAX3:%.*]] = 零扩展 整数8 [[TMP1]] 到 整数32
+; INSTCOMBINE-NEXT:    返回 整数32 [[MAX3]]
 ;
   %cmp = icmp sgt i8 %x, -1
   call void @llvm.assume(i1 %cmp)

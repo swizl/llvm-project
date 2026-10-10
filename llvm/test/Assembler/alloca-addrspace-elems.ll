@@ -1,15 +1,15 @@
 ; RUN: llvm-as < %s | llvm-dis | FileCheck %s
 
 target datalayout = "A5"
-; CHECK: target datalayout = "A5"
+; CHECK: 目标 数据布局 = "A5"
 
 
-; CHECK: %alloca_array_no_align = alloca i32, i32 9, align 4, addrspace(5)
-; CHECK-NEXT: %alloca_array_align4 = alloca i32, i32 9, align 4, addrspace(5)
-; CHECK-NEXT: %alloca_array_no_align_metadata = alloca i32, i32 9, align 4, addrspace(5), !foo !0
-; CHECK-NEXT: %alloca_array_align4_metadata = alloca i32, i32 9, align 4, addrspace(5), !foo !0
-; CHECK-NEXT: %alloca_inalloca_array_no_align = alloca inalloca i32, i32 9, align 4, addrspace(5)
-; CHECK-NEXT: %alloca_inalloca_array_align4_metadata = alloca inalloca i32, i32 9, align 4, addrspace(5), !foo !0
+; CHECK: %alloca_array_no_align = 分配 整数32, 整数32 9, 对齐 4, addrspace(5)
+; CHECK-NEXT: %alloca_array_align4 = 分配 整数32, 整数32 9, 对齐 4, addrspace(5)
+; CHECK-NEXT: %alloca_array_no_align_metadata = 分配 整数32, 整数32 9, 对齐 4, addrspace(5), !foo !0
+; CHECK-NEXT: %alloca_array_align4_metadata = 分配 整数32, 整数32 9, 对齐 4, addrspace(5), !foo !0
+; CHECK-NEXT: %alloca_inalloca_array_no_align = 分配 inalloca 整数32, 整数32 9, 对齐 4, addrspace(5)
+; CHECK-NEXT: %alloca_inalloca_array_align4_metadata = 分配 inalloca 整数32, 整数32 9, 对齐 4, addrspace(5), !foo !0
 
 define void @use_alloca() {
   %alloca_array_no_align = alloca i32, i32 9, addrspace(5)

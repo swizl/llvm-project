@@ -2,8 +2,8 @@
 ; declaration.
 ; RUN: llvm-as < %s | llvm-dis | FileCheck %s
 
-; CHECK-NOT: declare void @llvm.lifetime.start.i64(i64)
-; CHECK-NOT: declare void @llvm.lifetime.end.i64(i64)
+; CHECK-NOT: 声明 空类型 @llvm.lifetime.start.i64(整数64)
+; CHECK-NOT: 声明 空类型 @llvm.lifetime.end.i64(整数64)
 
 define void @tests.lifetime.start.end() {
   %a = alloca i8

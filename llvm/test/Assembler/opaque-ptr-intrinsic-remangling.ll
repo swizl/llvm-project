@@ -12,15 +12,15 @@ declare void @func()
 define void @test_invoke(ptr addrspace(1) %b) gc "statepoint-example" personality ptr @fake_personality_function {
 ; CHECK-LABEL: @test_invoke(
 ; CHECK-NEXT:  entry:
-; CHECK-NEXT:    [[D:%.*]] = getelementptr i32, ptr addrspace(1) [[B:%.*]], i64 16
-; CHECK-NEXT:    [[SAFEPOINT_TOKEN:%.*]] = invoke token (i64, i32, ptr, i32, i32, ...) @llvm.experimental.gc.statepoint.p0(i64 0, i32 0, ptr elementtype(void ()) @func, i32 0, i32 0, i32 0, i32 0) [ "gc-live"(ptr addrspace(1) [[B]], ptr addrspace(1) [[B]], ptr addrspace(1) [[D]], ptr addrspace(1) [[D]]) ]
-; CHECK-NEXT:    to label [[NORMAL_DEST:%.*]] unwind label [[UNWIND_DEST:%.*]]
+; CHECK-NEXT:    [[D:%.*]] = 获取元素指针 整数32, 指针 addrspace(1) [[B:%.*]], 整数64 16
+; CHECK-NEXT:    [[SAFEPOINT_TOKEN:%.*]] = 调用返回 令牌 (整数64, 整数32, 指针, 整数32, 整数32, ...) @llvm.experimental.gc.statepoint.p0(整数64 0, 整数32 0, 指针 elementtype(空类型 ()) @func, 整数32 0, 整数32 0, 整数32 0, 整数32 0) [ "gc-live"(指针 addrspace(1) [[B]], 指针 addrspace(1) [[B]], 指针 addrspace(1) [[D]], 指针 addrspace(1) [[D]]) ]
+; CHECK-NEXT:    to 标签 [[NORMAL_DEST:%.*]] unwind 标签 [[UNWIND_DEST:%.*]]
 ; CHECK:       normal_dest:
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ; CHECK:       unwind_dest:
-; CHECK-NEXT:    [[LPAD:%.*]] = landingpad token
+; CHECK-NEXT:    [[LPAD:%.*]] = 着陆垫 令牌
 ; CHECK-NEXT:    cleanup
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
 entry:
   %d = getelementptr i32, ptr addrspace(1) %b, i64 16
@@ -38,8 +38,8 @@ unwind_dest:
 
 define ptr @test_ptr_annotation(ptr %p) {
 ; CHECK-LABEL: @test_ptr_annotation(
-; CHECK-NEXT:    [[P2:%.*]] = call ptr @llvm.ptr.annotation.p0.p0(ptr [[P:%.*]], ptr undef, ptr undef, i32 undef, ptr undef)
-; CHECK-NEXT:    ret ptr [[P2]]
+; CHECK-NEXT:    [[P2:%.*]] = 调用 指针 @llvm.ptr.annotation.p0.p0(指针 [[P:%.*]], 指针 未定义, 指针 未定义, 整数32 未定义, 指针 未定义)
+; CHECK-NEXT:    返回 指针 [[P2]]
 ;
   %p2 = call ptr @llvm.ptr.annotation.p0(ptr %p, ptr undef, ptr undef, i32 undef, ptr undef)
   ret ptr %p2
@@ -48,13 +48,13 @@ define ptr @test_ptr_annotation(ptr %p) {
 
 define void @test_struct_return(ptr %res.p, ptr %a) {
 ; CHECK-LABEL: @test_struct_return(
-; CHECK-NEXT:    [[TMP1:%.*]] = call { <16 x i8>, <16 x i8> } @llvm.aarch64.neon.ld1x2.v16i8.p0(ptr [[A:%.*]])
-; CHECK-NEXT:    [[TMP2:%.*]] = extractvalue { <16 x i8>, <16 x i8> } [[TMP1]], 0
-; CHECK-NEXT:    [[TMP3:%.*]] = insertvalue [[INT8X16X2_T:%.*]] poison, <16 x i8> [[TMP2]], 0
-; CHECK-NEXT:    [[TMP4:%.*]] = extractvalue { <16 x i8>, <16 x i8> } [[TMP1]], 1
-; CHECK-NEXT:    [[TMP5:%.*]] = insertvalue [[INT8X16X2_T]] [[TMP3]], <16 x i8> [[TMP4]], 1
-; CHECK-NEXT:    store [[INT8X16X2_T]] [[TMP5]], ptr [[RES_P:%.*]], align 16
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    [[TMP1:%.*]] = 调用 { <16 个 整数8>, <16 个 整数8> } @llvm.aarch64.neon.ld1x2.v16i8.p0(指针 [[A:%.*]])
+; CHECK-NEXT:    [[TMP2:%.*]] = 提取值 { <16 个 整数8>, <16 个 整数8> } [[TMP1]], 0
+; CHECK-NEXT:    [[TMP3:%.*]] = 插入值 [[INT8X16X2_T:%.*]] 毒药值, <16 个 整数8> [[TMP2]], 0
+; CHECK-NEXT:    [[TMP4:%.*]] = 提取值 { <16 个 整数8>, <16 个 整数8> } [[TMP1]], 1
+; CHECK-NEXT:    [[TMP5:%.*]] = 插入值 [[INT8X16X2_T]] [[TMP3]], <16 个 整数8> [[TMP4]], 1
+; CHECK-NEXT:    存储 [[INT8X16X2_T]] [[TMP5]], 指针 [[RES_P:%.*]], 对齐 16
+; CHECK-NEXT:    返回 空类型
 ;
   %res = call %int8x16x2_t @llvm.aarch64.neon.ld1x2.v16i8.p0(ptr %a)
   store %int8x16x2_t %res, ptr %res.p

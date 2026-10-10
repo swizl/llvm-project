@@ -17,5 +17,5 @@
 ; CHECK: !3 = !DIModule(scope: !0, name: "Module", configMacros: "-DNDEBUG", includePath: "/usr/include", apinotes: "/tmp/m.apinotes", file: !0, line: 1)
 !4 = !DIModule(scope: !0, name: "Module", configMacros: "-DNDEBUG", includePath: "/usr/include", apinotes: "/tmp/m.apinotes", file: !0, line: 1)
 
-; CHECK: !4 = !DIModule(scope: !0, name: "Module", isDecl: true)
+; CHECK: !4 = !DIModule(scope: !0, name: "Module", isDecl: 真)
 !5 = !DIModule(scope: !0, name: "Module", isDecl: true)

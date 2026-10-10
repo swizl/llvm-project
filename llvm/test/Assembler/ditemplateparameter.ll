@@ -14,8 +14,8 @@
 !3 = !DITemplateTypeParameter(type: !1)
 !4 = !DITemplateTypeParameter(name: "", type: !1)
 
-; CHECK-NEXT: !4 = !DITemplateValueParameter(name: "V", type: !1, value: i32 7)
-; CHECK-NEXT: !5 = !DITemplateValueParameter(type: !1, value: i32 7)
+; CHECK-NEXT: !4 = !DITemplateValueParameter(name: "V", type: !1, value: 整数32 7)
+; CHECK-NEXT: !5 = !DITemplateValueParameter(type: !1, value: 整数32 7)
 ; CHECK-NEXT: !6 = !DITemplateValueParameter(tag: DW_TAG_GNU_template_template_param, name: "param", type: !1, value: !"template")
 !5 = !DITemplateValueParameter(name: "V", type: !1, value: i32 7)
 !6 = !DITemplateValueParameter(type: !1, value: i32 7)

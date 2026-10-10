@@ -4,5 +4,5 @@
 
 ; RUN: llvm-as < %s | llvm-dis | FileCheck %s
 
-; CHECK: source_filename = "test.cc"
+; CHECK: 源文件名 = "test.cc"
 source_filename = "test.cc"

@@ -2,12 +2,12 @@
 ; RUN: opt -S < %s | FileCheck %s
 
 define void @strip_bitcast() {
-; CHECK-LABEL: define void @strip_bitcast() {
-; CHECK-NEXT:    [[A:%.*]] = alloca i8, align 1
-; CHECK-NEXT:    [[B:%.*]] = bitcast ptr [[A]] to ptr
-; CHECK-NEXT:    call void @llvm.lifetime.start.p0(ptr [[A]])
-; CHECK-NEXT:    call void @llvm.lifetime.end.p0(ptr [[A]])
-; CHECK-NEXT:    ret void
+; CHECK-LABEL: 定义 空类型 @strip_bitcast() {
+; CHECK-NEXT:    [[A:%.*]] = 分配 整数8, 对齐 1
+; CHECK-NEXT:    [[B:%.*]] = 位转换 指针 [[A]] 到 指针
+; CHECK-NEXT:    调用 空类型 @llvm.lifetime.start.p0(指针 [[A]])
+; CHECK-NEXT:    调用 空类型 @llvm.lifetime.end.p0(指针 [[A]])
+; CHECK-NEXT:    返回 空类型
 ;
   %a = alloca i8
   %b = bitcast ptr %a to ptr
@@ -17,12 +17,12 @@ define void @strip_bitcast() {
 }
 
 define void @strip_addrspacecast() {
-; CHECK-LABEL: define void @strip_addrspacecast() {
-; CHECK-NEXT:    [[A:%.*]] = alloca i8, align 1
-; CHECK-NEXT:    [[B:%.*]] = addrspacecast ptr [[A]] to ptr addrspace(1)
-; CHECK-NEXT:    call void @llvm.lifetime.start.p0(ptr [[A]])
-; CHECK-NEXT:    call void @llvm.lifetime.end.p0(ptr [[A]])
-; CHECK-NEXT:    ret void
+; CHECK-LABEL: 定义 空类型 @strip_addrspacecast() {
+; CHECK-NEXT:    [[A:%.*]] = 分配 整数8, 对齐 1
+; CHECK-NEXT:    [[B:%.*]] = 地址空间转换 指针 [[A]] 到 指针 addrspace(1)
+; CHECK-NEXT:    调用 空类型 @llvm.lifetime.start.p0(指针 [[A]])
+; CHECK-NEXT:    调用 空类型 @llvm.lifetime.end.p0(指针 [[A]])
+; CHECK-NEXT:    返回 空类型
 ;
   %a = alloca i8
   %b = addrspacecast ptr %a to ptr addrspace(1)
@@ -32,12 +32,12 @@ define void @strip_addrspacecast() {
 }
 
 define void @strip_gep() {
-; CHECK-LABEL: define void @strip_gep() {
-; CHECK-NEXT:    [[A:%.*]] = alloca [2 x i8], align 1
-; CHECK-NEXT:    [[B:%.*]] = getelementptr [2 x i8], ptr [[A]], i64 0, i64 0
-; CHECK-NEXT:    call void @llvm.lifetime.start.p0(ptr [[A]])
-; CHECK-NEXT:    call void @llvm.lifetime.end.p0(ptr [[A]])
-; CHECK-NEXT:    ret void
+; CHECK-LABEL: 定义 空类型 @strip_gep() {
+; CHECK-NEXT:    [[A:%.*]] = 分配 [2 个 整数8], 对齐 1
+; CHECK-NEXT:    [[B:%.*]] = 获取元素指针 [2 个 整数8], 指针 [[A]], 整数64 0, 整数64 0
+; CHECK-NEXT:    调用 空类型 @llvm.lifetime.start.p0(指针 [[A]])
+; CHECK-NEXT:    调用 空类型 @llvm.lifetime.end.p0(指针 [[A]])
+; CHECK-NEXT:    返回 空类型
 ;
   %a = alloca [2 x i8]
   %b = getelementptr [2 x i8], ptr %a, i64 0, i64 0
@@ -47,9 +47,9 @@ define void @strip_gep() {
 }
 
 define void @remove_unanalyzable(ptr %p) {
-; CHECK-LABEL: define void @remove_unanalyzable(
-; CHECK-SAME: ptr [[P:%.*]]) {
-; CHECK-NEXT:    ret void
+; CHECK-LABEL: 定义 空类型 @remove_unanalyzable(
+; CHECK-SAME: 指针 [[P:%.*]]) {
+; CHECK-NEXT:    返回 空类型
 ;
   call void @llvm.lifetime.start.p0(i64 1, ptr %p)
   call void @llvm.lifetime.end.p0(i64 1, ptr %p)
@@ -57,11 +57,11 @@ define void @remove_unanalyzable(ptr %p) {
 }
 
 define void @no_declaration() {
-; CHECK-LABEL: define void @no_declaration() {
-; CHECK-NEXT:    [[A:%.*]] = alloca i8, align 1, addrspace(2)
-; CHECK-NEXT:    call void @llvm.lifetime.start.p2(ptr addrspace(2) [[A]])
-; CHECK-NEXT:    call void @llvm.lifetime.end.p2(ptr addrspace(2) [[A]])
-; CHECK-NEXT:    ret void
+; CHECK-LABEL: 定义 空类型 @no_declaration() {
+; CHECK-NEXT:    [[A:%.*]] = 分配 整数8, 对齐 1, addrspace(2)
+; CHECK-NEXT:    调用 空类型 @llvm.lifetime.start.p2(指针 addrspace(2) [[A]])
+; CHECK-NEXT:    调用 空类型 @llvm.lifetime.end.p2(指针 addrspace(2) [[A]])
+; CHECK-NEXT:    返回 空类型
 ;
   %a = alloca i8, addrspace(2)
   call void @llvm.lifetime.start.p2(i64 1, ptr addrspace(2) %a)
@@ -70,11 +70,11 @@ define void @no_declaration() {
 }
 
 define void @no_suffix1() {
-; CHECK-LABEL: define void @no_suffix1() {
-; CHECK-NEXT:    [[A:%.*]] = alloca i8, align 1, addrspace(3)
-; CHECK-NEXT:    call void @llvm.lifetime.start.p3(ptr addrspace(3) [[A]])
-; CHECK-NEXT:    call void @llvm.lifetime.end.p3(ptr addrspace(3) [[A]])
-; CHECK-NEXT:    ret void
+; CHECK-LABEL: 定义 空类型 @no_suffix1() {
+; CHECK-NEXT:    [[A:%.*]] = 分配 整数8, 对齐 1, addrspace(3)
+; CHECK-NEXT:    调用 空类型 @llvm.lifetime.start.p3(指针 addrspace(3) [[A]])
+; CHECK-NEXT:    调用 空类型 @llvm.lifetime.end.p3(指针 addrspace(3) [[A]])
+; CHECK-NEXT:    返回 空类型
 ;
   %a = alloca i8, addrspace(3)
   call void @llvm.lifetime.start(i64 1, ptr addrspace(3) %a)
@@ -83,11 +83,11 @@ define void @no_suffix1() {
 }
 
 define void @no_suffix2() {
-; CHECK-LABEL: define void @no_suffix2() {
-; CHECK-NEXT:    [[A:%.*]] = alloca i8, align 1, addrspace(4)
-; CHECK-NEXT:    call void @llvm.lifetime.start.p4(ptr addrspace(4) [[A]])
-; CHECK-NEXT:    call void @llvm.lifetime.end.p4(ptr addrspace(4) [[A]])
-; CHECK-NEXT:    ret void
+; CHECK-LABEL: 定义 空类型 @no_suffix2() {
+; CHECK-NEXT:    [[A:%.*]] = 分配 整数8, 对齐 1, addrspace(4)
+; CHECK-NEXT:    调用 空类型 @llvm.lifetime.start.p4(指针 addrspace(4) [[A]])
+; CHECK-NEXT:    调用 空类型 @llvm.lifetime.end.p4(指针 addrspace(4) [[A]])
+; CHECK-NEXT:    返回 空类型
 ;
   %a = alloca i8, addrspace(4)
   call void @llvm.lifetime.start(i64 1, ptr addrspace(4) %a)

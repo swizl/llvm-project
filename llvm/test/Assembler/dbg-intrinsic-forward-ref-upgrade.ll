@@ -2,11 +2,11 @@
 ; RUN: opt %s -S 2>&1 | FileCheck %s
 ;
 define void @f(i32 %x) !dbg !6 {
-; CHECK-LABEL: define void @f(
-; CHECK-SAME: i32 [[X:%.*]]) !dbg [[DBG4:![0-9]+]] {
+; CHECK-LABEL: 定义 空类型 @f(
+; CHECK-SAME: 整数32 [[X:%.*]]) !dbg [[DBG4:![0-9]+]] {
 ; CHECK-NEXT:  [[ENTRY:.*:]]
-; CHECK-NEXT:      #dbg_value(i32 [[X]], [[META8:![0-9]+]], !DIExpression(), [[META9:![0-9]+]])
-; CHECK-NEXT:    ret void, !dbg [[META9]]
+; CHECK-NEXT:      #dbg_value(整数32 [[X]], [[META8:![0-9]+]], !DIExpression(), [[META9:![0-9]+]])
+; CHECK-NEXT:    返回 空类型, !dbg [[META9]]
 ;
 entry:
   tail call void @llvm.dbg.value(metadata i32 %x, i64 0, metadata !10, metadata !DIExpression()), !dbg !11
@@ -27,7 +27,7 @@ entry:
 !10 = !DILocalVariable(name: "x", arg: 1, scope: !6, file: !1, line: 1, type: !9)
 !11 = !DILocation(line: 1, column: 1, scope: !6)
 ;.
-; CHECK: [[META0:![0-9]+]] = distinct !DICompileUnit(language: DW_LANG_C99, file: [[META1:![0-9]+]], isOptimized: false, runtimeVersion: 0, emissionKind: NoDebug)
+; CHECK: [[META0:![0-9]+]] = distinct !DICompileUnit(language: DW_LANG_C99, file: [[META1:![0-9]+]], isOptimized: 假, runtimeVersion: 0, emissionKind: NoDebug)
 ; CHECK: [[META1]] = !DIFile(filename: "{{.*}}t.c", directory: {{.*}})
 ; CHECK: [[DBG4]] = distinct !DISubprogram(name: "f", scope: [[META1]], file: [[META1]], line: 1, type: [[META5:![0-9]+]], scopeLine: 1, spFlags: DISPFlagDefinition, unit: [[META0]])
 ; CHECK: [[META5]] = !DISubroutineType(types: [[META6:![0-9]+]])

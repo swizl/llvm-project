@@ -34,13 +34,13 @@ attributes #1 = { nounwind readnone speculatable willreturn }
 ; CHECK-SAME: templateParams: ![[PARAMLIST:[0-9]+]]
 ; CHECK:      ![[PARAMLIST]] = !{![[PARAM1:[0-9]+]], ![[PARAM2:[0-9]+]]}
 ; CHECK:      ![[PARAM1]] = !DITemplateTypeParameter(name: "T", type: !{{[0-9]*}})
-; CHECK:      ![[PARAM2]] = !DITemplateValueParameter(name: "i", type: !{{[0-9]*}}, value: i32 6)
+; CHECK:      ![[PARAM2]] = !DITemplateValueParameter(name: "i", type: !{{[0-9]*}}, value: 整数32 6)
 
 ; CHECK:      ![[COMPTAG2:[0-9]+]] = distinct !DICompositeType(tag: DW_TAG_class_type, name: "foo<char, 3>",
 ; CHECK-SAME: templateParams: ![[PARAMLIST2:[0-9]+]]
 ; CHECK:      ![[PARAMLIST2]] = !{![[PARAM3:[0-9]+]], ![[PARAM4:[0-9]+]]}
-; CHECK:      ![[PARAM3]] = !DITemplateTypeParameter({{.*}}, defaulted: true
-; CHECK:      ![[PARAM4]] = !DITemplateValueParameter({{.*}}, defaulted: true
+; CHECK:      ![[PARAM3]] = !DITemplateTypeParameter({{.*}}, defaulted: 真
+; CHECK:      ![[PARAM4]] = !DITemplateValueParameter({{.*}}, defaulted: 真
 
 !0 = distinct !DICompileUnit(language: DW_LANG_C_plus_plus_14, file: !1, producer: "clang version 11.0.0", isOptimized: false, runtimeVersion: 0, emissionKind: FullDebug, enums: !2, splitDebugInlining: false, nameTableKind: None)
 !1 = !DIFile(filename: "test.cpp", directory: "/dir/", checksumkind: CSK_MD5, checksum: "863d08522c2300490dea873efc4b2369")

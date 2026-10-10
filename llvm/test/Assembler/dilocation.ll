@@ -7,10 +7,10 @@
 !llvm.module.flags = !{!12}
 !llvm.dbg.cu = !{!1}
 
-; CHECK: !0 = distinct !DISubprogram(scope: null, type: !1, spFlags: DISPFlagDefinition, unit: !3)
+; CHECK: !0 = distinct !DISubprogram(scope: 空指针, type: !1, spFlags: DISPFlagDefinition, unit: !3)
 !0 = distinct !DISubprogram(unit: !1, type: !13)
 ; CHECK: !1 = !DISubroutineType(types: !2)
-; CHECK: !2 = !{null}
+; CHECK: !2 = !{空指针}
 ; CHECK: !3 = distinct !DICompileUnit
 !1 = distinct !DICompileUnit(language: DW_LANG_C99, producer: "clang",
                              file: !2,
@@ -36,7 +36,7 @@
 
 !10 = !DILocation(scope: !0, column: 0, line: 0, isImplicitCode: true)
 !11 = !DILocation(scope: !0, column: 0, line: 1, isImplicitCode: false)
-; CHECK: !9 = !DILocation(line: 0, scope: !0, isImplicitCode: true)
+; CHECK: !9 = !DILocation(line: 0, scope: !0, isImplicitCode: 真)
 ; CHECK: !10 = !DILocation(line: 1, scope: !0)
 
 !12 = !{i32 2, !"Debug Info Version", i32 3}

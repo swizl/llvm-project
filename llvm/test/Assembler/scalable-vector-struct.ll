@@ -4,11 +4,11 @@
 %struct.test = type { <vscale x 1 x i32>, <vscale x 1 x i32> }
 
 define <vscale x 1 x i32> @load(%struct.test* %x) {
-; CHECK-LABEL: define <vscale x 1 x i32> @load
-; CHECK-SAME: (ptr [[X:%.*]]) {
-; CHECK-NEXT:    [[A:%.*]] = load [[STRUCT_TEST:%.*]], ptr [[X]], align 4
-; CHECK-NEXT:    [[B:%.*]] = extractvalue [[STRUCT_TEST]] [[A]], 1
-; CHECK-NEXT:    ret <vscale x 1 x i32> [[B]]
+; CHECK-LABEL: 定义 <vscale x 1 个 整数32> @load
+; CHECK-SAME: (指针 [[X:%.*]]) {
+; CHECK-NEXT:    [[A:%.*]] = 加载 [[STRUCT_TEST:%.*]], 指针 [[X]], 对齐 4
+; CHECK-NEXT:    [[B:%.*]] = 提取值 [[STRUCT_TEST]] [[A]], 1
+; CHECK-NEXT:    返回 <vscale x 1 个 整数32> [[B]]
 ;
   %a = load %struct.test, %struct.test* %x
   %b = extractvalue %struct.test %a, 1
@@ -16,12 +16,12 @@ define <vscale x 1 x i32> @load(%struct.test* %x) {
 }
 
 define void @store(%struct.test* %x, <vscale x 1 x i32> %y, <vscale x 1 x i32> %z) {
-; CHECK-LABEL: define void @store
-; CHECK-SAME: (ptr [[X:%.*]], <vscale x 1 x i32> [[Y:%.*]], <vscale x 1 x i32> [[Z:%.*]]) {
-; CHECK-NEXT:    [[A:%.*]] = insertvalue [[STRUCT_TEST:%.*]] undef, <vscale x 1 x i32> [[Y]], 0
-; CHECK-NEXT:    [[B:%.*]] = insertvalue [[STRUCT_TEST]] [[A]], <vscale x 1 x i32> [[Z]], 1
-; CHECK-NEXT:    store [[STRUCT_TEST]] [[B]], ptr [[X]], align 4
-; CHECK-NEXT:    ret void
+; CHECK-LABEL: 定义 空类型 @store
+; CHECK-SAME: (指针 [[X:%.*]], <vscale x 1 个 整数32> [[Y:%.*]], <vscale x 1 个 整数32> [[Z:%.*]]) {
+; CHECK-NEXT:    [[A:%.*]] = 插入值 [[STRUCT_TEST:%.*]] 未定义, <vscale x 1 个 整数32> [[Y]], 0
+; CHECK-NEXT:    [[B:%.*]] = 插入值 [[STRUCT_TEST]] [[A]], <vscale x 1 个 整数32> [[Z]], 1
+; CHECK-NEXT:    存储 [[STRUCT_TEST]] [[B]], 指针 [[X]], 对齐 4
+; CHECK-NEXT:    返回 空类型
 ;
   %a = insertvalue %struct.test undef, <vscale x 1 x i32> %y, 0
   %b = insertvalue %struct.test %a, <vscale x 1 x i32> %z, 1

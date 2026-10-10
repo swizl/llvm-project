@@ -2,8 +2,8 @@
 ; RUN: verify-uselistorder %s
 
 
-; CHECK: define void @f() gc "shadowstack"
-; CHECK: define void @g() gc "java"
+; CHECK: 定义 空类型 @f() gc "shadowstack"
+; CHECK: 定义 空类型 @g() gc "java"
 
 define void @f() gc "shadowstack" {
 entry:

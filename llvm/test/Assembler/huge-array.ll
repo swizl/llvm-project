@@ -1,8 +1,8 @@
 ; RUN: llvm-as < %s | llvm-dis | FileCheck %s
 ; RUN: verify-uselistorder %s
 
-; CHECK: define ptr @foo() {
-; CHECK: ret ptr null
+; CHECK: 定义 指针 @foo() {
+; CHECK: 返回 指针 空指针
 define ptr @foo() {
   ret ptr null
 }

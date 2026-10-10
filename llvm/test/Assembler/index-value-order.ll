@@ -19,7 +19,7 @@ define internal i32 @"_Z3barv"() {
 }
 
 ^0 = module: (path: "index-value-order.ll", hash: (0, 0, 0, 0, 0))
-^9 = gv: (name: "_ZTVN3FooE", summaries: (variable: (module: ^0, flags: (linkage: internal, visibility: default, notEligibleToImport: 0, live: 0, dsoLocal: 1, canAutoHide: 0), varFlags: (readonly: 1, writeonly: 0, constant: 1, vcall_visibility: 0), vTableFuncs: ((virtFunc: ^3, offset: 16)))))
-^4 = gv: (name: "_ZTSN3FooE", summaries: (variable: (module: ^0, flags: (linkage: linkonce_odr, visibility: default, notEligibleToImport: 0, live: 0, dsoLocal: 0, canAutoHide: 0), varFlags: (readonly: 0, writeonly: 0, constant: 1))))
-^3 = gv: (name: "_Z3barv", summaries: (function: (module: ^0, flags: (linkage: internal, visibility: default, notEligibleToImport: 0, live: 0, dsoLocal: 1, canAutoHide: 0), insts: 1, funcFlags: (readNone: 1, readOnly: 0, noRecurse: 1, returnDoesNotAlias: 0, noInline: 0, alwaysInline: 0, noUnwind: 1, mayThrow: 0, hasUnknownCall: 0, mustBeUnreachable: 0))))
+^9 = gv: (name: "_ZTVN3FooE", summaries: (variable: (module: ^0, flags: (linkage: 内部, visibility: 默认可见, notEligibleToImport: 0, live: 0, dsoLocal: 1, canAutoHide: 0), varFlags: (readonly: 1, writeonly: 0, constant: 1, vcall_visibility: 0), vTableFuncs: ((virtFunc: ^3, offset: 16)))))
+^4 = gv: (name: "_ZTSN3FooE", summaries: (variable: (module: ^0, flags: (linkage: 链接一次ODR, visibility: 默认可见, notEligibleToImport: 0, live: 0, dsoLocal: 0, canAutoHide: 0), varFlags: (readonly: 0, writeonly: 0, constant: 1))))
+^3 = gv: (name: "_Z3barv", summaries: (function: (module: ^0, flags: (linkage: 内部, visibility: 默认可见, notEligibleToImport: 0, live: 0, dsoLocal: 1, canAutoHide: 0), insts: 1, funcFlags: (readNone: 1, readOnly: 0, noRecurse: 1, returnDoesNotAlias: 0, noInline: 0, alwaysInline: 0, noUnwind: 1, mayThrow: 0, hasUnknownCall: 0, mustBeUnreachable: 0))))
 ^2 = typeidCompatibleVTable: (name: "_ZTSN3FooE", summary: ((offset: 16, ^9)))

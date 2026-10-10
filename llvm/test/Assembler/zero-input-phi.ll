@@ -5,10 +5,10 @@
 define void @dead_phi() {
 ; CHECK-LABEL: @dead_phi(
 ; CHECK-NEXT:  entry:
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ; CHECK:       return:
-; CHECK-NEXT:    [[R:%.*]] = phi i32
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    [[R:%.*]] = PHI节点 整数32
+; CHECK-NEXT:    返回 空类型
 ;
 entry:
   ret void

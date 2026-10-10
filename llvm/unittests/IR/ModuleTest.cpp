@@ -393,15 +393,15 @@ define void @Foo1() {
   ASSERT_TRUE(M1.get());
 
   StringLiteral M2Str = R"(
-; ModuleID = '<string>'
-source_filename = "<string2>"
+; 模块标识 = '<string>'
+源文件名 = "<string2>"
 
-@GV2 = external global i32
+@GV2 = 外部 全局 整数32
 
-@GA2 = alias void (), ptr @Foo2
+@GA2 = alias 空类型 (), 指针 @Foo2
 
-define void @Foo2() {
-  ret void
+定义 空类型 @Foo2() {
+  返回 空类型
 }
 
 !llvm.module.flags = !{!0}
@@ -409,13 +409,13 @@ define void @Foo2() {
 !foo2 = !{!3}
 !bar2 = !{!4}
 
-!0 = !{i32 2, !"Debug Info Version", i32 3}
-!1 = distinct !DICompileUnit(language: DW_LANG_C99, file: !2, producer: "clang2", isOptimized: true, flags: "-O2", runtimeVersion: 0, splitDebugFilename: "abc.debug", emissionKind: LineTablesOnly)
+!0 = !{整数32 2, !"Debug Info Version", 整数32 3}
+!1 = distinct !DICompileUnit(language: DW_LANG_C99, file: !2, producer: "clang2", isOptimized: 真, flags: "-O2", runtimeVersion: 0, splitDebugFilename: "abc.debug", emissionKind: LineTablesOnly)
 !2 = !DIFile(filename: "path/to/file2", directory: "/path/to/dir2")
 !3 = !DILocation(line: 1234, column: 56, scope: !4)
-!4 = distinct !DISubprogram(name: "foo2", scope: null, type: !5, spFlags: DISPFlagDefinition, unit: !1)
+!4 = distinct !DISubprogram(name: "foo2", scope: 空指针, type: !5, spFlags: DISPFlagDefinition, unit: !1)
 !5 = !DISubroutineType(types: !6)
-!6 = !{null}
+!6 = !{空指针}
 )";
   {
     std::unique_ptr<Module> M2 = parseAssemblyString(M2Str, Err, Context);

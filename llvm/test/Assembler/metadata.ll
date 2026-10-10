@@ -2,10 +2,10 @@
 ; RUN: llvm-as < %s | llvm-dis -materialize-metadata | FileCheck --check-prefix=CHECK-UNMAT %s
 ; RUN: verify-uselistorder %s
 
-; CHECK-UNMAT: @global = global i32 0, !foo [[M2:![0-9]+]], !foo [[M3:![0-9]+]], !baz [[M3]]
+; CHECK-UNMAT: @global = 全局 整数32 0, !foo [[M2:![0-9]+]], !foo [[M3:![0-9]+]], !baz [[M3]]
 @global = global i32 0, !foo !2, !foo !3, !baz !3
 
-; CHECK-UNMAT: @ifunc_func = ifunc void (...), ptr @resolver, !foo [[M2]]
+; CHECK-UNMAT: @ifunc_func = ifunc 空类型 (...), 指针 @resolver, !foo [[M2]]
 @ifunc_func = ifunc void (...), ptr @resolver, !foo !2
 
 define internal ptr @resolver() {
@@ -14,7 +14,7 @@ entry:
 }
 
 ; CHECK-LABEL: @test
-; CHECK: ret void, !foo [[M0:![0-9]+]], !bar [[M1:![0-9]+]]
+; CHECK: 返回 空类型, !foo [[M0:![0-9]+]], !bar [[M1:![0-9]+]]
 define void @test() !dbg !1 {
   add i32 2, 1, !bar !0
   add i32 1, 2, !foo !1
@@ -23,19 +23,19 @@ define void @test() !dbg !1 {
   ret void, !foo !0, !bar !1
 }
 
-; CHECK: define void @test2() !foo [[M2]] !baz [[M3]]
+; CHECK: 定义 空类型 @test2() !foo [[M2]] !baz [[M3]]
 define void @test2() !foo !2 !baz !3 {
   unreachable
 }
 
-; CHECK: define void @test3() !bar [[M3]]
-; CHECK: unreachable, !bar [[M4:![0-9]+]]
+; CHECK: 定义 空类型 @test3() !bar [[M3]]
+; CHECK: 不可达, !bar [[M4:![0-9]+]]
 define void @test3() !bar !3 {
   unreachable, !bar !4
 }
 
-; CHECK-LABEL: define void @test_attachment_name() {
-; CHECK:   unreachable, !\342abc [[M4]]
+; CHECK-LABEL: 定义 空类型 @test_attachment_name() {
+; CHECK:   不可达, !\342abc [[M4]]
 define void @test_attachment_name() {
   ;; Escape the first character when printing text IR, since it's a digit
   unreachable, !\34\32abc !4

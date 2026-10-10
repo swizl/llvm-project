@@ -285,7 +285,7 @@ TEST_F(MDNodeTest, Print) {
     C->printAsOperand(OS);
     OS << ", ";
     S->printAsOperand(OS);
-    OS << ", null";
+    OS << ", 空指针";
     MDNode *Nodes[] = {N0, N1, N2};
     for (auto *Node : Nodes)
       OS << ", <" << (void *)Node << ">";
@@ -346,7 +346,7 @@ TEST_F(MDNodeTest, PrintFromModule) {
     C->printAsOperand(OS);
     OS << ", ";
     S->printAsOperand(OS);
-    OS << ", null, !1, !2, !3}";
+    OS << ", 空指针, !1, !2, !3}";
   }
 
   EXPECT_PRINTER_EQ(Expected, N->print(OS, &M));
@@ -398,16 +398,16 @@ TEST_F(MDNodeTest, PrintFromMetadataAsValue) {
   EXPECT_PRINTER_EQ("!1 = distinct !{}", MAV1->print(OS));
   EXPECT_PRINTER_EQ("!0", MAV0->printAsOperand(OS, false));
   EXPECT_PRINTER_EQ("!1", MAV1->printAsOperand(OS, false));
-  EXPECT_PRINTER_EQ("metadata !0", MAV0->printAsOperand(OS, true));
-  EXPECT_PRINTER_EQ("metadata !1", MAV1->printAsOperand(OS, true));
+  EXPECT_PRINTER_EQ("元数据 !0", MAV0->printAsOperand(OS, true));
+  EXPECT_PRINTER_EQ("元数据 !1", MAV1->printAsOperand(OS, true));
 
   ModuleSlotTracker MST(&M);
   EXPECT_PRINTER_EQ("!0 = distinct !{}", MAV0->print(OS, MST));
   EXPECT_PRINTER_EQ("!1 = distinct !{}", MAV1->print(OS, MST));
   EXPECT_PRINTER_EQ("!0", MAV0->printAsOperand(OS, false, MST));
   EXPECT_PRINTER_EQ("!1", MAV1->printAsOperand(OS, false, MST));
-  EXPECT_PRINTER_EQ("metadata !0", MAV0->printAsOperand(OS, true, MST));
-  EXPECT_PRINTER_EQ("metadata !1", MAV1->printAsOperand(OS, true, MST));
+  EXPECT_PRINTER_EQ("元数据 !0", MAV0->printAsOperand(OS, true, MST));
+  EXPECT_PRINTER_EQ("元数据 !1", MAV1->printAsOperand(OS, true, MST));
 }
 
 TEST_F(MDNodeTest, PrintWithDroppedCallOperand) {

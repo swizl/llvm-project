@@ -12,7 +12,7 @@
 !3 = !DIBasicType(name: "int", size: 32, align: 32, encoding: DW_ATE_signed)
 !4 = distinct !{}
 
-; CHECK: !5 = !DIGlobalVariable(name: "foo", linkageName: "foo", scope: !0, file: !2, line: 7, type: !3, isLocal: true, isDefinition: false, align: 32)
+; CHECK: !5 = !DIGlobalVariable(name: "foo", linkageName: "foo", scope: !0, file: !2, line: 7, type: !3, isLocal: 真, isDefinition: 假, align: 32)
 !5 = !DIGlobalVariable(name: "foo", linkageName: "foo", scope: !0,
                        file: !2, line: 7, type: !3, isLocal: true,
                        isDefinition: false, align: 32)

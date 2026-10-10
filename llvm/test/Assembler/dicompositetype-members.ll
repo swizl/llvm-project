@@ -18,7 +18,7 @@
 ; CHECK-NEXT: !5 = !DIDerivedType(tag: DW_TAG_member, name: "field2", scope: !3, file: !1
 ; CHECK-NEXT: !6 = !DISubprogram(name: "foo", linkageName: "foo1", scope: !3, file: !1, type: !7, spFlags: 0)
 ; CHECK-NEXT: !7 = !DISubroutineType(types: !8)
-; CHECK-NEXT: !8 = !{null}
+; CHECK-NEXT: !8 = !{空指针}
 ; CHECK-NEXT: !9 = !DISubprogram(name: "foo", linkageName: "foo2", scope: !3, file: !1, type: !7, spFlags: 0)
 !3 = !DICompositeType(tag: DW_TAG_structure_type, name: "has-uuid", file: !1, line: 2, size: 64, align: 32, identifier: "uuid")
 !4 = !DIDerivedType(tag: DW_TAG_member, name: "field1", scope: !3, file: !1, line: 4, baseType: !0, size: 32, align: 32, offset: 32)

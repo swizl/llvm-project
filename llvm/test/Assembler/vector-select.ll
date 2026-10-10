@@ -3,7 +3,7 @@
 ; Rudimentary test of select on vectors returning vector of bool
 
 ; CHECK: @foo
-; CHECK: select <4 x i1> %cond, <4 x i32> %a, <4 x i32> %b
+; CHECK: 选择 <4 个 整数1> %cond, <4 个 整数32> %a, <4 个 整数32> %b
 define <4 x i32> @foo(<4 x i32> %a, <4 x i32> %b, <4 x i1> %cond) nounwind  {
 entry:
   %cmp = select <4 x i1>  %cond, <4 x i32> %a, <4 x i32> %b

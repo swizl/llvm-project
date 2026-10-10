@@ -1,13 +1,13 @@
 ; RUN: opt -S < %s | opt -S | FileCheck %s
 
-; CHECK-DAG: %T1 = type { i8 }
-; CHECK-DAG: %T2 = type { i8 }
-; CHECK-DAG: %T3 = type { i8 }
-; CHECK-DAG: %T4 = type { i8 }
-; CHECK-DAG: %T5 = type { i8 }
-; CHECK-DAG: %T6 = type { i8 }
-; CHECK-DAG: %T7 = type { i8 }
-; CHECK-DAG: %T8 = type { i8 }
+; CHECK-DAG: %T1 = type { 整数8 }
+; CHECK-DAG: %T2 = type { 整数8 }
+; CHECK-DAG: %T3 = type { 整数8 }
+; CHECK-DAG: %T4 = type { 整数8 }
+; CHECK-DAG: %T5 = type { 整数8 }
+; CHECK-DAG: %T6 = type { 整数8 }
+; CHECK-DAG: %T7 = type { 整数8 }
+; CHECK-DAG: %T8 = type { 整数8 }
 
 %T1 = type { i8 }
 %T2 = type { i8 }

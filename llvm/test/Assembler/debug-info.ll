@@ -100,16 +100,16 @@
 !41 = !DIBasicType(name: "u64.be", size: 64, align: 1, encoding: DW_ATE_unsigned, flags: DIFlagBigEndian)
 !42 = !DIBasicType(name: "u64.le", size: 64, align: 1, encoding: DW_ATE_unsigned, flags: DIFlagLittleEndian)
 
-; CHECK: !DIDerivedType(tag: DW_TAG_LLVM_ptrauth_type, baseType: !13, ptrAuthKey: 2, ptrAuthIsAddressDiscriminated: true, ptrAuthExtraDiscriminator: 1234, ptrAuthIsaPointer: false, ptrAuthAuthenticatesNullValues: false)
+; CHECK: !DIDerivedType(tag: DW_TAG_LLVM_ptrauth_type, baseType: !13, ptrAuthKey: 2, ptrAuthIsAddressDiscriminated: 真, ptrAuthExtraDiscriminator: 1234, ptrAuthIsaPointer: 假, ptrAuthAuthenticatesNullValues: 假)
 !43 = !DIDerivedType(tag: DW_TAG_LLVM_ptrauth_type, baseType: !15, ptrAuthKey: 2, ptrAuthIsAddressDiscriminated: true, ptrAuthExtraDiscriminator: 1234)
 
-; CHECK: !DIDerivedType(tag: DW_TAG_LLVM_ptrauth_type, baseType: !13, ptrAuthKey: 2, ptrAuthIsAddressDiscriminated: true, ptrAuthExtraDiscriminator: 1234, ptrAuthIsaPointer: true, ptrAuthAuthenticatesNullValues: false)
+; CHECK: !DIDerivedType(tag: DW_TAG_LLVM_ptrauth_type, baseType: !13, ptrAuthKey: 2, ptrAuthIsAddressDiscriminated: 真, ptrAuthExtraDiscriminator: 1234, ptrAuthIsaPointer: 真, ptrAuthAuthenticatesNullValues: 假)
 !44 = !DIDerivedType(tag: DW_TAG_LLVM_ptrauth_type, baseType: !15, ptrAuthKey: 2, ptrAuthIsAddressDiscriminated: true, ptrAuthExtraDiscriminator: 1234, ptrAuthIsaPointer: true)
 
-; CHECK: !DIDerivedType(tag: DW_TAG_LLVM_ptrauth_type, baseType: !13, ptrAuthKey: 2, ptrAuthIsAddressDiscriminated: true, ptrAuthExtraDiscriminator: 1234, ptrAuthIsaPointer: false, ptrAuthAuthenticatesNullValues: true)
+; CHECK: !DIDerivedType(tag: DW_TAG_LLVM_ptrauth_type, baseType: !13, ptrAuthKey: 2, ptrAuthIsAddressDiscriminated: 真, ptrAuthExtraDiscriminator: 1234, ptrAuthIsaPointer: 假, ptrAuthAuthenticatesNullValues: 真)
 !45 = !DIDerivedType(tag: DW_TAG_LLVM_ptrauth_type, baseType: !15, ptrAuthKey: 2, ptrAuthIsAddressDiscriminated: true, ptrAuthExtraDiscriminator: 1234, ptrAuthAuthenticatesNullValues: true)
 
-; CHECK: !DIDerivedType(tag: DW_TAG_LLVM_ptrauth_type, baseType: !13, ptrAuthKey: 2, ptrAuthIsAddressDiscriminated: true, ptrAuthExtraDiscriminator: 1234, ptrAuthIsaPointer: true, ptrAuthAuthenticatesNullValues: true)
+; CHECK: !DIDerivedType(tag: DW_TAG_LLVM_ptrauth_type, baseType: !13, ptrAuthKey: 2, ptrAuthIsAddressDiscriminated: 真, ptrAuthExtraDiscriminator: 1234, ptrAuthIsaPointer: 真, ptrAuthAuthenticatesNullValues: 真)
 !46 = !DIDerivedType(tag: DW_TAG_LLVM_ptrauth_type, baseType: !15, ptrAuthKey: 2, ptrAuthIsAddressDiscriminated: true, ptrAuthExtraDiscriminator: 1234, ptrAuthIsaPointer: true, ptrAuthAuthenticatesNullValues: true)
 
 ; CHECK: !DIBasicType(name: "ExtraInhabitantBasicType", size: 1, encoding: DW_ATE_unsigned, num_extra_inhabitants: 254)

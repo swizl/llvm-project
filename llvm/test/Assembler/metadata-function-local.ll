@@ -12,9 +12,9 @@ entry:
   %after = alloca i32
   ret void
 
-; CHECK: %before = alloca i32
-; CHECK: call void @llvm.metadata(metadata i32 %arg)
-; CHECK: call void @llvm.metadata(metadata ptr %after)
-; CHECK: call void @llvm.metadata(metadata ptr %before)
-; CHECK: %after = alloca i32
+; CHECK: %before = 分配 整数32
+; CHECK: 调用 空类型 @llvm.metadata(元数据 整数32 %arg)
+; CHECK: 调用 空类型 @llvm.metadata(元数据 指针 %after)
+; CHECK: 调用 空类型 @llvm.metadata(元数据 指针 %before)
+; CHECK: %after = 分配 整数32
 }

@@ -8,5 +8,5 @@ source_filename = "tmp.bc"
 ; CHECK-NEXT:  ^2 = flags: 97
 
 ^0 = module: (path: "main.bc", hash: (3499594384, 1671013073, 3271036935, 1830411232, 59290952))
-^1 = gv: (guid: 15822663052811949562, summaries: (function: (module: ^0, flags: (linkage: external, notEligibleToImport: 0, live: 1, dsoLocal: 1, canAutoHide: 0), insts: 2)))
+^1 = gv: (guid: 15822663052811949562, summaries: (function: (module: ^0, flags: (linkage: 外部, notEligibleToImport: 0, live: 1, dsoLocal: 1, canAutoHide: 0), insts: 2)))
 ^2 = flags: 97

@@ -3,8 +3,8 @@
 
 define <16 x i8> @test_laneselect(<16 x i8> %a, <16 x i8> %b, <16 x i8> %c) {
 ; CHECK-LABEL: @test_laneselect(
-; CHECK-NEXT:    [[RES:%.*]] = call <16 x i8> @llvm.wasm.relaxed.laneselect.v16i8(<16 x i8> [[A:%.*]], <16 x i8> [[B:%.*]], <16 x i8> [[C:%.*]])
-; CHECK-NEXT:    ret <16 x i8> [[RES]]
+; CHECK-NEXT:    [[RES:%.*]] = 调用 <16 个 整数8> @llvm.wasm.relaxed.laneselect.v16i8(<16 个 整数8> [[A:%.*]], <16 个 整数8> [[B:%.*]], <16 个 整数8> [[C:%.*]])
+; CHECK-NEXT:    返回 <16 个 整数8> [[RES]]
 ;
   %res = call <16 x i8> @llvm.wasm.laneselect.v16i8(<16 x i8> %a, <16 x i8> %b, <16 x i8> %c)
   ret <16 x i8> %res
@@ -12,8 +12,8 @@ define <16 x i8> @test_laneselect(<16 x i8> %a, <16 x i8> %b, <16 x i8> %c) {
 
 define <8 x i16> @test_dot(<16 x i8> %a, <16 x i8> %b) {
 ; CHECK-LABEL: @test_dot(
-; CHECK-NEXT:    [[RES:%.*]] = call <8 x i16> @llvm.wasm.relaxed.dot.i8x16.i7x16.signed(<16 x i8> [[A:%.*]], <16 x i8> [[B:%.*]])
-; CHECK-NEXT:    ret <8 x i16> [[RES]]
+; CHECK-NEXT:    [[RES:%.*]] = 调用 <8 个 整数16> @llvm.wasm.relaxed.dot.i8x16.i7x16.signed(<16 个 整数8> [[A:%.*]], <16 个 整数8> [[B:%.*]])
+; CHECK-NEXT:    返回 <8 个 整数16> [[RES]]
 ;
   %res = call <8 x i16> @llvm.wasm.dot.i8x16.i7x16.signed(<16 x i8> %a, <16 x i8> %b)
   ret <8 x i16> %res
@@ -21,8 +21,8 @@ define <8 x i16> @test_dot(<16 x i8> %a, <16 x i8> %b) {
 
 define <4 x i32> @test_dot_add(<16 x i8> %a, <16 x i8> %b, <4 x i32> %c) {
 ; CHECK-LABEL: @test_dot_add(
-; CHECK-NEXT:    [[RES:%.*]] = call <4 x i32> @llvm.wasm.relaxed.dot.i8x16.i7x16.add.signed(<16 x i8> [[A:%.*]], <16 x i8> [[B:%.*]], <4 x i32> [[C:%.*]])
-; CHECK-NEXT:    ret <4 x i32> [[RES]]
+; CHECK-NEXT:    [[RES:%.*]] = 调用 <4 个 整数32> @llvm.wasm.relaxed.dot.i8x16.i7x16.add.signed(<16 个 整数8> [[A:%.*]], <16 个 整数8> [[B:%.*]], <4 个 整数32> [[C:%.*]])
+; CHECK-NEXT:    返回 <4 个 整数32> [[RES]]
 ;
   %res = call <4 x i32> @llvm.wasm.dot.i8x16.i7x16.add.signed(<16 x i8> %a, <16 x i8> %b, <4 x i32> %c)
   ret <4 x i32> %res
@@ -30,8 +30,8 @@ define <4 x i32> @test_dot_add(<16 x i8> %a, <16 x i8> %b, <4 x i32> %c) {
 
 define <4 x float> @test_fma(<4 x float> %a, <4 x float> %b, <4 x float> %c) {
 ; CHECK-LABEL: @test_fma(
-; CHECK-NEXT:    [[RES:%.*]] = call <4 x float> @llvm.wasm.relaxed.madd.v4f32(<4 x float> [[A:%.*]], <4 x float> [[B:%.*]], <4 x float> [[C:%.*]])
-; CHECK-NEXT:    ret <4 x float> [[RES]]
+; CHECK-NEXT:    [[RES:%.*]] = 调用 <4 个 单精度> @llvm.wasm.relaxed.madd.v4f32(<4 个 单精度> [[A:%.*]], <4 个 单精度> [[B:%.*]], <4 个 单精度> [[C:%.*]])
+; CHECK-NEXT:    返回 <4 个 单精度> [[RES]]
 ;
   %res = call <4 x float> @llvm.wasm.fma.v4f32(<4 x float> %a, <4 x float> %b, <4 x float> %c)
   ret <4 x float> %res
@@ -39,8 +39,8 @@ define <4 x float> @test_fma(<4 x float> %a, <4 x float> %b, <4 x float> %c) {
 
 define <4 x float> @test_fms(<4 x float> %a, <4 x float> %b, <4 x float> %c) {
 ; CHECK-LABEL: @test_fms(
-; CHECK-NEXT:    [[RES:%.*]] = call <4 x float> @llvm.wasm.relaxed.nmadd.v4f32(<4 x float> [[A:%.*]], <4 x float> [[B:%.*]], <4 x float> [[C:%.*]])
-; CHECK-NEXT:    ret <4 x float> [[RES]]
+; CHECK-NEXT:    [[RES:%.*]] = 调用 <4 个 单精度> @llvm.wasm.relaxed.nmadd.v4f32(<4 个 单精度> [[A:%.*]], <4 个 单精度> [[B:%.*]], <4 个 单精度> [[C:%.*]])
+; CHECK-NEXT:    返回 <4 个 单精度> [[RES]]
 ;
   %res = call <4 x float> @llvm.wasm.fms.v4f32(<4 x float> %a, <4 x float> %b, <4 x float> %c)
   ret <4 x float> %res

@@ -242,20 +242,20 @@ TEST(ConstantsTest, AsInstructionsTest) {
   Constant *Undef64 = UndefValue::get(Int64Ty);
   Constant *PoisonV16 = PoisonValue::get(P6->getType());
 
-#define P0STR "ptrtoint (ptr @dummy to i32)"
-#define P3STR "ptrtoint (ptr @dummy to i1)"
-#define P4STR "ptrtoint (ptr @dummy2 to i32)"
-#define P6STR "bitcast (i32 ptrtoint (ptr @dummy2 to i32) to <2 x i16>)"
+#define P0STR "指针转整数 (指针 @dummy 到 整数32)"
+#define P3STR "指针转整数 (指针 @dummy 到 整数1)"
+#define P4STR "指针转整数 (指针 @dummy2 到 整数32)"
+#define P6STR "位转换 (整数32 指针转整数 (指针 @dummy2 到 整数32) 到 <2 个 整数16>)"
 
-  CHECK(ConstantExpr::getNeg(P0), "sub i32 0, " P0STR);
-  CHECK(ConstantExpr::getNot(P0), "xor i32 " P0STR ", -1");
-  CHECK(ConstantExpr::getAdd(P0, P0), "add i32 " P0STR ", " P0STR);
+  CHECK(ConstantExpr::getNeg(P0), "减 整数32 0, " P0STR);
+  CHECK(ConstantExpr::getNot(P0), "异或 整数32 " P0STR ", -1");
+  CHECK(ConstantExpr::getAdd(P0, P0), "加 整数32 " P0STR ", " P0STR);
   CHECK(ConstantExpr::getAdd(P0, P0, false, true),
-        "add nsw i32 " P0STR ", " P0STR);
+        "加 nsw 整数32 " P0STR ", " P0STR);
   CHECK(ConstantExpr::getAdd(P0, P0, true, true),
-        "add nuw nsw i32 " P0STR ", " P0STR);
-  CHECK(ConstantExpr::getSub(P0, P0), "sub i32 " P0STR ", " P0STR);
-  CHECK(ConstantExpr::getXor(P0, P0), "xor i32 " P0STR ", " P0STR);
+        "加 nuw nsw 整数32 " P0STR ", " P0STR);
+  CHECK(ConstantExpr::getSub(P0, P0), "减 整数32 " P0STR ", " P0STR);
+  CHECK(ConstantExpr::getXor(P0, P0), "异或 整数32 " P0STR ", " P0STR);
 
   std::vector<Constant *> V;
   V.push_back(One);
@@ -265,10 +265,10 @@ TEST(ConstantsTest, AsInstructionsTest) {
   //      "getelementptr ptr, ptr @dummy, i32 1");
   CHECK(ConstantExpr::getInBoundsGetElementPtr(PointerType::getUnqual(Context),
                                                Global, V),
-        "getelementptr inbounds ptr, ptr @dummy, i32 1");
+        "获取元素指针 inbounds 指针, 指针 @dummy, 整数32 1");
 
   CHECK(ConstantExpr::getExtractElement(P6, One),
-        "extractelement <2 x i16> " P6STR ", i32 1");
+        "提取元素 <2 个 整数16> " P6STR ", 整数32 1");
 
   EXPECT_EQ(Poison16, ConstantExpr::getExtractElement(P6, Two));
   EXPECT_EQ(Poison16, ConstantExpr::getExtractElement(P6, Big));

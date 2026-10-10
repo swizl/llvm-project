@@ -2,7 +2,7 @@
 
 /* Simple C style comment */
 
-; CHECK: @B = external global i32
+; CHECK: @B = 外部 全局 整数32
 @B = external global i32
 
 /* multiline C ctyle comment at "top-level"

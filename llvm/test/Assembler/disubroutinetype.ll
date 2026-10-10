@@ -19,13 +19,13 @@
 !6 = !DISubroutineType(types: !3)
 !7 = !DISubroutineType(flags: DIFlagLValueReference, types: !3)
 
-; CHECK: !8 = !DISubroutineType(types: null)
+; CHECK: !8 = !DISubroutineType(types: 空指针)
 !8 = !DISubroutineType(types: null)
 
-; CHECK: !9 = !DISubroutineType(cc: DW_CC_normal, types: null)
-; CHECK: !10 = !DISubroutineType(cc: DW_CC_BORLAND_msfastcall, types: null)
-; CHECK: !11 = !DISubroutineType(cc: DW_CC_BORLAND_stdcall, types: null)
-; CHECK: !12 = !DISubroutineType(cc: DW_CC_LLVM_vectorcall, types: null)
+; CHECK: !9 = !DISubroutineType(cc: DW_CC_normal, types: 空指针)
+; CHECK: !10 = !DISubroutineType(cc: DW_CC_BORLAND_msfastcall, types: 空指针)
+; CHECK: !11 = !DISubroutineType(cc: DW_CC_BORLAND_stdcall, types: 空指针)
+; CHECK: !12 = !DISubroutineType(cc: DW_CC_LLVM_vectorcall, types: 空指针)
 !9 = !DISubroutineType(cc: DW_CC_normal, types: null)
 !10 = !DISubroutineType(cc: DW_CC_BORLAND_msfastcall, types: null)
 !11 = !DISubroutineType(cc: DW_CC_BORLAND_stdcall, types: null)

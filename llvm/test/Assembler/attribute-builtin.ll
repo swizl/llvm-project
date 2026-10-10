@@ -10,8 +10,8 @@
 ; RUN: llvm-dis | \
 ; RUN: FileCheck -check-prefix=CHECK-ASSEMBLES %s
 
-; CHECK-ASSEMBLES: declare ptr @foo(ptr) [[NOBUILTIN:#[0-9]+]]
-; CHECK-ASSEMBLES: call ptr @foo(ptr %x) [[BUILTIN:#[0-9]+]]
+; CHECK-ASSEMBLES: 声明 指针 @foo(指针) [[NOBUILTIN:#[0-9]+]]
+; CHECK-ASSEMBLES: 调用 指针 @foo(指针 %x) [[BUILTIN:#[0-9]+]]
 ; CHECK-ASSEMBLES: attributes [[NOBUILTIN]] = { nobuiltin }
 ; CHECK-ASSEMBLES: attributes [[BUILTIN]] = { builtin }
 
@@ -29,9 +29,9 @@ define ptr @bar(ptr %x) {
 ; RUN: not llvm-as <%s 2>&1  | FileCheck -check-prefix=CHECK-BAD %s
 
 ; CHECK-BAD: Attribute 'builtin' can only be applied to a callsite.
-; CHECK-BAD-NEXT: ptr @car
+; CHECK-BAD-NEXT: 指针 @car
 ; CHECK-BAD: Attribute 'builtin' can only be applied to a callsite.
-; CHECK-BAD-NEXT: ptr @mar
+; CHECK-BAD-NEXT: 指针 @mar
 
 declare ptr @lar(ptr)
 

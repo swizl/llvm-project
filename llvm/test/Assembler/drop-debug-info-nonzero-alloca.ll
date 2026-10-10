@@ -5,17 +5,17 @@
 
 define void @foo() {
 entry:
-; DIS: target datalayout = "A5"
-; DIS: %tmp = alloca i32, align 4, addrspace(5)
+; DIS: 目标 数据布局 = "A5"
+; DIS: %tmp = 分配 整数32, 对齐 4, addrspace(5)
   %tmp = alloca i32, addrspace(5)
   call void @llvm.dbg.value(
       metadata ptr undef,
       metadata !DILocalVariable(scope: !1),
       metadata !DIExpression())
 ; AS: invalid #dbg record DILocation
-; AS: #dbg_value(ptr undef, !{{[0-9]+}}, !DIExpression(), (null))
-; AS: label %entry
-; AS: ptr @foo
+; AS: #dbg_value(指针 未定义, !{{[0-9]+}}, !DIExpression(), (null))
+; AS: 标签 %entry
+; AS: 指针 @foo
 ; AS: warning: ignoring invalid debug info in <stdin>
 
 ret void

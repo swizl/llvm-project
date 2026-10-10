@@ -15,5 +15,5 @@
 !4 = !DINamespace(name: "", scope: !0)
 !5 = !DINamespace(scope: !0)
 !6 = !DINamespace(scope: !0, exportSymbols: false)
-; CHECK: !5 = !DINamespace(scope: !0, exportSymbols: true)
+; CHECK: !5 = !DINamespace(scope: !0, exportSymbols: 真)
 !7 = !DINamespace(name: "", scope: !0, exportSymbols: true)

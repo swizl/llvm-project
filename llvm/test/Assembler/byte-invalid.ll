@@ -10,14 +10,14 @@
 ; RUN: not llvm-as -disable-output %t/icmp-byte.ll          2>&1 | FileCheck %t/icmp-byte.ll
 
 ;--- zext-byte-to-int.ll
-; CHECK: invalid cast opcode for cast from 'b8' to 'i32'
+; CHECK: invalid cast opcode for cast from 'b8' to '整数32'
 define void @test(b8 %b) {
   %t = zext b8 %b to i32
   ret void
 }
 
 ;--- sext-byte-to-int.ll
-; CHECK: invalid cast opcode for cast from 'b8' to 'i32'
+; CHECK: invalid cast opcode for cast from 'b8' to '整数32'
 define void @test(b8 %b) {
   %t = sext b8 %b to i32
   ret void
@@ -31,28 +31,28 @@ define void @test(b32 %b) {
 }
 
 ;--- zext-int-to-byte.ll
-; CHECK: invalid cast opcode for cast from 'i8' to 'b32'
+; CHECK: invalid cast opcode for cast from '整数8' to 'b32'
 define void @test(i8 %v) {
   %t = zext i8 %v to b32
   ret void
 }
 
 ;--- sext-int-to-byte.ll
-; CHECK: invalid cast opcode for cast from 'i8' to 'b32'
+; CHECK: invalid cast opcode for cast from '整数8' to 'b32'
 define void @test(i8 %v) {
   %t = sext i8 %v to b32
   ret void
 }
 
 ;--- trunc-int-to-byte.ll
-; CHECK: invalid cast opcode for cast from 'i32' to 'b8'
+; CHECK: invalid cast opcode for cast from '整数32' to 'b8'
 define void @test(i32 %v) {
   %t = trunc i32 %v to b8
   ret void
 }
 
 ;--- trunc-byte-to-int.ll
-; CHECK: invalid cast opcode for cast from 'b32' to 'i8'
+; CHECK: invalid cast opcode for cast from 'b32' to '整数8'
 define void @test(b32 %b) {
   %t = trunc b32 %b to i8
   ret void

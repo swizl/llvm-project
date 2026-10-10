@@ -13,12 +13,12 @@ define target("spirv.Event") @func2() {
   ret target("spirv.Event") poison
 }
 
-; CHECK: @global = global target("spirv.DeviceEvent") zeroinitializer
-; CHECK: define target("spirv.Sampler") @foo(target("spirv.Sampler") %a) {
-; CHECK:   ret target("spirv.Sampler") %a
+; CHECK: @global = 全局 target("spirv.DeviceEvent") 零初始化
+; CHECK: 定义 target("spirv.Sampler") @foo(target("spirv.Sampler") %a) {
+; CHECK:   返回 target("spirv.Sampler") %a
 ; CHECK: }
-; CHECK: define target("spirv.Event") @func2() {
-; CHECK:   %mem = alloca target("spirv.Event")
-; CHECK:   %val = load target("spirv.Event"), ptr %mem
-; CHECK:   ret target("spirv.Event") poison
+; CHECK: 定义 target("spirv.Event") @func2() {
+; CHECK:   %mem = 分配 target("spirv.Event")
+; CHECK:   %val = 加载 target("spirv.Event"), 指针 %mem
+; CHECK:   返回 target("spirv.Event") 毒药值
 ; CHECK: }

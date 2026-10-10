@@ -10,5 +10,5 @@ define ptr @f_thunk(ptr %this, ...) {
   %rv = musttail call ptr (ptr, ...) @f(ptr %this, ...)
   ret ptr %rv
 }
-; CHECK-LABEL: define ptr @f_thunk(ptr %this, ...)
-; CHECK: %rv = musttail call ptr (ptr, ...) @f(ptr %this, ...)
+; CHECK-LABEL: 定义 指针 @f_thunk(指针 %this, ...)
+; CHECK: %rv = musttail 调用 指针 (指针, ...) @f(指针 %this, ...)

@@ -8,7 +8,7 @@
 ; BARE: }
 
 @B = external global i32
-; ANNOT: @B = external global i32   ; [#uses=0 type=ptr]
+; ANNOT: @B = 外部 全局 整数32   ; [#uses=0 type=指针]
 
 define <4 x i1> @foo(<4 x float> %a, <4 x float> %b) nounwind {
 entry:
@@ -16,5 +16,5 @@ entry:
   ret <4 x i1> %cmp
 }
 
-; ANNOT: %cmp = fcmp olt <4 x float> %a, %b              ; [#uses=1 type=<4 x i1>]
+; ANNOT: %cmp = 浮点比较 olt <4 个 单精度> %a, %b              ; [#uses=1 type=<4 个 整数1>]
 

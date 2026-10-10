@@ -2,8 +2,8 @@
 ; RUN: verify-uselistorder %s
 ; Basic smoke test for half type.
 
-; CHECK: define half @halftest
+; CHECK: 定义 半精度 @halftest
 define half  @halftest(half %A0) {
-; CHECK: ret half %A0
+; CHECK: 返回 半精度 %A0
         ret half %A0
 }

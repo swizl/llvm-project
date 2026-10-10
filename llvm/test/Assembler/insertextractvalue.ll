@@ -2,11 +2,11 @@
 ; RUN: verify-uselistorder %s
 
 ; CHECK:      @foo
-; CHECK-NEXT: load
-; CHECK-NEXT: extractvalue
-; CHECK-NEXT: insertvalue
-; CHECK-NEXT: store
-; CHECK-NEXT: ret
+; CHECK-NEXT: 加载
+; CHECK-NEXT: 提取值
+; CHECK-NEXT: 插入值
+; CHECK-NEXT: 存储
+; CHECK-NEXT: 返回
 define float @foo({{i32},{float, double}}* %p) nounwind {
   %t = load {{i32},{float, double}}, {{i32},{float, double}}* %p
   %s = extractvalue {{i32},{float, double}} %t, 1, 0

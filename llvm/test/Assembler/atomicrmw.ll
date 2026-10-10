@@ -3,7 +3,7 @@
 ; Make sure that we can parse an atomicrmw with an operand defined later in the function.
 
 ; CHECK: @f
-; CHECK: atomicrmw
+; CHECK: 原子读写
 define void @f(i1 %arg) {
   entry:
     br label %def

@@ -38,23 +38,23 @@ define void @foo2(%fum.1 %b, %fum %a) {
   ret void
 }
 
-; CHECK-DAG: %fum = type { %aab, i8, [7 x i8] }
+; CHECK-DAG: %fum = type { %aab, 整数8, [7 个 整数8] }
 ; CHECK-DAG: %aab = type { %aba }
-; CHECK-DAG: %aba = type { [8 x i8] }
-; CHECK-DAG: %fum.1 = type { %abb, i8, [7 x i8] }
+; CHECK-DAG: %aba = type { [8 个 整数8] }
+; CHECK-DAG: %fum.1 = type { %abb, 整数8, [7 个 整数8] }
 ; CHECK-DAG: %abb = type { %abc }
-; CHECK-DAG: %abc = type { [4 x i8] }
+; CHECK-DAG: %abc = type { [4 个 整数8] }
 
-; CHECK-LABEL: define void @foo1(%fum %a, %fum.1 %b) {
-; CHECK-NEXT:   %b.copy = call %fum.1 @llvm.ssa.copy.s_fum.1s(%fum.1 %b)
-; CHECK-NEXT:   %a.copy = call %fum @llvm.ssa.copy.s_fums(%fum %a)
-; CHECK-NEXT:  ret void
+; CHECK-LABEL: 定义 空类型 @foo1(%fum %a, %fum.1 %b) {
+; CHECK-NEXT:   %b.copy = 调用 %fum.1 @llvm.ssa.copy.s_fum.1s(%fum.1 %b)
+; CHECK-NEXT:   %a.copy = 调用 %fum @llvm.ssa.copy.s_fums(%fum %a)
+; CHECK-NEXT:  返回 空类型
 
-; CHECK-LABEL: define void @foo2(%fum.1 %b, %fum %a) {
-; CHECK-NEXT:   %a.copy = call %fum @llvm.ssa.copy.s_fums(%fum %a)
-; CHECK-NEXT:  %b.copy = call %fum.1 @llvm.ssa.copy.s_fum.1s(%fum.1 %b)
-; CHECK-NEXT:  ret void
+; CHECK-LABEL: 定义 空类型 @foo2(%fum.1 %b, %fum %a) {
+; CHECK-NEXT:   %a.copy = 调用 %fum @llvm.ssa.copy.s_fums(%fum %a)
+; CHECK-NEXT:  %b.copy = 调用 %fum.1 @llvm.ssa.copy.s_fum.1s(%fum.1 %b)
+; CHECK-NEXT:  返回 空类型
 
-; CHECK: declare %fum.1 @llvm.ssa.copy.s_fum.1s(%fum.1 returned)
+; CHECK: 声明 %fum.1 @llvm.ssa.copy.s_fum.1s(%fum.1 returned)
 
-; CHECK: declare %fum @llvm.ssa.copy.s_fums(%fum returned)
+; CHECK: 声明 %fum @llvm.ssa.copy.s_fums(%fum returned)

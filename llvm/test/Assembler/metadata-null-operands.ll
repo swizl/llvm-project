@@ -8,4 +8,4 @@
 !0 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: null)
 
 ; CHECK: !named = !{!0}
-; CHECK: !0 = !DIDerivedType({{.*}}baseType: null{{.*}})
+; CHECK: !0 = !DIDerivedType({{.*}}baseType: 空指针{{.*}})

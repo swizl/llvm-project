@@ -8,60 +8,60 @@
 
 ;--- num-to-sym.ll
 target datalayout = "P11-p2(global):32:8-p8(stack):8:8-p11(code):8:8"
-; CHECK: target datalayout = "P11-p2(global):32:8-p8(stack):8:8-p11(code):8:8"
+; CHECK: 目标 数据布局 = "P11-p2(global):32:8-p8(stack):8:8-p11(code):8:8"
 
-; CHECK: @str = private addrspace("global") constant [4 x i8] c"str\00"
+; CHECK: @str = 私有 addrspace("global") 常量 [4 个 整数8] 字"str\00"
 @str = private addrspace(2) constant [4 x i8] c"str\00"
 
 define void @foo() {
-  ; CHECK: %alloca = alloca i32, align 4, addrspace("stack")
+  ; CHECK: %alloca = 分配 整数32, 对齐 4, addrspace("stack")
   %alloca = alloca i32, addrspace(8)
   ret void
 }
 
-; CHECK: define void @bar() addrspace("code")
+; CHECK: 定义 空类型 @bar() addrspace("code")
 define void @bar() addrspace(11) {
-  ; CHECK: call addrspace("code") void @foo()
+  ; CHECK: 调用 addrspace("code") 空类型 @foo()
   call addrspace(11) void @foo()
   ret void
 }
 
 ;--- sym-to-sym.ll
 target datalayout = "P11-p2(global):32:8-p8(stack):8:8-p11(code):8:8"
-; CHECK: target datalayout = "P11-p2(global):32:8-p8(stack):8:8-p11(code):8:8"
+; CHECK: 目标 数据布局 = "P11-p2(global):32:8-p8(stack):8:8-p11(code):8:8"
 
-; CHECK: @str = private addrspace("global") constant [4 x i8] c"str\00"
+; CHECK: @str = 私有 addrspace("global") 常量 [4 个 整数8] 字"str\00"
 @str = private addrspace("global") constant [4 x i8] c"str\00"
 
 define void @foo() {
-  ; CHECK: %alloca = alloca i32, align 4, addrspace("stack")
+  ; CHECK: %alloca = 分配 整数32, 对齐 4, addrspace("stack")
   %alloca = alloca i32, addrspace("stack")
   ret void
 }
 
-; CHECK: define void @bar() addrspace("code")
+; CHECK: 定义 空类型 @bar() addrspace("code")
 define void @bar() addrspace(11) {
-  ; CHECK: call addrspace("code") void @foo()
+  ; CHECK: 调用 addrspace("code") 空类型 @foo()
   call addrspace("code") void @foo()
   ret void
 }
 
 ;--- sym-to-num.ll
 target datalayout = "P11-p2(global):32:8-p8(stack):8:8-p11(code):8:8"
-; CHECK: target datalayout = "P11-p2(global):32:8-p8(stack):8:8-p11(code):8:8"
+; CHECK: 目标 数据布局 = "P11-p2(global):32:8-p8(stack):8:8-p11(code):8:8"
 
-; CHECK: @str = private addrspace(2) constant [4 x i8] c"str\00"
+; CHECK: @str = 私有 addrspace(2) 常量 [4 个 整数8] 字"str\00"
 @str = private addrspace("global") constant [4 x i8] c"str\00"
 
 define void @foo() {
-  ; CHECK: %alloca = alloca i32, align 4, addrspace(8)
+  ; CHECK: %alloca = 分配 整数32, 对齐 4, addrspace(8)
   %alloca = alloca i32, addrspace("stack")
   ret void
 }
 
-; CHECK: define void @bar() addrspace(11)
+; CHECK: 定义 空类型 @bar() addrspace(11)
 define void @bar() addrspace(11) {
-  ; CHECK: call addrspace(11) void @foo()
+  ; CHECK: 调用 addrspace(11) 空类型 @foo()
   call addrspace("code") void @foo()
   ret void
 }

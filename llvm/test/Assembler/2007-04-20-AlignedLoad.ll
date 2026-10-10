@@ -1,7 +1,7 @@
 ; RUN: llvm-as < %s | llvm-dis | FileCheck %s
 ; RUN: verify-uselistorder %s
 
-; CHECK: %tmp2 = load i32, ptr %arg, align 1024
+; CHECK: %tmp2 = 加载 整数32, 指针 %arg, 对齐 1024
 define i32 @test(ptr %arg) {
 entry:
         %tmp2 = load i32, ptr %arg, align 1024      ; <i32> [#uses=1]

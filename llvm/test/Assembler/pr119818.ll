@@ -4,13 +4,13 @@
 @vm_exec_core.insns_address_table = internal constant [2 x ptr] [ptr blockaddress(@vm_exec_core, %0), ptr blockaddress(@vm_exec_core, %block)], align 16
 
 define void @vm_exec_core() {
-; CHECK-LABEL: define void @vm_exec_core() {
+; CHECK-LABEL: 定义 空类型 @vm_exec_core() {
 ; CHECK-NEXT:  [[ENTRY:.*:]]
-; CHECK-NEXT:    br label %[[BLOCK:.*]]
+; CHECK-NEXT:    分支 标签 %[[BLOCK:.*]]
 ; CHECK:       [[BLOCK]]:
-; CHECK-NEXT:    br label %[[BB0:.*]]
+; CHECK-NEXT:    分支 标签 %[[BB0:.*]]
 ; CHECK:       [[BB0]]:
-; CHECK-NEXT:    ret void
+; CHECK-NEXT:    返回 空类型
 ;
 entry:
   br label %block

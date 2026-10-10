@@ -16,4 +16,4 @@ entry:
 
 ^0 = module: (path: "{{.*}}thinlto-bad-summary1.ll", hash: (0, 0, 0, 0, 0))
 ; Missing a ')'
-^1 = gv: (name: "main", summaries: (function: (module: ^0, flags: (linkage: external, notEligibleToImport: 0, live: 0, dsoLocal: 0), insts: 1)) ; guid = 15822663052811949562
+^1 = gv: (name: "main", summaries: (function: (module: ^0, flags: (linkage: 外部, notEligibleToImport: 0, live: 0, dsoLocal: 0), insts: 1)) ; guid = 15822663052811949562

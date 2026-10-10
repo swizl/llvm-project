@@ -15,13 +15,13 @@ define void @test.ctlz(i8 %a, i16 %b, i32 %c, i42 %d) {
 ; CHECK: @test.ctlz
 
 entry:
-  ; CHECK: call i8 @llvm.ctlz.i8(i8 %a, i1 false)
+  ; CHECK: 调用 整数8 @llvm.ctlz.i8(整数8 %a, 整数1 假)
   call i8 @llvm.ctlz.i8(i8 %a)
-  ; CHECK: call i16 @llvm.ctlz.i16(i16 %b, i1 false)
+  ; CHECK: 调用 整数16 @llvm.ctlz.i16(整数16 %b, 整数1 假)
   call i16 @llvm.ctlz.i16(i16 %b)
-  ; CHECK: call i32 @llvm.ctlz.i32(i32 %c, i1 false)
+  ; CHECK: 调用 整数32 @llvm.ctlz.i32(整数32 %c, 整数1 假)
   call i32 @llvm.ctlz.i32(i32 %c)
-  ; CHECK: call i42 @llvm.ctlz.i42(i42 %d, i1 false)
+  ; CHECK: 调用 整数42 @llvm.ctlz.i42(整数42 %d, 整数1 假)
   call i42 @llvm.ctlz.i42(i42 %d)
 
   ret void
@@ -36,13 +36,13 @@ define void @test.cttz(i8 %a, i16 %b, i32 %c, i42 %d) {
 ; CHECK: @test.cttz
 
 entry:
-  ; CHECK: call i8 @llvm.cttz.i8(i8 %a, i1 false)
+  ; CHECK: 调用 整数8 @llvm.cttz.i8(整数8 %a, 整数1 假)
   call i8 @llvm.cttz.i8(i8 %a)
-  ; CHECK: call i16 @llvm.cttz.i16(i16 %b, i1 false)
+  ; CHECK: 调用 整数16 @llvm.cttz.i16(整数16 %b, 整数1 假)
   call i16 @llvm.cttz.i16(i16 %b)
-  ; CHECK: call i32 @llvm.cttz.i32(i32 %c, i1 false)
+  ; CHECK: 调用 整数32 @llvm.cttz.i32(整数32 %c, 整数1 假)
   call i32 @llvm.cttz.i32(i32 %c)
-  ; CHECK: call i42 @llvm.cttz.i42(i42 %d, i1 false)
+  ; CHECK: 调用 整数42 @llvm.cttz.i42(整数42 %d, 整数1 假)
   call i42 @llvm.cttz.i42(i42 %d)
 
   ret void
@@ -51,7 +51,7 @@ entry:
 declare void @llvm.coro.end(ptr, i1)
 define void @test.coro.end(ptr %ptr) {
 ; CHECK-LABEL: @test.coro.end(
-; CHECK: call void @llvm.coro.end(ptr %ptr, i1 false, token none)
+; CHECK: 调用 空类型 @llvm.coro.end(指针 %ptr, 整数1 假, 令牌 无)
   call void @llvm.coro.end(ptr %ptr, i1 false)
   ret void
 }
@@ -61,7 +61,7 @@ define void @test.coro.end(ptr %ptr) {
 declare i32 @llvm.objectsize.i32(ptr, i1) nounwind readonly
 define i32 @test.objectsize() {
 ; CHECK-LABEL: @test.objectsize(
-; CHECK: @llvm.objectsize.i32.p0(ptr @a, i1 false, i1 false, i1 false)
+; CHECK: @llvm.objectsize.i32.p0(指针 @a, 整数1 假, 整数1 假, 整数1 假)
   %s = call i32 @llvm.objectsize.i32(ptr @a, i1 false)
   ret i32 %s
 }
@@ -69,7 +69,7 @@ define i32 @test.objectsize() {
 declare i64 @llvm.objectsize.i64.p0(ptr, i1) nounwind readonly
 define i64 @test.objectsize.2() {
 ; CHECK-LABEL: @test.objectsize.2(
-; CHECK: @llvm.objectsize.i64.p0(ptr @a, i1 false, i1 false, i1 false)
+; CHECK: @llvm.objectsize.i64.p0(指针 @a, 整数1 假, 整数1 假, 整数1 假)
   %s = call i64 @llvm.objectsize.i64.p0(ptr @a, i1 false)
   ret i64 %s
 }
@@ -79,14 +79,14 @@ define i64 @test.objectsize.2() {
 declare i32 @llvm.objectsize.i32.unnamed(ptr, i1) nounwind readonly
 define i32 @test.objectsize.unnamed() {
 ; CHECK-LABEL: @test.objectsize.unnamed(
-; CHECK: @llvm.objectsize.i32.p0(ptr @u, i1 false, i1 false, i1 false)
+; CHECK: @llvm.objectsize.i32.p0(指针 @u, 整数1 假, 整数1 假, 整数1 假)
   %s = call i32 @llvm.objectsize.i32.unnamed(ptr @u, i1 false)
   ret i32 %s
 }
 
 define i64 @test.objectsize.unnamed.2() {
 ; CHECK-LABEL: @test.objectsize.unnamed.2(
-; CHECK: @llvm.objectsize.i64.p0(ptr @u, i1 false, i1 false, i1 false)
+; CHECK: @llvm.objectsize.i64.p0(指针 @u, 整数1 假, 整数1 假, 整数1 假)
   %s = call i64 @llvm.objectsize.i64.p0(ptr @u, i1 false)
   ret i64 %s
 }
@@ -134,10 +134,10 @@ define void @tests.invariant.start.end() {
   ; CHECK-LABEL: @tests.invariant.start.end(
   %a = alloca i8
   %i = call ptr @llvm.invariant.start(i64 1, ptr %a)
-  ; CHECK: call ptr @llvm.invariant.start.p0
+  ; CHECK: 调用 指针 @llvm.invariant.start.p0
   store i8 0, ptr %a
   call void @llvm.invariant.end(ptr %i, i64 1, ptr %a)
-  ; CHECK: call void @llvm.invariant.end.p0
+  ; CHECK: 调用 空类型 @llvm.invariant.end.p0
   ret void
 }
 
@@ -148,10 +148,10 @@ define void @tests.invariant.start.end.unnamed() {
   ; CHECK-LABEL: @tests.invariant.start.end.unnamed(
   %a = alloca ptr
   %i = call ptr @llvm.invariant.start.unnamed(i64 1, ptr %a)
-  ; CHECK: call ptr @llvm.invariant.start.p0
+  ; CHECK: 调用 指针 @llvm.invariant.start.p0
   store ptr null, ptr %a
   call void @llvm.invariant.end.unnamed(ptr %i, i64 1, ptr %a)
-  ; CHECK: call void @llvm.invariant.end.p0
+  ; CHECK: 调用 空类型 @llvm.invariant.end.p0
   ret void
 }
 
@@ -160,7 +160,7 @@ declare void @llvm.stackprotectorcheck(ptr)
 
 define void @test.stackprotectorcheck() {
 ; CHECK-LABEL: @test.stackprotectorcheck(
-; CHECK-NEXT: ret void
+; CHECK-NEXT: 返回 空类型
   call void @llvm.stackprotectorcheck(ptr @__stack_chk_guard)
   ret void
 }
@@ -172,10 +172,10 @@ define void @tests.lifetime.start.end() {
   ; CHECK-LABEL: @tests.lifetime.start.end(
   %a = alloca i8
   call void @llvm.lifetime.start(i64 1, ptr %a)
-  ; CHECK: call void @llvm.lifetime.start.p0(ptr %a)
+  ; CHECK: 调用 空类型 @llvm.lifetime.start.p0(指针 %a)
   store i8 0, ptr %a
   call void @llvm.lifetime.end(i64 1, ptr %a)
-  ; CHECK: call void @llvm.lifetime.end.p0(ptr %a)
+  ; CHECK: 调用 空类型 @llvm.lifetime.end.p0(指针 %a)
   ret void
 }
 
@@ -186,17 +186,17 @@ define void @tests.lifetime.start.end.unnamed() {
   ; CHECK-LABEL: @tests.lifetime.start.end.unnamed(
   %a = alloca ptr
   call void @llvm.lifetime.start.unnamed(i64 1, ptr %a)
-  ; CHECK: call void @llvm.lifetime.start.p0(ptr %a)
+  ; CHECK: 调用 空类型 @llvm.lifetime.start.p0(指针 %a)
   store ptr null, ptr %a
   call void @llvm.lifetime.end.unnamed(i64 1, ptr %a)
-  ; CHECK: call void @llvm.lifetime.end.p0(ptr %a)
+  ; CHECK: 调用 空类型 @llvm.lifetime.end.p0(指针 %a)
   ret void
 }
 
 declare void @llvm.prefetch(ptr, i32, i32, i32)
 define void @test.prefetch(ptr %ptr) {
 ; CHECK-LABEL: @test.prefetch(
-; CHECK: @llvm.prefetch.p0(ptr %ptr, i32 0, i32 3, i32 1)
+; CHECK: @llvm.prefetch.p0(指针 %ptr, 整数32 0, 整数32 3, 整数32 1)
   call void @llvm.prefetch(ptr %ptr, i32 0, i32 3, i32 1)
   ret void
 }
@@ -204,7 +204,7 @@ define void @test.prefetch(ptr %ptr) {
 declare void @llvm.prefetch.p0(ptr, i32, i32, i32)
 define void @test.prefetch.2(ptr %ptr) {
 ; CHECK-LABEL: @test.prefetch.2(
-; CHECK: @llvm.prefetch.p0(ptr %ptr, i32 0, i32 3, i32 1)
+; CHECK: @llvm.prefetch.p0(指针 %ptr, 整数32 0, 整数32 3, 整数32 1)
   call void @llvm.prefetch(ptr %ptr, i32 0, i32 3, i32 1)
   ret void
 }
@@ -212,60 +212,60 @@ define void @test.prefetch.2(ptr %ptr) {
 declare void @llvm.prefetch.unnamed(ptr, i32, i32, i32)
 define void @test.prefetch.unnamed(ptr %ptr) {
 ; CHECK-LABEL: @test.prefetch.unnamed(
-; CHECK: @llvm.prefetch.p0(ptr %ptr, i32 0, i32 3, i32 1)
+; CHECK: @llvm.prefetch.p0(指针 %ptr, 整数32 0, 整数32 3, 整数32 1)
   call void @llvm.prefetch.unnamed(ptr %ptr, i32 0, i32 3, i32 1)
   ret void
 }
 
 define void @test.vector.splice(<4 x i32> %a, <4 x i32> %b) {
 ; CHECK-LABEL: @test.vector.splice
-; CHECK: @llvm.vector.splice.left.v4i32(<4 x i32> %a, <4 x i32> %b, i32 3)
+; CHECK: @llvm.vector.splice.left.v4i32(<4 个 整数32> %a, <4 个 整数32> %b, 整数32 3)
   call <4 x i32> @llvm.vector.splice(<4 x i32> %a, <4 x i32> %b, i32 3)
-; CHECK: @llvm.vector.splice.right.v4i32(<4 x i32> %a, <4 x i32> %b, i32 2)
+; CHECK: @llvm.vector.splice.right.v4i32(<4 个 整数32> %a, <4 个 整数32> %b, 整数32 2)
   call <4 x i32> @llvm.vector.splice(<4 x i32> %a, <4 x i32> %b, i32 -2)
-; CHECK: @llvm.vector.splice.left.v4i32(<4 x i32> %a, <4 x i32> %b, i32 1)
+; CHECK: @llvm.vector.splice.left.v4i32(<4 个 整数32> %a, <4 个 整数32> %b, 整数32 1)
   call <4 x i32> @llvm.vector.splice.v4i32(<4 x i32> %a, <4 x i32> %b, i32 1)
   ret void
 }
 
 define i32 @ctlz(i32 %A) {
-; CHECK: %for.body.i = call i32 @llvm.ctlz.i32(i32 %A, i1 false)
+; CHECK: %for.body.i = 调用 整数32 @llvm.ctlz.i32(整数32 %A, 整数1 假)
   %for.body.i = call i32 @llvm.ctlz.i32.p0(i32 %A)
   ret i32 %for.body.i
 }
 
 define i32 @ctlz_with_isZeroPoison(i32 %A) {
-; CHECK: %for.body.i = call i32 @llvm.ctlz.i32(i32 %A, i1 false)
+; CHECK: %for.body.i = 调用 整数32 @llvm.ctlz.i32(整数32 %A, 整数1 假)
   %for.body.i = call i32 @llvm.ctlz.i32.p0(i32 %A, i1 false)
   ret i32 %for.body.i
 }
 
 define i32 @cttz(i32 %A) {
-; CHECK: %for.body.i = call i32 @llvm.cttz.i32(i32 %A, i1 false)
+; CHECK: %for.body.i = 调用 整数32 @llvm.cttz.i32(整数32 %A, 整数1 假)
   %for.body.i = call i32 @llvm.cttz.i32.p0(i32 %A)
   ret i32 %for.body.i
 }
 
 define i32 @cttz_with_isZeroPoison(i32 %A) {
-; CHECK: %for.body.i = call i32 @llvm.cttz.i32(i32 %A, i1 false)
+; CHECK: %for.body.i = 调用 整数32 @llvm.cttz.i32(整数32 %A, 整数1 假)
   %for.body.i = call i32 @llvm.cttz.i32.p0(i32 %A, i1 false)
   ret i32 %for.body.i
 }
 
 define <8 x double> @preserve_fmf_on_x86_intrin(<8 x double> %x0, <8 x double> %x1, <8 x double> %x2, i8 %x3){
-; CHECK: %1 = fneg fast
-; CHECK: %2 = call fast
-; CHECK: %4 = select fast
+; CHECK: %1 = 取反 fast
+; CHECK: %2 = 调用 fast
+; CHECK: %4 = 选择 fast
   %res = call fast <8 x double> @llvm.x86.avx512.mask3.vfmsubadd.pd.512(<8 x double> %x0, <8 x double> %x1, <8 x double> %x2, i8 %x3, i32 4)
   ret <8 x double> %res
 }
 
 ; This is part of @test.objectsize(), since llvm.objectsize declaration gets
 ; emitted at the end.
-; CHECK: declare i32 @llvm.objectsize.i32.p0
+; CHECK: 声明 整数32 @llvm.objectsize.i32.p0
 
-; CHECK: declare void @llvm.lifetime.start.p0(ptr captures(none))
-; CHECK: declare void @llvm.lifetime.end.p0(ptr captures(none))
+; CHECK: 声明 空类型 @llvm.lifetime.start.p0(指针 captures(none))
+; CHECK: 声明 空类型 @llvm.lifetime.end.p0(指针 captures(none))
 
-; CHECK: declare ptr @llvm.experimental.gc.get.pointer.base.p0(ptr readnone captures(none))
+; CHECK: 声明 指针 @llvm.experimental.gc.get.pointer.base.p0(指针 readnone captures(none))
 declare ptr @llvm.experimental.gc.get.pointer.base.p0.p0(ptr)

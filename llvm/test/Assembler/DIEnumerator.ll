@@ -69,7 +69,7 @@
 ; CHECK: ![[ULONG]] = !DIBasicType(name: "long long unsigned int", size: 64, encoding: DW_ATE_unsigned)
 !21 = !{!22}
 !22 = !DIEnumerator(name: "A3", value: 9223372036854775808, isUnsigned: true)
-; CHECK: !DIEnumerator(name: "A3", value: 9223372036854775808, isUnsigned: true)
+; CHECK: !DIEnumerator(name: "A3", value: 9223372036854775808, isUnsigned: 真)
 
 
 !23 = !{!0, !24, !26, !28}

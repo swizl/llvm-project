@@ -73,7 +73,7 @@ TEST(TypesTest, TargetExtType) {
   TargetExtensionType->print(TETStream);
 
   EXPECT_STREQ(TETStream.str().str().data(),
-               "target(\"structTET\", { i32, float }, 0, 1)");
+               "target(\"structTET\", { 整数32, 单精度 }, 0, 1)");
 }
 
 TEST(TypedPointerType, PrintTest) {
@@ -83,7 +83,7 @@ TEST(TypedPointerType, PrintTest) {
 
   Type *I8Ptr = TypedPointerType::get(Type::getInt8Ty(Context), 0);
   I8Ptr->print(OS);
-  EXPECT_EQ(StringRef(Buffer), ("typedptr(i8, 0)"));
+  EXPECT_EQ(StringRef(Buffer), ("typedptr(整数8, 0)"));
 }
 
 }  // end anonymous namespace

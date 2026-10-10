@@ -4,23 +4,23 @@
 ; Basic smoke tests for bfloat type.
 
 define bfloat @check_bfloat(bfloat %A) {
-; ASSEM-DISASS: ret bfloat %A
+; ASSEM-DISASS: 返回 bfloat %A
     ret bfloat %A
 }
 
 define bfloat @check_bfloat_literal() {
-; ASSEM-DISASS: ret bfloat 2.924930e-09
+; ASSEM-DISASS: 返回 bfloat 2.924930e-09
     ret bfloat 0xR3149
 }
 
 define <4 x bfloat> @check_fixed_vector() {
-; ASSEM-DISASS: ret <4 x bfloat> %tmp
+; ASSEM-DISASS: 返回 <4 个 bfloat> %tmp
   %tmp = fadd <4 x bfloat> undef, undef
   ret <4 x bfloat> %tmp
 }
 
 define <vscale x 4 x bfloat> @check_vector() {
-; ASSEM-DISASS: ret <vscale x 4 x bfloat> %tmp
+; ASSEM-DISASS: 返回 <vscale x 4 个 bfloat> %tmp
   %tmp = fadd <vscale x 4 x bfloat> undef, undef
   ret <vscale x 4 x bfloat> %tmp
 }
@@ -39,24 +39,24 @@ define float @check_bfloat_convert() {
 
 ; ASSEM-DISASS-LABEL @snan_bfloat
 define bfloat @snan_bfloat() {
-; ASSEM-DISASS: ret bfloat +snan(0x1)
+; ASSEM-DISASS: 返回 bfloat +snan(0x1)
     ret bfloat 0xR7F81
 }
 
 ; ASSEM-DISASS-LABEL @qnan_bfloat
 define bfloat @qnan_bfloat() {
-; ASSEM-DISASS: ret bfloat +qnan
+; ASSEM-DISASS: 返回 bfloat +qnan
     ret bfloat 0xR7FC0
 }
 
 ; ASSEM-DISASS-LABEL @pos_inf_bfloat
 define bfloat @pos_inf_bfloat() {
-; ASSEM-DISASS: ret bfloat +inf
+; ASSEM-DISASS: 返回 bfloat +inf
     ret bfloat 0xR7F80
 }
 
 ; ASSEM-DISASS-LABEL @neg_inf_bfloat
 define bfloat @neg_inf_bfloat() {
-; ASSEM-DISASS: ret bfloat -inf
+; ASSEM-DISASS: 返回 bfloat -inf
     ret bfloat 0xRFF80
 }

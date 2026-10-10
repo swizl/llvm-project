@@ -33,7 +33,7 @@ TEST(AsmWriterTest, DebugPrintDetachedInstruction) {
   std::string S;
   raw_string_ostream OS(S);
   Add->print(OS);
-  EXPECT_THAT(S, HasSubstr("<badref> = add i32 poison, poison, !<empty"));
+  EXPECT_THAT(S, HasSubstr("<badref> = 加 整数32 毒药值, 毒药值, !<empty"));
 }
 
 TEST(AsmWriterTest, DebugPrintDetachedArgument) {
@@ -44,7 +44,7 @@ TEST(AsmWriterTest, DebugPrintDetachedArgument) {
   std::string S;
   raw_string_ostream OS(S);
   Arg->print(OS);
-  EXPECT_EQ(S, "i32 <badref>");
+  EXPECT_EQ(S, "整数32 <badref>");
   delete Arg;
 }
 

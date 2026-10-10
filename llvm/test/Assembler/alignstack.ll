@@ -9,7 +9,7 @@ define void @test1() nounwind {
 ; CHECK-NOT: alignstack
 	tail call void asm sideeffect "mov", "~{dirflag},~{fpsr},~{flags}"() nounwind
 	ret void
-; CHECK: ret
+; CHECK: 返回
 }
 define void @test2() nounwind {
 ; CHECK: test2
@@ -17,7 +17,7 @@ define void @test2() nounwind {
 ; CHECK: alignstack
 	tail call void asm sideeffect alignstack "mov", "~{dirflag},~{fpsr},~{flags}"() nounwind
 	ret void
-; CHECK: ret
+; CHECK: 返回
 }
 define void @test3() nounwind {
 ; CHECK: test3
@@ -25,7 +25,7 @@ define void @test3() nounwind {
 ; CHECK: alignstack
 	tail call void asm alignstack "mov", "~{dirflag},~{fpsr},~{flags}"() nounwind
 	ret void
-; CHECK: ret
+; CHECK: 返回
 }
 define void @test4() nounwind {
 ; CHECK: test4
@@ -33,5 +33,5 @@ define void @test4() nounwind {
 ; CHECK-NOT: alignstack
 	tail call void asm  "mov", "~{dirflag},~{fpsr},~{flags}"() nounwind
 	ret void
-; CHECK: ret
+; CHECK: 返回
 }
