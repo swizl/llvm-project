@@ -3878,8 +3878,8 @@ static void printDLLStorageClass(GlobalValue::DLLStorageClassTypes SCT,
                                  formatted_raw_ostream &Out) {
   switch (SCT) {
   case GlobalValue::DefaultStorageClass: break;
-  case GlobalValue::DLLImportStorageClass: Out << "dllimport "; break;
-  case GlobalValue::DLLExportStorageClass: Out << "dllexport "; break;
+  case GlobalValue::DLLImportStorageClass: Out << "DLL导入 "; break;
+  case GlobalValue::DLLExportStorageClass: Out << "DLL导出 "; break;
   }
 }
 
