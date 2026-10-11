@@ -1927,6 +1927,53 @@ struct MDFieldPrinter {
 
 } // end anonymous namespace
 
+// 汉化元数据字段名：打印为中文，与 AsmParser 的 规范元数据字段名 一一对应，
+// 保证本地化 IR 可被 llvm-as/llc 往返解析。
+static StringRef 汉化元数据字段名(StringRef 名) {
+  if (名 == "line")            return "行";
+  if (名 == "column")          return "列";
+  if (名 == "file")            return "文件";
+  if (名 == "scope")           return "作用域";
+  if (名 == "type")            return "类型";
+  if (名 == "types")           return "类型列表";
+  if (名 == "name")            return "名称";
+  if (名 == "linkageName")     return "链接名";
+  if (名 == "filename")        return "文件名";
+  if (名 == "directory")       return "目录";
+  if (名 == "producer")        return "生产者";
+  if (名 == "language")        return "语言";
+  if (名 == "isOptimized")     return "已优化";
+  if (名 == "runtimeVersion")  return "运行时版本";
+  if (名 == "emissionKind")    return "发射种类";
+  if (名 == "scopeLine")       return "作用域行";
+  if (名 == "spFlags")         return "子程序标志";
+  if (名 == "unit")            return "单元";
+  if (名 == "retainedNodes")   return "保留节点";
+  if (名 == "size")            return "大小";
+  if (名 == "encoding")        return "编码";
+  if (名 == "flags")           return "标志";
+  if (名 == "arg")             return "参数序号";
+  if (名 == "align")           return "对齐";
+  if (名 == "dialect")         return "方言";
+  if (名 == "cc")              return "调用约定";
+  return 名;
+}
+
+// 汉化调试枚举值：把调试元数据中出现的英文 DWARF 枚举值译为中文，
+// 与 LLLexer 的中文枚举值词法映射一一对应（词法层再归一化为英文规范名）。
+static StringRef 汉化调试枚举值(StringRef 值) {
+  if (值 == "DW_LANG_C")          return "C语言";
+  if (值 == "DW_ATE_signed")      return "有符号整数";
+  if (值 == "DW_ATE_unsigned")    return "无符号整数";
+  if (值 == "DW_ATE_float")       return "浮点数";
+  if (值 == "DW_ATE_boolean")     return "布尔";
+  if (值 == "FullDebug")          return "完整调试";
+  if (值 == "NoDebug")            return "无调试";
+  if (值 == "LineTablesOnly")     return "仅行表";
+  if (值 == "DISPFlagDefinition") return "子程序定义";
+  return 值;
+}
+
 void MDFieldPrinter::printTag(const DINode *N) {
   Out << FS << "tag: ";
   auto Tag = dwarf::TagString(N->getTag());
@@ -1953,6 +2000,7 @@ void MDFieldPrinter::printChecksum(
 
 void MDFieldPrinter::printString(StringRef Name, StringRef Value,
                                  bool ShouldSkipEmpty) {
+  Name = 汉化元数据字段名(Name);
   if (ShouldSkipEmpty && Value.empty())
     return;
 
@@ -1973,6 +2021,7 @@ static void writeMetadataAsOperand(raw_ostream &Out, const Metadata *MD,
 
 void MDFieldPrinter::printMetadata(StringRef Name, const Metadata *MD,
                                    bool ShouldSkipNull) {
+  Name = 汉化元数据字段名(Name);
   if (ShouldSkipNull && !MD)
     return;
 
@@ -1997,6 +2046,7 @@ void MDFieldPrinter::printMetadataOrInt(StringRef Name, const Metadata *MD,
 
 template <class IntTy>
 void MDFieldPrinter::printInt(StringRef Name, IntTy Int, bool ShouldSkipZero) {
+  Name = 汉化元数据字段名(Name);
   if (ShouldSkipZero && !Int)
     return;
 
@@ -2005,6 +2055,7 @@ void MDFieldPrinter::printInt(StringRef Name, IntTy Int, bool ShouldSkipZero) {
 
 void MDFieldPrinter::printAPInt(StringRef Name, const APInt &Int,
                                 bool IsUnsigned, bool ShouldSkipZero) {
+  Name = 汉化元数据字段名(Name);
   if (ShouldSkipZero && Int.isZero())
     return;
 
@@ -2014,12 +2065,14 @@ void MDFieldPrinter::printAPInt(StringRef Name, const APInt &Int,
 
 void MDFieldPrinter::printBool(StringRef Name, bool Value,
                                std::optional<bool> Default) {
+  Name = 汉化元数据字段名(Name);
   if (Default && Value == *Default)
     return;
   Out << FS << Name << ": " << (Value ? "真" : "假");
 }
 
 void MDFieldPrinter::printDIFlags(StringRef Name, DINode::DIFlags Flags) {
+  Name = 汉化元数据字段名(Name);
   if (!Flags)
     return;
 
@@ -2032,7 +2085,7 @@ void MDFieldPrinter::printDIFlags(StringRef Name, DINode::DIFlags Flags) {
   for (auto F : SplitFlags) {
     auto StringF = DINode::getFlagString(F);
     assert(!StringF.empty() && "Expected valid flag");
-    Out << FlagsFS << StringF;
+    Out << FlagsFS << 汉化调试枚举值(StringF);
   }
   if (Extra || SplitFlags.empty())
     Out << FlagsFS << Extra;
@@ -2040,6 +2093,7 @@ void MDFieldPrinter::printDIFlags(StringRef Name, DINode::DIFlags Flags) {
 
 void MDFieldPrinter::printDISPFlags(StringRef Name,
                                     DISubprogram::DISPFlags Flags) {
+  Name = 汉化元数据字段名(Name);
   // Always print this field, because no flags in the IR at all will be
   // interpreted as old-style isDefinition: true.
   Out << FS << Name << ": ";
@@ -2056,7 +2110,7 @@ void MDFieldPrinter::printDISPFlags(StringRef Name,
   for (auto F : SplitFlags) {
     auto StringF = DISubprogram::getFlagString(F);
     assert(!StringF.empty() && "Expected valid flag");
-    Out << FlagsFS << StringF;
+    Out << FlagsFS << 汉化调试枚举值(StringF);
   }
   if (Extra || SplitFlags.empty())
     Out << FlagsFS << Extra;
@@ -2064,11 +2118,14 @@ void MDFieldPrinter::printDISPFlags(StringRef Name,
 
 void MDFieldPrinter::printEmissionKind(StringRef Name,
                                        DICompileUnit::DebugEmissionKind EK) {
-  Out << FS << Name << ": " << DICompileUnit::emissionKindString(EK);
+  Name = 汉化元数据字段名(Name);
+  Out << FS << Name << ": "
+      << 汉化调试枚举值(DICompileUnit::emissionKindString(EK));
 }
 
 void MDFieldPrinter::printNameTableKind(StringRef Name,
                                         DICompileUnit::DebugNameTableKind NTK) {
+  Name = 汉化元数据字段名(Name);
   if (NTK == DICompileUnit::DebugNameTableKind::Default)
     return;
   Out << FS << Name << ": " << DICompileUnit::nameTableKindString(NTK);
@@ -2076,19 +2133,21 @@ void MDFieldPrinter::printNameTableKind(StringRef Name,
 
 void MDFieldPrinter::printFixedPointKind(StringRef Name,
                                          DIFixedPointType::FixedPointKind V) {
+  Name = 汉化元数据字段名(Name);
   Out << FS << Name << ": " << DIFixedPointType::fixedPointKindString(V);
 }
 
 template <class IntTy, class Stringifier>
 void MDFieldPrinter::printDwarfEnum(StringRef Name, IntTy Value,
                                     Stringifier toString, bool ShouldSkipZero) {
+  Name = 汉化元数据字段名(Name);
   if (ShouldSkipZero && !Value)
     return;
 
   Out << FS << Name << ": ";
   auto S = toString(Value);
   if (!S.empty())
-    Out << S;
+    Out << 汉化调试枚举值(S);
   else
     Out << Value;
 }
@@ -2113,7 +2172,7 @@ static void writeGenericDINode(raw_ostream &Out, const GenericDINode *N,
 
 static void writeDILocation(raw_ostream &Out, const DILocation *DL,
                             AsmWriterContext &WriterCtx) {
-  Out << "!DILocation(";
+  Out << "!位置(";
   MDFieldPrinter Printer(Out, WriterCtx);
   // Always output the line, since 0 is a relevant and important value for it.
   Printer.printInt("line", DL->getLine(), /* ShouldSkipZero */ false);
@@ -2219,7 +2278,7 @@ static void writeDIEnumerator(raw_ostream &Out, const DIEnumerator *N,
 
 static void writeDIBasicType(raw_ostream &Out, const DIBasicType *N,
                              AsmWriterContext &WriterCtx) {
-  Out << "!DIBasicType(";
+  Out << "!基础类型(";
   MDFieldPrinter Printer(Out, WriterCtx);
   if (N->getTag() != dwarf::DW_TAG_base_type)
     Printer.printTag(N);
@@ -2378,7 +2437,7 @@ static void writeDICompositeType(raw_ostream &Out, const DICompositeType *N,
 
 static void writeDISubroutineType(raw_ostream &Out, const DISubroutineType *N,
                                   AsmWriterContext &WriterCtx) {
-  Out << "!DISubroutineType(";
+  Out << "!子程序类型(";
   MDFieldPrinter Printer(Out, WriterCtx);
   Printer.printDIFlags("flags", N->getFlags());
   Printer.printDwarfEnum("cc", N->getCC(), dwarf::ConventionString);
@@ -2388,7 +2447,7 @@ static void writeDISubroutineType(raw_ostream &Out, const DISubroutineType *N,
 }
 
 static void writeDIFile(raw_ostream &Out, const DIFile *N, AsmWriterContext &) {
-  Out << "!DIFile(";
+  Out << "!文件(";
   MDFieldPrinter Printer(Out);
   Printer.printString("filename", N->getFilename(),
                       /* ShouldSkipEmpty */ false);
@@ -2405,7 +2464,7 @@ static void writeDIFile(raw_ostream &Out, const DIFile *N, AsmWriterContext &) {
 
 static void writeDICompileUnit(raw_ostream &Out, const DICompileUnit *N,
                                AsmWriterContext &WriterCtx) {
-  Out << "!DICompileUnit(";
+  Out << "!编译单元(";
   MDFieldPrinter Printer(Out, WriterCtx);
 
   DISourceLanguageName Lang = N->getSourceLanguage();
@@ -2452,7 +2511,7 @@ static void writeDICompileUnit(raw_ostream &Out, const DICompileUnit *N,
 
 static void writeDISubprogram(raw_ostream &Out, const DISubprogram *N,
                               AsmWriterContext &WriterCtx) {
-  Out << "!DISubprogram(";
+  Out << "!子程序(";
   MDFieldPrinter Printer(Out, WriterCtx);
   Printer.printString("name", N->getName());
   Printer.printString("linkageName", N->getLinkageName());
@@ -2606,7 +2665,7 @@ static void writeDIGlobalVariable(raw_ostream &Out, const DIGlobalVariable *N,
 
 static void writeDILocalVariable(raw_ostream &Out, const DILocalVariable *N,
                                  AsmWriterContext &WriterCtx) {
-  Out << "!DILocalVariable(";
+  Out << "!局部变量(";
   MDFieldPrinter Printer(Out, WriterCtx);
   Printer.printString("name", N->getName());
   Printer.printInt("arg", N->getArg());
@@ -2638,7 +2697,7 @@ static void writeDILabel(raw_ostream &Out, const DILabel *N,
 
 static void writeDIExpression(raw_ostream &Out, const DIExpression *N,
                               AsmWriterContext &WriterCtx) {
-  Out << "!DIExpression(";
+  Out << "!表达式(";
   ListSeparator FS;
   if (N->isValid()) {
     for (const DIExpression::ExprOperand &Op : N->expr_ops()) {
@@ -2717,7 +2776,7 @@ static void writeDIImportedEntity(raw_ostream &Out, const DIImportedEntity *N,
 static void writeMDNodeBodyInternal(raw_ostream &Out, const MDNode *Node,
                                     AsmWriterContext &Ctx) {
   if (Node->isDistinct())
-    Out << "distinct ";
+    Out << "独立 ";
   else if (Node->isTemporary())
     Out << "<temporary!> "; // Handle broken code.
 

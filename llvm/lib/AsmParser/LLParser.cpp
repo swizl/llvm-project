@@ -5753,8 +5753,38 @@ bool LLParser::parseSpecializedMDNode(MDNode *&N, bool IsDistinct) {
 #define REQUIRE_FIELD(NAME, TYPE, INIT)                                        \
   if (!NAME.Seen)                                                              \
     return error(ClosingLoc, "missing required field '" #NAME "'");
+// 中文元数据字段名 → 英文规范名（与 AsmWriter 的 汉化元数据字段名 对应）。
+static StringRef 规范元数据字段名(StringRef 名) {
+  if (名 == "行")         return "line";
+  if (名 == "列")         return "column";
+  if (名 == "文件")       return "file";
+  if (名 == "作用域")     return "scope";
+  if (名 == "类型")       return "type";
+  if (名 == "类型列表")   return "types";
+  if (名 == "名称")       return "name";
+  if (名 == "链接名")     return "linkageName";
+  if (名 == "文件名")     return "filename";
+  if (名 == "目录")       return "directory";
+  if (名 == "生产者")     return "producer";
+  if (名 == "语言")       return "language";
+  if (名 == "已优化")     return "isOptimized";
+  if (名 == "运行时版本") return "runtimeVersion";
+  if (名 == "发射种类")   return "emissionKind";
+  if (名 == "作用域行")   return "scopeLine";
+  if (名 == "子程序标志") return "spFlags";
+  if (名 == "单元")       return "unit";
+  if (名 == "保留节点")   return "retainedNodes";
+  if (名 == "大小")       return "size";
+  if (名 == "编码")       return "encoding";
+  if (名 == "标志")       return "flags";
+  if (名 == "参数序号")   return "arg";
+  if (名 == "对齐")       return "align";
+  if (名 == "方言")       return "dialect";
+  if (名 == "调用约定")   return "cc";
+  return 名;
+}
 #define PARSE_MD_FIELD(NAME, TYPE, DEFAULT)                                    \
-  if (Lex.getStrVal() == #NAME)                                                \
+  if (规范元数据字段名(Lex.getStrVal()) == #NAME)                               \
     return parseMDField(#NAME, NAME);
 #define PARSE_MD_FIELDS()                                                      \
   VISIT_MD_FIELDS(DECLARE_FIELD, DECLARE_FIELD)                                \

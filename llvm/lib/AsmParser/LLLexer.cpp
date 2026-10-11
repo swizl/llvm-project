@@ -472,6 +472,23 @@ lltok::Kind LLLexer::LexExclaim() {
     UnEscapeLexed(StrVal);
     return lltok::MetadataVar;
   }
+  // 中文元数据节点名（如 !编译单元）：归一化为英文规范名，供 AsmParser 分派。
+  if (static_cast<unsigned char>(CurPtr[0]) >= 0x80) {
+    ++CurPtr;
+    while (*CurPtr && static_cast<unsigned char>(*CurPtr) >= 0x80)
+      ++CurPtr;
+    StringRef 中文名(TokStart + 1, CurPtr - (TokStart + 1));
+    if (中文名 == "编译单元")       StrVal = "DICompileUnit";
+    else if (中文名 == "文件")      StrVal = "DIFile";
+    else if (中文名 == "子程序")    StrVal = "DISubprogram";
+    else if (中文名 == "子程序类型") StrVal = "DISubroutineType";
+    else if (中文名 == "基础类型")  StrVal = "DIBasicType";
+    else if (中文名 == "位置")      StrVal = "DILocation";
+    else if (中文名 == "局部变量")  StrVal = "DILocalVariable";
+    else if (中文名 == "表达式")    StrVal = "DIExpression";
+    else StrVal.assign(中文名.begin(), 中文名.end());
+    return lltok::MetadataVar;
+  }
   return lltok::exclaim;
 }
 
@@ -1162,6 +1179,7 @@ lltok::Kind LLLexer::LexChineseIdentifier() {
   if (Keyword == "源文件名") return lltok::kw_source_filename;
   if (Keyword == "模块")     return lltok::kw_module;
   if (Keyword == "汇编")     return lltok::kw_asm;
+  if (Keyword == "独立")     return lltok::kw_distinct;
 
   // Linkage (链接)
   if (Keyword == "私有")       return lltok::kw_private;
@@ -1380,6 +1398,18 @@ lltok::Kind LLLexer::LexChineseIdentifier() {
   if (Keyword == "有序小于")     return lltok::kw_olt;
   if (Keyword == "有序小于等于") return lltok::kw_ole;
   if (Keyword == "有序大于等于") return lltok::kw_oge;
+
+  // Debug metadata enum values (调试元数据枚举值)：中文 → 英文规范名，
+  // 复用 AsmParser 的 dwarf::getLanguage/getAttributeEncoding/getEmissionKind 查表。
+  if (Keyword == "C语言")        { StrVal = "DW_LANG_C";        return lltok::DwarfLang; }
+  if (Keyword == "有符号整数")   { StrVal = "DW_ATE_signed";    return lltok::DwarfAttEncoding; }
+  if (Keyword == "无符号整数")   { StrVal = "DW_ATE_unsigned";  return lltok::DwarfAttEncoding; }
+  if (Keyword == "浮点数")       { StrVal = "DW_ATE_float";     return lltok::DwarfAttEncoding; }
+  if (Keyword == "布尔")         { StrVal = "DW_ATE_boolean";   return lltok::DwarfAttEncoding; }
+  if (Keyword == "完整调试")     { StrVal = "FullDebug";        return lltok::EmissionKind; }
+  if (Keyword == "无调试")       { StrVal = "NoDebug";          return lltok::EmissionKind; }
+  if (Keyword == "仅行表")       { StrVal = "LineTablesOnly";   return lltok::EmissionKind; }
+  if (Keyword == "子程序定义")   { StrVal = "DISPFlagDefinition"; return lltok::DISPFlag; }
 
   // Finally, if this isn't known, return an error.
   return lltok::Error;
