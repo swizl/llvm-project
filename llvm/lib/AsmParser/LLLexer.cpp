@@ -1152,16 +1152,18 @@ lltok::Kind LLLexer::LexIdentifier() {
 /// LexChineseIdentifier - Lex a Chinese/UTF-8 identifier and match against
 /// Chinese keyword aliases for LLVM IR keywords and instructions.
 lltok::Kind LLLexer::LexChineseIdentifier() {
-  // Scan the full UTF-8 identifier (bytes >= 0x80 or alphanumeric)
+  // Scan the full UTF-8 identifier (bytes >= 0x80 plus the usual label chars,
+  // so mixed names such as "最大公约数.exit" are lexed as one token).
   while (*CurPtr && (static_cast<unsigned char>(*CurPtr) >= 0x80 ||
-                     isalnum(static_cast<unsigned char>(*CurPtr)) ||
-                     *CurPtr == '_'))
+                     isLabelChar(*CurPtr)))
     ++CurPtr;
 
   StringRef Keyword(TokStart, CurPtr - TokStart);
 
   // Chinese label: if followed by ':', this is a basic-block label (入口:).
-  if (*CurPtr == ':') {
+  // Honour IgnoreColonInIdentifiers so attribute contexts such as
+  // memory(不可访问内存: 读写) still lex the name as a keyword.
+  if (!IgnoreColonInIdentifiers && *CurPtr == ':') {
     StrVal.assign(TokStart, CurPtr);
     ++CurPtr; // consume the ':'
     return lltok::LabelStr;
@@ -1246,11 +1248,14 @@ lltok::Kind LLLexer::LexChineseIdentifier() {
 
   // Overflow flags (溢出标志)
   if (Keyword == "无符号环绕") return lltok::kw_nuw;
-  if (Keyword == "无符号环绕") return lltok::kw_nsw;
+  if (Keyword == "有符号环绕") return lltok::kw_nsw;
+  if (Keyword == "无符号有符号环绕") return lltok::kw_nusw;
   if (Keyword == "精确")       return lltok::kw_exact;
   if (Keyword == "不相交")     return lltok::kw_disjoint;
   if (Keyword == "入界")       return lltok::kw_inbounds;
   if (Keyword == "非负")       return lltok::kw_nneg;
+  if (Keyword == "同号")       return lltok::kw_samesign;
+  if (Keyword == "范围内")     return lltok::kw_inrange;
 
   // Boolean (布尔)
   if (Keyword == "真")         return lltok::kw_true;
@@ -1329,7 +1334,7 @@ lltok::Kind LLLexer::LexChineseIdentifier() {
 
   // Instructions - Other (指令 - 其他)
   if (Keyword == "选择")       return lltok::kw_select;
-  if (Keyword == "PHI节点")    return lltok::kw_phi;
+  if (Keyword == "合并节点")    return lltok::kw_phi;
   if (Keyword == "冻结")       return lltok::kw_freeze;
   if (Keyword == "着陆垫")     return lltok::kw_landingpad;
 
@@ -1393,11 +1398,66 @@ lltok::Kind LLLexer::LexChineseIdentifier() {
   if (Keyword == "无符号小于等于") return lltok::kw_ule;
   if (Keyword == "无符号大于等于") return lltok::kw_uge;
   if (Keyword == "有序等于")     return lltok::kw_oeq;
-  if (Keyword == "有序不等于")   return lltok::kw_une;
+  if (Keyword == "有序不等")     return lltok::kw_one;
   if (Keyword == "有序大于")     return lltok::kw_ogt;
   if (Keyword == "有序小于")     return lltok::kw_olt;
   if (Keyword == "有序小于等于") return lltok::kw_ole;
   if (Keyword == "有序大于等于") return lltok::kw_oge;
+  if (Keyword == "有序")         return lltok::kw_ord;
+  if (Keyword == "无序比较")     return lltok::kw_uno;
+  if (Keyword == "无序等于")     return lltok::kw_ueq;
+  if (Keyword == "无序不等于")   return lltok::kw_une;
+
+  // Attribute names (属性名)
+  if (Keyword == "无未定义")     return lltok::kw_noundef;
+  if (Keyword == "非空")         return lltok::kw_nonnull;
+  if (Keyword == "不读")         return lltok::kw_readnone;
+  if (Keyword == "只读")         return lltok::kw_readonly;
+  if (Keyword == "只写")         return lltok::kw_writeonly;
+  if (Keyword == "无释放")       return lltok::kw_nofree;
+  if (Keyword == "不展开")       return lltok::kw_nounwind;
+  if (Keyword == "不返回")       return lltok::kw_noreturn;
+  if (Keyword == "无别名")       return lltok::kw_noalias;
+  if (Keyword == "将返回")       return lltok::kw_willreturn;
+  if (Keyword == "必须推进")     return lltok::kw_mustprogress;
+  if (Keyword == "不同步")       return lltok::kw_nosync;
+  if (Keyword == "可推测")       return lltok::kw_speculatable;
+  if (Keyword == "无回调")       return lltok::kw_nocallback;
+  if (Keyword == "不产生未定义或毒药") return lltok::kw_nocreateundeforpoison;
+  if (Keyword == "立即参数")     return lltok::kw_immarg;
+  if (Keyword == "分配大小")     return lltok::kw_allocsize;
+  if (Keyword == "分配种类")     return lltok::kw_allockind;
+  if (Keyword == "可解引用")     return lltok::kw_dereferenceable;
+  if (Keyword == "可解引用或空") return lltok::kw_dereferenceable_or_null;
+  if (Keyword == "范围")         return lltok::kw_range;
+  if (Keyword == "捕获")         return lltok::kw_captures;
+  if (Keyword == "内存")         return lltok::kw_memory;
+  if (Keyword == "初始化")       return lltok::kw_initializes;
+
+  // Memory locations (内存位置)
+  if (Keyword == "参数内存")     return lltok::kw_argmem;
+  if (Keyword == "不可访问内存") return lltok::kw_inaccessiblemem;
+  if (Keyword == "错误内存")     return lltok::kw_errnomem;
+  if (Keyword == "目标内存")     return lltok::kw_target_mem;
+  if (Keyword == "目标内存0")    return lltok::kw_target_mem0;
+  if (Keyword == "目标内存1")    return lltok::kw_target_mem1;
+
+  // ModRef kinds (内存访问种类)
+  if (Keyword == "读")           return lltok::kw_read;
+  if (Keyword == "写")           return lltok::kw_write;
+  if (Keyword == "读写")         return lltok::kw_readwrite;
+
+  // Captures components (捕获成分)
+  if (Keyword == "地址为空")     return lltok::kw_address_is_null;
+  if (Keyword == "地址")         return lltok::kw_address;
+  if (Keyword == "来源")         return lltok::kw_provenance;
+  if (Keyword == "读来源")       return lltok::kw_read_provenance;
+
+  // Misc directives (其他指令)
+  if (Keyword == "属性组")       return lltok::kw_attributes;
+  if (Keyword == "个性")         return lltok::kw_personality;
+  if (Keyword == "不透明")       return lltok::kw_opaque;
+  if (Keyword == "使用列表顺序") return lltok::kw_uselistorder;
 
   // Debug metadata enum values (调试元数据枚举值)：中文 → 英文规范名，
   // 复用 AsmParser 的 dwarf::getLanguage/getAttributeEncoding/getEmissionKind 查表。

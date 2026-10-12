@@ -757,7 +757,7 @@ void TypePrinting::print(Type *Ty, raw_ostream &OS) {
 
 void TypePrinting::printStructBody(StructType *STy, raw_ostream &OS) {
   if (STy->isOpaque()) {
-    OS << "opaque";
+    OS << "不透明";
     return;
   }
 
@@ -1503,37 +1503,37 @@ static void writeOptimizationInfo(raw_ostream &Out, const User *U) {
 
   if (const auto *OBO = dyn_cast<OverflowingBinaryOperator>(U)) {
     if (OBO->hasNoUnsignedWrap())
-      Out << " nuw";
+      Out << " 无符号环绕";
     if (OBO->hasNoSignedWrap())
-      Out << " nsw";
+      Out << " 有符号环绕";
   } else if (const auto *Div = dyn_cast<PossiblyExactOperator>(U)) {
     if (Div->isExact())
-      Out << " exact";
+      Out << " 精确";
   } else if (const auto *PDI = dyn_cast<PossiblyDisjointInst>(U)) {
     if (PDI->isDisjoint())
-      Out << " disjoint";
+      Out << " 不相交";
   } else if (const auto *GEP = dyn_cast<GEPOperator>(U)) {
     if (GEP->isInBounds())
-      Out << " inbounds";
+      Out << " 入界";
     else if (GEP->hasNoUnsignedSignedWrap())
-      Out << " nusw";
+      Out << " 无符号有符号环绕";
     if (GEP->hasNoUnsignedWrap())
-      Out << " nuw";
+      Out << " 无符号环绕";
     if (auto InRange = GEP->getInRange()) {
-      Out << " inrange(" << InRange->getLower() << ", " << InRange->getUpper()
+      Out << " 范围内(" << InRange->getLower() << ", " << InRange->getUpper()
           << ")";
     }
   } else if (const auto *NNI = dyn_cast<PossiblyNonNegInst>(U)) {
     if (NNI->hasNonNeg())
-      Out << " nneg";
+      Out << " 非负";
   } else if (const auto *TI = dyn_cast<TruncInst>(U)) {
     if (TI->hasNoUnsignedWrap())
-      Out << " nuw";
+      Out << " 无符号环绕";
     if (TI->hasNoSignedWrap())
-      Out << " nsw";
+      Out << " 有符号环绕";
   } else if (const auto *ICmp = dyn_cast<ICmpInst>(U)) {
     if (ICmp->hasSameSign())
-      Out << " samesign";
+      Out << " 同号";
   }
 }
 
@@ -4174,7 +4174,7 @@ void AssemblyWriter::printTypeIdentities() {
   // Emit all numbered types.
   auto &NumberedTypes = TypePrinter.getNumberedTypes();
   for (unsigned I = 0, E = NumberedTypes.size(); I != E; ++I) {
-    Out << '%' << I << " = type ";
+    Out << '%' << I << " = 类型 ";
 
     // Make sure we print out at least one level of the type structure, so
     // that we do not get %2 = type %2
@@ -4185,7 +4185,7 @@ void AssemblyWriter::printTypeIdentities() {
   auto &NamedTypes = TypePrinter.getNamedTypes();
   for (StructType *NamedType : NamedTypes) {
     printLLVMName(Out, NamedType->getName(), LocalPrefix);
-    Out << " = type ";
+    Out << " = 类型 ";
 
     // Make sure we print out at least one level of the type structure, so
     // that we do not get %FILE = type %FILE
@@ -4214,7 +4214,7 @@ void AssemblyWriter::printFunction(const Function *F) {
     }
 
     if (!AttrStr.empty())
-      Out << "; Function Attrs: " << AttrStr << '\n';
+      Out << "; 函数属性: " << AttrStr << '\n';
   }
 
   if (F->isIntrinsic() && F->getIntrinsicID() == Intrinsic::not_intrinsic)
@@ -4320,7 +4320,7 @@ void AssemblyWriter::printFunction(const Function *F) {
     writeOperand(F->getPrologueData(), true);
   }
   if (F->hasPersonalityFn()) {
-    Out << " personality ";
+    Out << " 个性 ";
     writeOperand(F->getPersonalityFn(), /*PrintType=*/true);
   }
 
@@ -4396,9 +4396,9 @@ void AssemblyWriter::printBasicBlock(const BasicBlock *BB) {
     Out.PadToColumn(50);
     Out << ";";
     if (pred_empty(BB)) {
-      Out << " No predecessors!";
+      Out << " 无前驱!";
     } else {
-      Out << " preds = ";
+      Out << " 前驱 = ";
       ListSeparator LS;
       for (const BasicBlock *Pred : predecessors(BB)) {
         Out << LS;
@@ -4508,11 +4508,11 @@ void AssemblyWriter::printInstruction(const Instruction &I) {
 
   if (const auto *CI = dyn_cast<CallInst>(&I)) {
     if (CI->isMustTailCall())
-      Out << "musttail ";
+      Out << "必须尾调用 ";
     else if (CI->isTailCall())
-      Out << "tail ";
+      Out << "尾调用 ";
     else if (CI->isNoTailCall())
-      Out << "notail ";
+      Out << "禁用尾调用 ";
   }
 
   // Print out the opcode...
@@ -5115,7 +5115,7 @@ void AssemblyWriter::writeAllAttributeGroups() {
     asVec[I.second] = I;
 
   for (const auto &I : asVec)
-    Out << "attributes #" << I.second << " = { "
+    Out << "属性组 #" << I.second << " = { "
         << I.first.getAsString(true) << " }\n";
 }
 
@@ -5124,7 +5124,7 @@ void AssemblyWriter::printUseListOrder(const Value *V,
   if (Machine.getFunction())
     Out << "  ";
 
-  Out << "uselistorder ";
+  Out << "使用列表顺序 ";
   writeOperand(V, true);
 
   assert(Shuffle.size() >= 2 && "Shuffle too small");
@@ -5232,7 +5232,7 @@ void Type::print(raw_ostream &OS, bool /*IsForDebug*/, bool NoDetails) const {
   // If the type is a named struct type, print the body as well.
   if (auto *STy = dyn_cast<StructType>(const_cast<Type *>(this)))
     if (!STy->isLiteral()) {
-      OS << " = type ";
+      OS << " = 类型 ";
       TP.printStructBody(STy, OS);
     }
 }

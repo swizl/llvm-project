@@ -63,19 +63,19 @@ raw_ostream &llvm::operator<<(raw_ostream &OS, MemoryEffects ME) {
 
 raw_ostream &llvm::operator<<(raw_ostream &OS, CaptureComponents CC) {
   if (capturesNothing(CC)) {
-    OS << "none";
+    OS << "无";
     return OS;
   }
 
   ListSeparator LS;
   if (capturesAddressIsNullOnly(CC))
-    OS << LS << "address_is_null";
+    OS << LS << "地址为空";
   else if (capturesAddress(CC))
-    OS << LS << "address";
+    OS << LS << "地址";
   if (capturesReadProvenanceOnly(CC))
-    OS << LS << "read_provenance";
+    OS << LS << "读来源";
   if (capturesFullProvenance(CC))
-    OS << LS << "provenance";
+    OS << LS << "来源";
 
   return OS;
 }
@@ -85,11 +85,11 @@ raw_ostream &llvm::operator<<(raw_ostream &OS, CaptureInfo CI) {
   CaptureComponents Other = CI.getOtherComponents();
   CaptureComponents Ret = CI.getRetComponents();
 
-  OS << "captures(";
+  OS << "捕获(";
   if (!capturesNothing(Other) || Other == Ret)
     OS << LS << Other;
   if (Other != Ret)
-    OS << LS << "ret: " << Ret;
+    OS << LS << "返回: " << Ret;
   OS << ")";
   return OS;
 }

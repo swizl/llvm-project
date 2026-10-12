@@ -882,7 +882,7 @@ const char *Instruction::getOpcodeName(unsigned OpCode) {
   // 其他指令
   case ICmp:           return "整数比较";
   case FCmp:           return "浮点比较";
-  case PHI:            return "PHI节点";
+  case PHI:            return "合并节点";
   case Select:         return "选择";
   case Call:           return "调用";
   case Shl:            return "左移";

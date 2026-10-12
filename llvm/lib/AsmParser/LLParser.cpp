@@ -2643,17 +2643,17 @@ bool LLParser::parseAllocKind(AllocFnKind &Kind) {
   if (parseStringConstant(Arg))
     return error(KindLoc, "expected allockind value");
   for (StringRef A : llvm::split(Arg, ",")) {
-    if (A == "alloc") {
+    if (A == "alloc" || A == "分配") {
       Kind |= AllocFnKind::Alloc;
-    } else if (A == "realloc") {
+    } else if (A == "realloc" || A == "重分配") {
       Kind |= AllocFnKind::Realloc;
-    } else if (A == "free") {
+    } else if (A == "free" || A == "释放") {
       Kind |= AllocFnKind::Free;
-    } else if (A == "uninitialized") {
+    } else if (A == "uninitialized" || A == "未初始化") {
       Kind |= AllocFnKind::Uninitialized;
-    } else if (A == "zeroed") {
+    } else if (A == "zeroed" || A == "清零") {
       Kind |= AllocFnKind::Zeroed;
-    } else if (A == "aligned") {
+    } else if (A == "aligned" || A == "对齐") {
       Kind |= AllocFnKind::Aligned;
     } else {
       return error(KindLoc, Twine("unknown allockind ") + A);

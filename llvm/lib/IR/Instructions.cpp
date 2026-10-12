@@ -3690,33 +3690,33 @@ CmpInst::Predicate CmpInst::getInversePredicate(Predicate pred) {
 
 StringRef CmpInst::getPredicateName(Predicate Pred) {
   switch (Pred) {
-  default:                   return "unknown";
-  case FCmpInst::FCMP_FALSE: return "false";
-  case FCmpInst::FCMP_OEQ:   return "oeq";
-  case FCmpInst::FCMP_OGT:   return "ogt";
-  case FCmpInst::FCMP_OGE:   return "oge";
-  case FCmpInst::FCMP_OLT:   return "olt";
-  case FCmpInst::FCMP_OLE:   return "ole";
-  case FCmpInst::FCMP_ONE:   return "one";
-  case FCmpInst::FCMP_ORD:   return "ord";
-  case FCmpInst::FCMP_UNO:   return "uno";
-  case FCmpInst::FCMP_UEQ:   return "ueq";
-  case FCmpInst::FCMP_UGT:   return "ugt";
-  case FCmpInst::FCMP_UGE:   return "uge";
-  case FCmpInst::FCMP_ULT:   return "ult";
-  case FCmpInst::FCMP_ULE:   return "ule";
-  case FCmpInst::FCMP_UNE:   return "une";
-  case FCmpInst::FCMP_TRUE:  return "true";
-  case ICmpInst::ICMP_EQ:    return "eq";
-  case ICmpInst::ICMP_NE:    return "ne";
-  case ICmpInst::ICMP_SGT:   return "sgt";
-  case ICmpInst::ICMP_SGE:   return "sge";
-  case ICmpInst::ICMP_SLT:   return "slt";
-  case ICmpInst::ICMP_SLE:   return "sle";
-  case ICmpInst::ICMP_UGT:   return "ugt";
-  case ICmpInst::ICMP_UGE:   return "uge";
-  case ICmpInst::ICMP_ULT:   return "ult";
-  case ICmpInst::ICMP_ULE:   return "ule";
+  default:                   return "未知";
+  case FCmpInst::FCMP_FALSE: return "假";
+  case FCmpInst::FCMP_OEQ:   return "有序等于";
+  case FCmpInst::FCMP_OGT:   return "有序大于";
+  case FCmpInst::FCMP_OGE:   return "有序大于等于";
+  case FCmpInst::FCMP_OLT:   return "有序小于";
+  case FCmpInst::FCMP_OLE:   return "有序小于等于";
+  case FCmpInst::FCMP_ONE:   return "有序不等";
+  case FCmpInst::FCMP_ORD:   return "有序";
+  case FCmpInst::FCMP_UNO:   return "无序比较";
+  case FCmpInst::FCMP_UEQ:   return "无序等于";
+  case FCmpInst::FCMP_UGT:   return "无符号大于";
+  case FCmpInst::FCMP_UGE:   return "无符号大于等于";
+  case FCmpInst::FCMP_ULT:   return "无符号小于";
+  case FCmpInst::FCMP_ULE:   return "无符号小于等于";
+  case FCmpInst::FCMP_UNE:   return "无序不等于";
+  case FCmpInst::FCMP_TRUE:  return "真";
+  case ICmpInst::ICMP_EQ:    return "等于";
+  case ICmpInst::ICMP_NE:    return "不等于";
+  case ICmpInst::ICMP_SGT:   return "有符号大于";
+  case ICmpInst::ICMP_SGE:   return "有符号大于等于";
+  case ICmpInst::ICMP_SLT:   return "有符号小于";
+  case ICmpInst::ICMP_SLE:   return "有符号小于等于";
+  case ICmpInst::ICMP_UGT:   return "无符号大于";
+  case ICmpInst::ICMP_UGE:   return "无符号大于等于";
+  case ICmpInst::ICMP_ULT:   return "无符号小于";
+  case ICmpInst::ICMP_ULE:   return "无符号小于等于";
   }
 }
 

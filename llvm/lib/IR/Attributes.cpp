@@ -325,6 +325,44 @@ Attribute::AttrKind Attribute::getAttrKindFromName(StringRef AttrName) {
 }
 
 StringRef Attribute::getNameFromAttrKind(Attribute::AttrKind AttrKind) {
+  // 汉化属性名（日月中文 IR）。未列出的属性回退到英文规范名。
+  switch (AttrKind) {
+  case Attribute::NoUndef:
+    return "无未定义";
+  case Attribute::NonNull:
+    return "非空";
+  case Attribute::ReadNone:
+    return "不读";
+  case Attribute::ReadOnly:
+    return "只读";
+  case Attribute::WriteOnly:
+    return "只写";
+  case Attribute::NoFree:
+    return "无释放";
+  case Attribute::NoUnwind:
+    return "不展开";
+  case Attribute::NoReturn:
+    return "不返回";
+  case Attribute::NoAlias:
+    return "无别名";
+  case Attribute::WillReturn:
+    return "将返回";
+  case Attribute::MustProgress:
+    return "必须推进";
+  case Attribute::NoSync:
+    return "不同步";
+  case Attribute::Speculatable:
+    return "可推测";
+  case Attribute::NoCallback:
+    return "无回调";
+  case Attribute::NoCreateUndefOrPoison:
+    return "不产生未定义或毒药";
+  case Attribute::ImmArg:
+    return "立即参数";
+  default:
+    break;
+  }
+
   switch (AttrKind) {
 #define GET_ATTR_NAMES
 #define ATTRIBUTE_ENUM(ENUM_NAME, DISPLAY_NAME)                                \
@@ -538,13 +576,13 @@ ArrayRef<ConstantRange> Attribute::getInitializes() const {
 static const char *getModRefStr(ModRefInfo MR) {
   switch (MR) {
   case ModRefInfo::NoModRef:
-    return "none";
+    return "无";
   case ModRefInfo::Ref:
-    return "read";
+    return "读";
   case ModRefInfo::Mod:
-    return "write";
+    return "写";
   case ModRefInfo::ModRef:
-    return "readwrite";
+    return "读写";
   }
   llvm_unreachable("Invalid ModRefInfo");
 }
@@ -570,8 +608,8 @@ std::string Attribute::getAsString(bool InAttrGrp) const {
   //   alignstack=8
   //
   if (hasAttribute(Attribute::Alignment))
-    return (InAttrGrp ? "align=" + Twine(getValueAsInt())
-                      : "align " + Twine(getValueAsInt()))
+    return (InAttrGrp ? "对齐=" + Twine(getValueAsInt())
+                      : "对齐 " + Twine(getValueAsInt()))
         .str();
 
   auto AttrWithBytesToString = [&](const char *Name) {
@@ -581,19 +619,19 @@ std::string Attribute::getAsString(bool InAttrGrp) const {
   };
 
   if (hasAttribute(Attribute::StackAlignment))
-    return AttrWithBytesToString("alignstack");
+    return AttrWithBytesToString("对齐栈");
 
   if (hasAttribute(Attribute::Dereferenceable))
-    return AttrWithBytesToString("dereferenceable");
+    return AttrWithBytesToString("可解引用");
 
   if (hasAttribute(Attribute::DereferenceableOrNull))
-    return AttrWithBytesToString("dereferenceable_or_null");
+    return AttrWithBytesToString("可解引用或空");
 
   if (hasAttribute(Attribute::DeadOnReturn)) {
     uint64_t DeadBytes = getValueAsInt();
     if (DeadBytes == std::numeric_limits<uint64_t>::max())
-      return "dead_on_return";
-    return AttrWithBytesToString("dead_on_return");
+      return "返回时死";
+    return AttrWithBytesToString("返回时死");
   }
 
   if (hasAttribute(Attribute::AllocSize)) {
@@ -602,8 +640,8 @@ std::string Attribute::getAsString(bool InAttrGrp) const {
     std::tie(ElemSize, NumElems) = getAllocSizeArgs();
 
     return (NumElems
-                ? "allocsize(" + Twine(ElemSize) + "," + Twine(*NumElems) + ")"
-                : "allocsize(" + Twine(ElemSize) + ")")
+                ? "分配大小(" + Twine(ElemSize) + "," + Twine(*NumElems) + ")"
+                : "分配大小(" + Twine(ElemSize) + ")")
         .str();
   }
 
@@ -625,18 +663,18 @@ std::string Attribute::getAsString(bool InAttrGrp) const {
     AllocFnKind Kind = getAllocKind();
     SmallVector<StringRef> parts;
     if ((Kind & AllocFnKind::Alloc) != AllocFnKind::Unknown)
-      parts.push_back("alloc");
+      parts.push_back("分配");
     if ((Kind & AllocFnKind::Realloc) != AllocFnKind::Unknown)
-      parts.push_back("realloc");
+      parts.push_back("重分配");
     if ((Kind & AllocFnKind::Free) != AllocFnKind::Unknown)
-      parts.push_back("free");
+      parts.push_back("释放");
     if ((Kind & AllocFnKind::Uninitialized) != AllocFnKind::Unknown)
-      parts.push_back("uninitialized");
+      parts.push_back("未初始化");
     if ((Kind & AllocFnKind::Zeroed) != AllocFnKind::Unknown)
-      parts.push_back("zeroed");
+      parts.push_back("清零");
     if ((Kind & AllocFnKind::Aligned) != AllocFnKind::Unknown)
-      parts.push_back("aligned");
-    return ("allockind(\"" +
+      parts.push_back("对齐");
+    return ("分配种类(\"" +
             Twine(llvm::join(parts.begin(), parts.end(), ",")) + "\")")
         .str();
   }
@@ -645,7 +683,7 @@ std::string Attribute::getAsString(bool InAttrGrp) const {
     std::string Result;
     raw_string_ostream OS(Result);
     bool First = true;
-    OS << "memory(";
+    OS << "内存(";
 
     MemoryEffects ME = getMemoryEffects();
 
@@ -672,7 +710,7 @@ std::string Attribute::getAsString(bool InAttrGrp) const {
       // memory(target_mem:read, target_mem3:none, target_mem5:write).
       if (ME.isTargetMemLoc(Loc) && ME.isTargetMemLocSameForAll()) {
         if (!TargetPrintedForAll) {
-          OS << "target_mem: ";
+          OS << "目标内存: ";
           OS << getModRefStr(MR);
           TargetPrintedForAll = true;
         }
@@ -682,21 +720,21 @@ std::string Attribute::getAsString(bool InAttrGrp) const {
 
       switch (Loc) {
       case IRMemLocation::ArgMem:
-        OS << "argmem: ";
+        OS << "参数内存: ";
         break;
       case IRMemLocation::InaccessibleMem:
-        OS << "inaccessiblemem: ";
+        OS << "不可访问内存: ";
         break;
       case IRMemLocation::ErrnoMem:
-        OS << "errnomem: ";
+        OS << "错误内存: ";
         break;
       case IRMemLocation::Other:
         llvm_unreachable("This is represented as the default access kind");
       case IRMemLocation::TargetMem0:
-        OS << "target_mem0: ";
+        OS << "目标内存0: ";
         break;
       case IRMemLocation::TargetMem1:
-        OS << "target_mem1: ";
+        OS << "目标内存1: ";
         break;
       }
       OS << getModRefStr(MR);
@@ -732,8 +770,8 @@ std::string Attribute::getAsString(bool InAttrGrp) const {
     std::string Result;
     raw_string_ostream OS(Result);
     const ConstantRange &CR = getValueAsConstantRange();
-    OS << "range(";
-    OS << "i" << CR.getBitWidth() << " ";
+    OS << "范围(";
+    OS << "整数" << CR.getBitWidth() << " ";
     OS << CR.getLower() << ", " << CR.getUpper();
     OS << ")";
     return Result;
@@ -743,7 +781,7 @@ std::string Attribute::getAsString(bool InAttrGrp) const {
     std::string Result;
     raw_string_ostream OS(Result);
     ConstantRangeList CRL = getInitializes();
-    OS << "initializes(";
+    OS << "初始化(";
     CRL.print(OS);
     OS << ")";
     return Result;
