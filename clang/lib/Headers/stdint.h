@@ -839,7 +839,13 @@ typedef __UINTMAX_TYPE__ uintmax_t;
 #define WINT_WIDTH       __WINT_WIDTH__
 #endif
 
-/* Chinese type aliases (中文类型别名) */
+#endif /* __STDC_HOSTED__ */
+#endif /* __MVS__ */
+
+/* Chinese type aliases (中文类型别名)：置于所有条件分支之外，确保 hosted 环境
+ * （__STDC_HOSTED__ && __has_include_next(<stdint.h>)）下同样生效。*/
+#if !defined(_CHINESE_STDINT_H)
+#define _CHINESE_STDINT_H
 typedef int8_t   整数8型;
 typedef int16_t  整数16型;
 typedef int32_t  整数32型;
@@ -848,7 +854,6 @@ typedef uint8_t  无符号整数8型;
 typedef uint16_t 无符号整数16型;
 typedef uint32_t 无符号整数32型;
 typedef uint64_t 无符号整数64型;
+#endif /* _CHINESE_STDINT_H */
 
-#endif /* __STDC_HOSTED__ */
-#endif /* __MVS__ */
 #endif /* __CLANG_STDINT_H */
