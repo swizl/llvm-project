@@ -250,7 +250,7 @@ static bool EvaluateValue(PPValue &Result, Token &PeekTok, DefinedTracker &DT,
     // keywords are pp-identifiers, so we can't check the kind.
     if (IdentifierInfo *II = PeekTok.getIdentifierInfo()) {
       // Handle "defined X" and "defined(X)".
-      if (II->isStr("defined"))
+      if (II->isStr("defined") || II->isStr("已定义"))
         return EvaluateDefined(Result, PeekTok, DT, ValueLive, PP);
 
       if (!II->isCPlusPlusOperatorKeyword()) {

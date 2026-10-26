@@ -892,12 +892,16 @@ def ArmBuiltinAlias : InheritableAttr, TargetSpecificAttr<TargetAnyArm> {
 
 def Aligned : InheritableAttr {
   let Spellings = [GCC<"aligned">, Declspec<"align">, CustomKeyword<"alignas">,
-                   CustomKeyword<"_Alignas">];
+                   CustomKeyword<"_Alignas">, CustomKeyword<"对齐">,
+                   CustomKeyword<"对齐说明">];
   let Args = [AlignedArgument<"Alignment", 1>];
   let Accessors = [Accessor<"isGNU", [GCC<"aligned">]>,
-                   Accessor<"isC11", [CustomKeyword<"_Alignas">]>,
+                   Accessor<"isC11", [CustomKeyword<"_Alignas">,
+                                      CustomKeyword<"对齐说明">]>,
                    Accessor<"isAlignas", [CustomKeyword<"alignas">,
-                                          CustomKeyword<"_Alignas">]>,
+                                          CustomKeyword<"_Alignas">,
+                                          CustomKeyword<"对齐">,
+                                          CustomKeyword<"对齐说明">]>,
                    Accessor<"isDeclspec",[Declspec<"align">]>];
   let comparisonFn = "areAlignedAttrsEqual";
   let profileFn = "profileAlignedAttr";
