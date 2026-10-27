@@ -1869,7 +1869,7 @@ def OpenCLNoSVM : Attr {
 def Deprecated : InheritableAttr {
   let Spellings = [GCC<"deprecated">, Declspec<"deprecated">,
                    CXX11<"","deprecated", 201309>,
-                   C23<"", "deprecated", 201904>];
+                   C23<"", "deprecated", 201904>, CustomKeyword<"已弃用">];
   let Args = [StringArgument<"Message", 1>,
               // An optional string argument that enables us to provide a
               // Fix-It.
@@ -1933,7 +1933,8 @@ def ExtVectorType : TypeAttr {
 def FallThrough : StmtAttr {
   let Spellings = [CXX11<"", "fallthrough", 201603>,
                    C23<"", "fallthrough", 201910>,
-                   CXX11<"clang", "fallthrough">, GCC<"fallthrough">];
+                   CXX11<"clang", "fallthrough">, GCC<"fallthrough">,
+                   CustomKeyword<"贯穿">];
   // The attribute only applies to a NullStmt, but we have special fix-it
   // behavior if applied to a case label.
   let Subjects = SubjectList<[NullStmt, SwitchCase], ErrorDiag,
@@ -1942,12 +1943,14 @@ def FallThrough : StmtAttr {
 }
 
 def Likely : StmtAttr {
-  let Spellings = [CXX11<"", "likely", 201803>, C23<"clang", "likely">];
+  let Spellings = [CXX11<"", "likely", 201803>, C23<"clang", "likely">,
+                   CustomKeyword<"可能">];
   let Documentation = [LikelihoodDocs];
 }
 
 def Unlikely : StmtAttr {
-  let Spellings = [CXX11<"", "unlikely", 201803>, C23<"clang", "unlikely">];
+  let Spellings = [CXX11<"", "unlikely", 201803>, C23<"clang", "unlikely">,
+                   CustomKeyword<"不太可能">];
   let Documentation = [LikelihoodDocs];
 }
 def : MutualExclusions<[Likely, Unlikely]>;
@@ -2327,7 +2330,8 @@ def ArmMveStrictPolymorphism : TypeAttr, TargetSpecificAttr<TargetARM> {
 
 def NoUniqueAddress : InheritableAttr {
   let Subjects = SubjectList<[NonBitField], ErrorDiag>;
-  let Spellings = [CXX11<"", "no_unique_address", 201803>, CXX11<"msvc", "no_unique_address", 201803>];
+  let Spellings = [CXX11<"", "no_unique_address", 201803>, CXX11<"msvc", "no_unique_address", 201803>,
+                   CustomKeyword<"无唯一地址">];
   let TargetSpecificSpellings = [
     TargetSpecificSpelling<TargetItaniumCXXABI, [CXX11<"", "no_unique_address", 201803>]>,
     TargetSpecificSpelling<TargetMicrosoftRecordLayout, [CXX11<"msvc", "no_unique_address", 201803>]>,
@@ -3820,7 +3824,7 @@ def PointerAuth : TypeAttr {
 
 def Unused : InheritableAttr {
   let Spellings = [CXX11<"", "maybe_unused", 201603>, GCC<"unused">,
-                   C23<"", "maybe_unused", 202106>];
+                   C23<"", "maybe_unused", 202106>, CustomKeyword<"可能未使用">];
   let Subjects = SubjectList<[Var, Binding, ObjCIvar, Type, Enum, EnumConstant, Label,
                               Field, ObjCMethod, FunctionLike]>;
   let Documentation = [WarnMaybeUnusedDocs];
@@ -3917,7 +3921,7 @@ def WarnUnusedResult : InheritableAttr {
   let Spellings = [CXX11<"", "nodiscard", 201907>,
                    C23<"", "nodiscard", 202003>,
                    CXX11<"clang", "warn_unused_result">,
-                   GCC<"warn_unused_result">];
+                   GCC<"warn_unused_result">, CustomKeyword<"必须使用">];
   let Subjects = SubjectList<[ObjCMethod, Enum, Record, FunctionLike, TypedefName]>;
   let Args = [StringArgument<"Message", 1>];
   let Documentation = [WarnUnusedResultsDocs];

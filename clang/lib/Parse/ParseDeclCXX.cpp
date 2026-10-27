@@ -2419,6 +2419,21 @@ VirtSpecifiers::Specifier Parser::isCXX11VirtSpecifier(const Token &Tok) const {
     Ident_override = &PP.getIdentifierTable().get("override");
   }
 
+  // Chinese virt-specifier aliases (中文虚函数说明符):
+  // 最终 = final, 覆盖 = override, 密封 = sealed, 抽象 = abstract.
+  // 这些是上下文关键字（未登记进关键字表），故不占用同名标识符。
+  if (II->isStr("最终"))
+    return VirtSpecifiers::VS_Final;
+
+  if (II->isStr("覆盖"))
+    return VirtSpecifiers::VS_Override;
+
+  if (II->isStr("密封"))
+    return VirtSpecifiers::VS_Sealed;
+
+  if (II->isStr("抽象"))
+    return VirtSpecifiers::VS_Abstract;
+
   if (II == Ident_override)
     return VirtSpecifiers::VS_Override;
 
